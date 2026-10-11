@@ -24,5 +24,6 @@ Verified on **2026-10-11** using the official pages below. Model guides describe
 5. Express loop/rotation as intent. Matching endpoints do not verify a full revolution or seamless playback.
 6. Concise output retains constraints; Detailed adds temporal continuity. Chinese interpretation uses the same sections and user-supplied Chinese notes, without translation APIs.
 7. The Grok compiler is a conservative local formula inferred from API examples, **not** a verified consumer-specific best-prompt standard.
+8. Keep frame workflow advice consistent with the motion path. One-way 90°/180° turntable/orbit guidance uses a distinct final orientation/viewpoint or no endpoint/no loop; repetition needs a separately designed return path or edit. Identical endpoint images are reserved for full revolutions or returning-pose plans. This is engineering interpretation of the documented visual-input/text agreement (Flow creation URL above, verified 2026-10-11, high confidence for documentation; output fidelity unverified), not a provider rotation guarantee. Grok consumer endpoint support remains unknown.
 
 Object rotation, hidden-surface reconstruction, crossfading and A/B/C timing are **engineering strategies**, not documented provider guarantees. Consumer I2V UAT and subjective video quality remain manual.

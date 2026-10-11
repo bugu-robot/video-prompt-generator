@@ -18,7 +18,13 @@ export function workflow(p: MotionPlan): string[] {
     result.push(
       `在外部網站確認可用時長後，設定約 ${p.durationSeconds} 秒；提示文字不能更改生成控制項。`,
     );
-  if (p.loop === 'match-pose')
+  if (p.mode === 'rotation' && p.rotation.angle !== 360)
+    result.push(
+      cap.consumer.endFrame.status === 'supported'
+        ? `單向 ${p.rotation.angle}° ${p.rotation.type === 'orbit' ? '鏡頭繞行' : '物件自轉'}應使用與目標方向／視角相符的不同尾幀（如使用 Flow Frames），或不設定尾幀及選擇「不要求循環」。重複播放須另行設計回程或剪輯；這裡不會更改角度、方向或路徑。`
+        : `單向 ${p.rotation.angle}° 旋轉的網站首尾幀功能未核實；只有確認實際控制項支援後，才提供相符的不同尾幀。可不設定尾幀及選擇「不要求循環」，重複播放則須另行設計回程或剪輯；這裡不會更改角度、方向或路徑。`,
+    );
+  else if (p.loop === 'match-pose')
     result.push(
       cap.consumer.endFrame.status === 'supported'
         ? '如使用 Flow Frames，可自行把相同原圖設為首尾幀並描述中間動作；這只提高邊界相配機會。'

@@ -31,7 +31,7 @@ Open http://localhost:4173/. Wait for the offline-ready indicator; dev mode deli
 - Three provider compilers, source-aware conditional motion, 23 curated presets, relevant preservation, audio preferences and rule-based diagnostics.
 - Deterministic A/B/C timing variations with no invented scene objects; fixed pure rotations disclose when constraints leave no motion freedom.
 - Local image preview, metadata, subject description and pointer/keyboard rectangle marking. No automatic vision or persistent image bytes.
-- Custom preset save/update/rename/duplicate/delete and validated atomic JSON import/export.
+- Custom preset save/update/rename/duplicate/delete and validated atomic JSON import/export; consistent 1 MiB UTF-8 aggregate limit, protected unreadable data, raw backup and explicitly confirmed recovery.
 - Provider comparison, original-English clipboard, text export, versioned integration JSON and documented schema.
 - Local video metadata, first/near-last-frame capture, RGB/luma differences, real playback, manual QC and JSON report. No fake identity/rotation analyzer.
 - Responsive dark/light/system themes, keyboard controls, installable offline PWA, hash-versioned shell and user-controlled updates.

@@ -14,7 +14,11 @@ A source image provides the visual scene; prompts avoid reinventing it. Unconfir
 
 Ambient defaults to a locked tripod. Cinematic enables dolly/orbit in addition to the restrained ambient camera set. Rotation emits **only** its rigid turn or camera path, retaining dormant ambient selections for later mode switches. Turntable has a stationary camera; camera orbit keeps the object stationary. Conflicting imported camera/type combinations produce an error.
 
+Dormant selected motions are not checked for conflicts in Rotation, because they are not emitted. The same stored motions are checked again when active in Ambient/Cinematic. Every base/variant/comparison copy gate evaluates its own compiled plan rather than treating hidden settings as emitted actions.
+
 Direction is viewed from the positive selected axis toward the object center. A Y-axis clockwise turn is viewed from above. This is an explicit requested convention, not proof the model follows it. 90°/180° cannot also finish at the start in one single-direction turn; selecting these angles clears return-to-start.
+
+For partial turns, provider workflow advice recommends distinct matching target endpoints where consumer support is confirmed, otherwise an explicit check of unverified controls, no endpoint/no loop, or a separately designed return path/edit. The app does not suggest identical endpoint frames for an intended one-way partial turn or change its angle/direction. Full-turn/returning-pose identical-frame guidance remains available for supported consumer workflows.
 
 ## Smart A/B/C
 

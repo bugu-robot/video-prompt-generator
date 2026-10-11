@@ -15,12 +15,20 @@ All six feasible implementation phases are complete on `feat/local-first-video-p
 | Environment | Verified outcome |
 | --- | --- |
 | Local Node 24 clean install | npm ci, typecheck, lint, root/Pages builds, audit pass; 0 vulnerabilities |
-| Local unit suite after final review | 170 pass, 0 fail/skip, 3 files |
-| Actual local Chromium 153 | 26 browser tests pass, 0 fail/skip |
-| Ubuntu and Windows Node 24 CI baseline | 168 unit tests each plus typecheck/lint/root/Pages builds/audit pass |
-| Chromium / Firefox / WebKit CI baseline | 26 / 25 / 25 pass = 76; 0 fail/skip |
+| Local unit suite after independent-review fixes | 221 pass, 0 fail/skip, 4 files |
+| Actual local Chromium 153 | 42 browser tests pass, 0 fail/skip |
+| Independently reviewed Ubuntu and Windows Node 24 CI baseline | 170 unit tests each plus typecheck/lint/root/Pages builds/audit pass |
+| Independently reviewed Chromium / Firefox / WebKit CI baseline | 26 / 25 / 25 pass = 76; 0 fail/skip |
 
-Remote baseline: commit `cb3e624d04b6b04d2efb33ed70966bc2459459f9`, [CI run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38130744331). Final review adds two unit regressions for rotation-loop edge cases and extends the existing browser rotation acceptance; the latest PR checks rerun all 170 unit tests and 76 browser tests. Inspect current results on the linked PR/Actions rather than treating this static snapshot as a live CI dashboard.
+Independently reviewed baseline: commit `1f47146f8fb2500ed52093d0ce38bea52214af11`, [CI run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38131499051). The follow-up adds 51 unit cases and 16 shared browser cases: the full suite now contains 221 units and Chromium 42 / Firefox 41 / WebKit 41 = 124 browser cases. Local outcomes above are measured; current remote outcomes must be verified from the feature branch's new PR checks.
+
+## Independent-review fixes (2026-10-11)
+
+- Preset write/export validates the exact final representation with a shared 1 MiB (1,048,576 UTF-8 bytes) limit and 100-item limit. An oversized merged import fails before the one atomic write, preserving existing bytes. Save/update/rename/delete/import require a successful existing-data read; malformed/oversized/schema-invalid data is never an empty fallback. Quota failures preserve prior contents, including when the startup write probe fails.
+- The UI keeps unreadable preset data visible as a recovery state, disables ordinary mutation, offers exact raw backup and requires a downloaded backup plus explicit replacement confirmation for a validated recovery file. Validation/quota/stale-backup failures leave original data intact. Recovering a subset does not automatically migrate omitted entries; keep the raw backup.
+- Rotation audits only emitted rigid turn/orbit motion, retaining dormant Ambient/Cinematic selections. Real conflicts return when those modes become active; base, A/B/C and comparison copy gates use their own actual plans.
+- One-way 90°/180° turntable/orbit workflows suggest a distinct final orientation/viewpoint, no endpoint/no loop, or a separately designed return path/edit. Full revolutions and returning-pose plans keep appropriate identical-endpoint suggestions. Grok controls stay unknown; angle/direction/mechanics are never changed silently.
+- Validated export mirrors compare semantically regardless of object-key order. Ordered arrays, strict values, schema/compiler/capability versions, canonical dates and English recompilation remain enforced. Schema/example version 1.0.0 is unchanged and its existing contract tests pass.
 
 Real browser acceptance includes clipboard readback, H.264 decode, image privacy/region interaction, atomic imports, responsive layouts and real Service Worker root/Pages offline reload plus explicit waiting-worker update. Fixed CORS Vary cache matching, update-worker lifecycle, import notifications, source confirmation reset, axis convention and canonical dates. Final rotation-loop clauses never invent ambient movement or demand contradictory partial-turn closure.
 

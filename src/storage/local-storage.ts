@@ -12,6 +12,7 @@ import {
 import {
   PRESET_BUNDLE_SCHEMA,
   PRESET_SCHEMA,
+  assertJsonByteLimit,
   parseSafeJson,
   validate,
 } from './schema';
@@ -36,8 +37,13 @@ export function browserStorage(): {
   try {
     const s = localStorage;
     const key = 'video-prompts.storage-test';
-    s.setItem(key, '1');
-    s.removeItem(key);
+    try {
+      s.setItem(key, '1');
+      s.removeItem(key);
+    } catch {
+      // A full or read-only store may still contain recoverable presets. Keep
+      // its reader; later writes report errors rather than hiding it in memory.
+    }
     return { storage: s, persistent: true };
   } catch {
     return { storage: volatile, persistent: false };
@@ -79,14 +85,37 @@ export function saveSettings(s: StorageLike, settings: AppSettings): void {
     JSON.stringify({ schemaVersion: '1.0.0', settings: clean }),
   );
 }
-export function listCustomPresets(s: StorageLike): MotionPreset[] {
+export type PresetRead =
+  | { status: 'ready'; presets: MotionPreset[]; raw: string | null }
+  | { status: 'unreadable'; raw: string | null; messageZh: string };
+export function inspectCustomPresets(s: StorageLike): PresetRead {
+  let raw: string | null = null;
   try {
-    const raw = s.getItem(PRESETS_KEY);
-    if (!raw) return [];
-    return parsePresetBundle(raw);
-  } catch {
-    return [];
+    raw = s.getItem(PRESETS_KEY);
+    return {
+      status: 'ready',
+      presets: raw === null || raw === '' ? [] : parsePresetBundle(raw),
+      raw,
+    };
+  } catch (error) {
+    return {
+      status: 'unreadable',
+      raw,
+      messageZh:
+        '自訂預設無法讀取，原始資料已保留；另存、更新、重新命名、刪除及合併匯入已停止。請先匯出原始備份，再修復或分拆 JSON，使用復原功能。原因：' +
+        (error instanceof Error ? error.message : '瀏覽器不允許讀取儲存資料。'),
+    };
   }
+}
+export function listCustomPresets(s: StorageLike): MotionPreset[] {
+  const result = inspectCustomPresets(s);
+  if (result.status === 'unreadable') throw new Error(result.messageZh);
+  return result.presets;
+}
+export function rawPresetBackup(s: StorageLike): string {
+  const raw = s.getItem(PRESETS_KEY);
+  if (raw === null || raw === '') throw new Error('沒有可匯出的原始預設資料。');
+  return raw;
 }
 function custom(p: MotionPreset): void {
   validate(p, PRESET_SCHEMA);
@@ -115,11 +144,42 @@ export function presetBundle(presets: MotionPreset[]): string {
     presets,
   };
   validate(data, PRESET_BUNDLE_SCHEMA);
-  return JSON.stringify(data, null, 2);
+  for (const p of presets) custom(p);
+  if (new Set(presets.map((p) => p.id)).size !== presets.length)
+    throw new Error('預設 ID 重複。');
+  const raw = JSON.stringify(data, null, 2);
+  assertJsonByteLimit(
+    raw,
+    '合併後的自訂預設超過 1 MiB（1,048,576 UTF-8 bytes）；原有資料未更改。請先匯出備份，刪除不需要的預設或縮短備註，再分批匯入。分批匯入仍須符合儲存總量上限。',
+  );
+  return raw;
 }
 function write(s: StorageLike, ps: MotionPreset[]): void {
   if (ps.length > 100) throw new Error('最多儲存 100 個自訂預設。');
-  s.setItem(PRESETS_KEY, ps.length ? presetBundle(ps) : '');
+  // Validate the exact representation before the single atomic localStorage write.
+  const raw = ps.length ? presetBundle(ps) : '';
+  try {
+    s.setItem(PRESETS_KEY, raw);
+  } catch {
+    throw new Error(
+      '無法寫入自訂預設（瀏覽器儲存空間或政策限制）；原有資料未更改。請先匯出備份，再釋放儲存空間。',
+    );
+  }
+}
+export function restorePresets(
+  s: StorageLike,
+  raw: string,
+  backedUpRaw: string,
+): MotionPreset[] {
+  const restored = parsePresetBundle(raw);
+  const current = inspectCustomPresets(s);
+  if (current.status !== 'unreadable')
+    throw new Error('資料目前可正常讀取；請使用一般匯入以保留已有預設。');
+  if (current.raw === null || current.raw !== backedUpRaw)
+    throw new Error('原始資料已變更或無法讀取；請重新匯出原始備份後再復原。');
+  // Replacement is only available through the explicit, backed-up recovery workflow.
+  write(s, restored);
+  return restored;
 }
 export function savePreset(
   s: StorageLike,

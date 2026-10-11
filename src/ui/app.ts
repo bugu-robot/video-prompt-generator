@@ -41,13 +41,17 @@ import {
   browserStorage,
   deletePreset,
   importPresets,
+  inspectCustomPresets,
   listCustomPresets,
   loadSettings,
   presetBundle,
+  rawPresetBackup,
   renamePreset,
   savePreset,
   saveSettings,
+  restorePresets,
 } from '../storage/local-storage';
+import { MAX_JSON_BYTES, parseSafeJson } from '../storage/schema';
 import {
   copyEnglish,
   createExport,
@@ -122,6 +126,7 @@ export function mountApp(root: HTMLElement): void {
   let activeVariant: 'base' | 'A' | 'B' | 'C' = 'base',
     presetName = '',
     presetFilter = 'all',
+    recoveryBackup: string | null = null,
     toastTimer: ReturnType<typeof setTimeout> | undefined;
   let pwaStatus = '首次載入後準備離線快取',
     applyUpdate: (() => void) | null = null,
@@ -129,7 +134,13 @@ export function mountApp(root: HTMLElement): void {
     drawMode = false,
     qcBusy = false;
   const plan = () => settings.plan;
-  const presets = () => [...BUILT_IN_PRESETS, ...listCustomPresets(storage)];
+  const presets = () => {
+    const state = inspectCustomPresets(storage);
+    return [
+      ...BUILT_IN_PRESETS,
+      ...(state.status === 'ready' ? state.presets : []),
+    ];
+  };
   const output = () =>
     activeVariant === 'base'
       ? compilePrompt(plan())
@@ -327,7 +338,7 @@ export function mountApp(root: HTMLElement): void {
   }
   function advancedMarkup(): string {
     const p = plan();
-    return `<section class="panel"><div class="section-heading"><span class="step">04</span><h2>循環與保留</h2></div>${select('loop', '循環策略', Object.entries(LOOP_LABELS), p.loop)}<p class="hint">${LOOP_DESCRIPTIONS[p.loop]}「Loop-friendly」不代表保證無縫。</p>
+    return `<section class="panel"><div class="section-heading"><span class="step">04</span><h2>循環與保留</h2></div>${select('loop', '循環策略', Object.entries(LOOP_LABELS), p.loop)}<p class="hint">${p.mode === 'rotation' && p.rotation.angle !== 360 ? '單向 90°／180° 的尾端方向／視角與開首不同；如指定外部尾幀，應使用目標方向的不同圖片。重複播放須另行剪輯或設計回程，亦可選擇不要求循環。' : LOOP_DESCRIPTIONS[p.loop]}「Loop-friendly」不代表保證無縫。</p>
       <details data-section="preservation"><summary>原圖保留項目與音訊</summary><div class="check-grid">${PRESERVATIONS.map((k) => `<label class="check"><input type="checkbox" data-preserve="${k}" ${p.preservation.includes(k) ? 'checked' : ''}/><span>${PRESERVATION_LABELS[k].zh}</span></label>`).join('')}</div>
       ${select(
         'audio',
@@ -351,11 +362,17 @@ export function mountApp(root: HTMLElement): void {
       )}</section>`;
   }
   function presetMarkup(): string {
-    const items = presets().filter(
+    const state = inspectCustomPresets(storage),
+      available = [
+        ...BUILT_IN_PRESETS,
+        ...(state.status === 'ready' ? state.presets : []),
+      ],
+      items = available.filter(
         (p) => presetFilter === 'all' || p.category === presetFilter,
       ),
-      current = presets().find((p) => p.id === plan().presetId),
-      isCustom = current?.category === 'custom';
+      current = available.find((p) => p.id === plan().presetId),
+      isCustom = current?.category === 'custom',
+      blocked = state.status === 'unreadable';
     return `<section class="panel"><div class="section-heading"><span class="step">05</span><h2>動作預設</h2><span class="pill">${BUILT_IN_PRESETS.length} 個內置</span></div>
       ${select(
         'presetFilter',
@@ -372,12 +389,13 @@ export function mountApp(root: HTMLElement): void {
         presetFilter,
         'ui.presetFilter',
       )}
-      <div class="preset-list">${items.map((p) => `<button class="preset-card ${p.id === plan().presetId ? 'selected' : ''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id === plan().presetId}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('') || '<p class="hint">此分類還沒有自訂預設。</p>'}</div>
+      ${blocked ? `<div class="callout" role="alert" id="preset-recovery"><p>${escape(state.messageZh)}</p><button data-action="export-raw-presets" ${state.raw === null ? 'disabled' : ''}>匯出原始預設備份</button><details data-section="preset-recovery"><summary>復原不可讀的自訂預設</summary><p>先下載原始備份並確認檔案已保存。修復 JSON 格式，或將過大的資料分拆為符合 schema、最多 100 個預設及 1 MiB 的檔案。復原只替換自訂預設；未放入復原檔案的項目仍保留在你下載的原始備份內。其他設定及媒體不受影響。</p><label class="check"><input id="preset-recovery-confirm" type="checkbox" ${recoveryBackup !== null && recoveryBackup === state.raw ? '' : 'disabled'}/><span>我已保存原始備份，確認以已修復的 JSON 替換目前不可讀的自訂預設</span></label><button data-action="restore-presets" disabled>選取已修復 JSON 並復原</button><input id="recovery-file" class="file-input" type="file" accept="application/json,.json" aria-label="復原預設 JSON"/></details></div>` : ''}
+      <div class="preset-list">${items.map((p) => `<button class="preset-card ${p.id === plan().presetId ? 'selected' : ''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id === plan().presetId}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('') || `<p class="hint">${blocked ? '自訂預設暫時無法顯示；原始資料仍在，請使用上方復原功能。' : '此分類還沒有自訂預設。'}</p>`}</div>
       ${current ? `<p class="hint">已選：${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>` : ''}
       <label class="field" for="presetName"><span>自訂預設名稱</span><input id="presetName" maxlength="80" value="${escape(presetName)}" placeholder="例如 Mochi 雨天微動作"/></label>
-      <div class="actions"><button data-action="save-preset">另存設定</button><button data-action="duplicate-preset">複製設定</button><button data-action="update-preset" ${isCustom ? '' : 'disabled'}>更新自訂</button><button data-action="rename-preset" ${isCustom ? '' : 'disabled'}>重新命名</button><button data-action="delete-preset" ${isCustom ? '' : 'disabled'}>刪除自訂</button></div>
-      <div class="actions"><button data-action="export-presets" ${listCustomPresets(storage).length ? '' : 'disabled'}>匯出全部自訂</button><button data-action="export-selected" ${current ? '' : 'disabled'}>匯出已選預設</button><button data-action="import-json">匯入預設／設定 JSON</button></div><input id="json-file" class="file-input" type="file" accept="application/json,.json" aria-label="匯入 JSON"/>
-      <p class="hint">預設儲存左邊的原設定；A/B/C 版本可用輸出 JSON 保留。內置預設可複製後編輯。儲存的是動作設定，不包含圖片、影片或框選。匯入會先完整驗證，不覆蓋已有預設。</p></section>`;
+      <div class="actions"><button data-action="save-preset" ${blocked ? 'disabled' : ''}>另存設定</button><button data-action="duplicate-preset" ${blocked ? 'disabled' : ''}>複製設定</button><button data-action="update-preset" ${isCustom ? '' : 'disabled'}>更新自訂</button><button data-action="rename-preset" ${isCustom ? '' : 'disabled'}>重新命名</button><button data-action="delete-preset" ${isCustom ? '' : 'disabled'}>刪除自訂</button></div>
+      <div class="actions"><button data-action="export-presets" ${state.status === 'ready' && state.presets.length ? '' : 'disabled'}>匯出全部自訂</button><button data-action="export-selected" ${current ? '' : 'disabled'}>匯出已選預設</button><button data-action="import-json">匯入預設／設定 JSON</button></div><input id="json-file" class="file-input" type="file" accept="application/json,.json" aria-label="匯入 JSON"/>
+      <p class="hint">預設儲存左邊的原設定；A/B/C 版本可用輸出 JSON 保留。內置預設可複製後編輯。儲存的是動作設定，不包含圖片、影片或框選。匯入會先完整驗證，不覆蓋已有預設。自訂預設總量及單次 JSON 均限 1 MiB（1,048,576 UTF-8 bytes），最多 100 個。</p></section>`;
   }
   function promptMarkup(
     english: string,
@@ -639,22 +657,48 @@ export function mountApp(root: HTMLElement): void {
     const el = event.target;
     if (!(el instanceof HTMLInputElement || el instanceof HTMLSelectElement))
       return;
+    if (el.id === 'preset-recovery-confirm' && el instanceof HTMLInputElement) {
+      const button = root.querySelector<HTMLButtonElement>(
+        '[data-action="restore-presets"]',
+      );
+      if (button) button.disabled = !el.checked || recoveryBackup === null;
+      return;
+    }
     if (el instanceof HTMLInputElement && el.type === 'file') {
       const file = el.files?.[0];
       if (!file) return;
       if (el.id === 'image-file') void setImage(file);
       else if (el.id === 'video-file') void setVideo(file);
-      else if (el.id === 'json-file') {
-        if (file.size > 1024 * 1024) {
-          notify('JSON 不能超過 1 MB。');
+      else if (el.id === 'json-file' || el.id === 'recovery-file') {
+        const recovering = el.id === 'recovery-file';
+        const backedUpRaw = recoveryBackup;
+        if (
+          recovering &&
+          (backedUpRaw === null ||
+            !root.querySelector<HTMLInputElement>('#preset-recovery-confirm')
+              ?.checked)
+        ) {
+          notify('請先匯出原始備份，確認檔案已保存並勾選復原確認。');
           return;
         }
+        if (file.size > MAX_JSON_BYTES) {
+          notify('JSON 不能超過 1 MiB（1,048,576 UTF-8 bytes）。');
+          return;
+        }
+        el.value = '';
         void file
           .text()
           .then((raw) => {
             try {
-              const parsed = JSON.parse(raw) as { format?: string };
-              if (parsed?.format === 'video-prompt-generator-presets') {
+              const parsed = parseSafeJson(raw) as { format?: string } | null;
+              if (recovering) {
+                const restored = restorePresets(storage, raw, backedUpRaw!);
+                recoveryBackup = null;
+                render();
+                notify(
+                  `已復原 ${restored.length} 個自訂預設；原始資料請保留在已下載備份內。`,
+                );
+              } else if (parsed?.format === 'video-prompt-generator-presets') {
                 const imported = importPresets(storage, raw);
                 render();
                 notify(`已匯入 ${imported.length} 個預設；原有預設已保留。`);
@@ -835,6 +879,20 @@ export function mountApp(root: HTMLElement): void {
           'video-motion-presets.json',
           presetBundle(listCustomPresets(storage)),
         );
+        return;
+      }
+      if (action === 'export-raw-presets') {
+        const raw = rawPresetBackup(storage);
+        downloadFile('video-motion-presets-raw-backup.json', raw);
+        recoveryBackup = raw;
+        render();
+        notify(
+          '已開始下載原始資料，內容沒有解析或修改；請確認備份檔案已保存。',
+        );
+        return;
+      }
+      if (action === 'restore-presets') {
+        root.querySelector<HTMLInputElement>('#recovery-file')!.click();
         return;
       }
       if (action === 'export-selected') {

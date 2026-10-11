@@ -12,6 +12,10 @@ Turntable: object rotates about its own selected axis, stationary camera. Camera
 
 Uniform speed is the usual loop-friendly request. Slow means steady but slower motion. Ease-in/ease-out changes angular cadence and may create a pause at the boundary. A fixed uniform rotation leaves no variation freedom, so A/B/C disclose identical core prompts; eased cadence supports distinct variants without changing angle/direction/axis.
 
+For one-way 90°/180° turntable **and** orbit, external Flow frame advice uses a different end image matching the intended final orientation/viewpoint, or recommends omitting the endpoint and using no loop. A repeatable edit/return path must be designed separately. Do not use the same source in both slots for a non-closing partial turn. Full revolutions and genuine returning-pose plans retain identical-endpoint guidance where the consumer registry supports that control. Grok controls remain unverified. No advice automatically changes the selected angle, direction or mechanics.
+
+Ambient subject/environment selections stay stored when entering Rotation. They are dormant: the rigid turn/orbit prompt and its motion-conflict audit exclude them. Returning to Ambient or Cinematic restores those selections and any genuine conflicts. This behavior applies equally to base, A/B/C and provider-comparison copy checks.
+
 ## Manual acceptance
 
 Check the complete timeline, not just endpoint images:

@@ -9,6 +9,8 @@ This task does **not** modify `bugu-robot/mochi-bot-v2`, initiate browser submis
 - `src/storage/export.ts`: runtime validation, same-plan mirrored-field checks and original-English recompilation.
 - `src/storage/schema.ts`: canonical schema definitions; artifact consistency is tested.
 
+Version 1.0.0 and the stable example remain unchanged by the review fixes. Validated mirrored JSON objects compare by keys/values irrespective of key order (including `loopSettings` and source metadata). Arrays remain ordered; values, unknown-field rejection, exact schema/compiler/capability versions, canonical dates and deterministically recompiled English prompts remain strict. The parser's 1 MiB limit counts UTF-8 bytes, not JavaScript string length. Import interoperability does not authorize generation or loosen approval/kill-switch requirements.
+
 Export fields: format/schema version; provider; internal model selection; generation mode; full Motion Plan; source image filename/MIME/size/dimensions; English prompt; compiler version; capability snapshot date; preset identity; loop settings; findings; export timestamp. Media bytes, object URLs, absolute file paths and credentials are excluded.
 
 Internal model selectors are not API model IDs. `grok-consumer-current` explicitly means the consumer version is unknown. Never select an API version in browser automation based on this string.

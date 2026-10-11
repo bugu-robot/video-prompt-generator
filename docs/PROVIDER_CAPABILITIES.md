@@ -19,11 +19,15 @@ The Omni model prompt guide mentions scene extension, while Flow's consumer tabl
 
 Consumer workflow URLs: https://support.google.com/flow/answer/16353334?hl=en (frames/references) and https://support.google.com/flow/answer/16935718?hl=en (editing). Verified 2026-10-11, high confidence. Frames anchor endpoints; Ingredients provide reference identity. The app does not assume both workflows can be combined.
 
+The app's endpoint suggestion is a **motion-dependent engineering policy**, not an additional capability: the four supported Flow model entries recommend distinct target endpoints or no endpoint/no loop for one-way 90°/180° turntable/orbit. Full revolutions and returning-pose plans can instead suggest identical images. A separately designed return path/edit is not submitted by this tool. Angle, direction and mechanics are never silently changed. This follows visual-input/text agreement in the Flow creation guide above; generation fidelity remains unverified.
+
 ## Grok consumer website
 
 Stable internal selector: `grok-consumer-current`, a **non-versioned app selector**, not a claimed xAI model version. Consumer source: https://docs.x.ai/grok/overview, verified 2026-10-11, high confidence for general Imagine image/video availability.
 
 I2V controls, end frames, multiple reference views, duration choices, exact resolutions/aspect ratios, editing, extension and exact audio controls are **unknown** in the consumer registry. Relevant dedicated sources retrieved describe the API; none verifies these controls in the current consumer account. The UI warns and marks duration/reference options as preferences or workflow guidance.
+
+Partial-turn distinct-end-frame advice is conditional on verifying the actual website controls first. It does not promote Grok endpoint support from unknown or use API evidence to enable consumer features.
 
 ## API evidence — kept separate
 

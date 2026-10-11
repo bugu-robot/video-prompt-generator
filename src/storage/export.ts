@@ -75,6 +75,27 @@ export function createExport(
     exportTimestamp: timestamp,
   };
 }
+// Both operands have already passed the strict schema. Object key order has no
+// JSON meaning; array order, primitive types and values still must match exactly.
+function sameJsonValue(a: unknown, b: unknown): boolean {
+  if (Array.isArray(a) || Array.isArray(b))
+    return (
+      Array.isArray(a) &&
+      Array.isArray(b) &&
+      a.length === b.length &&
+      a.every((value, index) => sameJsonValue(value, b[index]))
+    );
+  if (isRecord(a) && isRecord(b)) {
+    const keys = Object.keys(a);
+    return (
+      keys.length === Object.keys(b).length &&
+      keys.every(
+        (key) => Object.hasOwn(b, key) && sameJsonValue(a[key], b[key]),
+      )
+    );
+  }
+  return a === b;
+}
 export function importConfiguration(raw: string): MotionPlan {
   const v = parseSafeJson(raw);
   validate(v, EXPORT_SCHEMA);
@@ -91,7 +112,7 @@ export function importConfiguration(raw: string): MotionPlan {
     'qcWarnings',
     'generatedEnglishPrompt',
   ] as const) {
-    if (JSON.stringify(v[key]) !== JSON.stringify(expected[key]))
+    if (!sameJsonValue(v[key], expected[key]))
       throw new Error('匯出欄位 ' + key + ' 與 Motion Plan 不一致。');
   }
   if (

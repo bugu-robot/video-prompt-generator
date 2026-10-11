@@ -10,7 +10,10 @@ export function auditPlan(p: MotionPlan): AuditFinding[] {
     messageZh: string,
     messageEn: string,
   ) => results.push({ id, severity, messageZh, messageEn });
-  const motions = [...p.subjectMotions, ...p.environmentalMotions];
+  const motions =
+    p.mode === 'rotation'
+      ? []
+      : [...p.subjectMotions, ...p.environmentalMotions];
   const cap = PROVIDER_CAPABILITIES[p.model];
   if (!p.source.image)
     add(

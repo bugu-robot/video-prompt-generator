@@ -248,9 +248,18 @@ export function validate(v: unknown, s: Schema, path = 'root'): void {
     }
   }
 }
+export const MAX_JSON_BYTES = 1024 * 1024;
+export function jsonByteLength(raw: string): number {
+  return new TextEncoder().encode(raw).byteLength;
+}
+export function assertJsonByteLimit(
+  raw: string,
+  message = 'JSON 不能超過 1 MiB（1,048,576 UTF-8 bytes）。',
+): void {
+  if (jsonByteLength(raw) > MAX_JSON_BYTES) throw new Error(message);
+}
 export function parseSafeJson(raw: string): unknown {
-  if (new TextEncoder().encode(raw).byteLength > 1024 * 1024)
-    throw new Error('JSON 不能超過 1 MB。');
+  assertJsonByteLimit(raw);
   let value: unknown;
   try {
     value = JSON.parse(raw);
