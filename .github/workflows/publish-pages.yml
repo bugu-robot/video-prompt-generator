@@ -1,0 +1,48 @@
+name: Publish static site to gh-pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: video-prompt-generator-pages
+  cancel-in-progress: false
+jobs:
+  publish:
+    name: Verify and publish static PWA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Typecheck and lint
+        run: |
+          npm run typecheck
+          npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Build for GitHub Pages
+        run: npm run build:pages
+      - name: Publish generated site without Actions artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          site_dir="$(mktemp -d)"
+          cp -a dist-pages/. "$site_dir"/
+          touch "$site_dir/.nojekyll"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan gh-pages
+          git rm -rf --ignore-unmatch .
+          git clean -fdx
+          cp -a "$site_dir"/. .
+          git add --all
+          git commit -m "Deploy static PWA from ${GITHUB_SHA}"
+          git push --force origin HEAD:gh-pages
