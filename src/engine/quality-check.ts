@@ -16,8 +16,8 @@ export function auditPlan(p: MotionPlan): AuditFinding[] {
     add(
       'no-source',
       'recommendation',
-      '未載入原圖。提示會以條件式動作描述；請在供應商網站自行提供原圖。',
-      'No local source image is loaded; supply the actual image to the provider.',
+      '未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。',
+      'No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider.',
     );
   if (!p.source.elementsConfirmed && motions.length && p.mode !== 'rotation')
     add(
@@ -98,6 +98,13 @@ export function auditPlan(p: MotionPlan): AuditFinding[] {
         'error',
         '90°／180°的單向旋轉不能同時回到起始方向；請取消回到起點或選 360°。',
         'A partial one-way rotation cannot end at its starting orientation.',
+      );
+    if (p.rotation.angle !== 360 && p.loop !== 'none')
+      add(
+        'partial-rotation-loop',
+        'warning',
+        '單向 90°／180° 旋轉的首尾方向不同，不能直接當成無縫循環；請選 360°、取消循環，或人手設計剪輯／回程。',
+        'A one-way partial turn ends at a different orientation; use a full revolution, no loop, or a separately reviewed edit/return path.',
       );
     if (
       p.rotation.angle === 360 &&

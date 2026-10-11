@@ -97,6 +97,13 @@ test('object turntable and camera orbit remain mechanically distinct', async ({
   await page.locator('#angle').selectOption('180');
   await expect(final(page)).toContainText('180-degree orbit');
   await expect(final(page)).not.toContainText('Finish at the starting');
+  await expect(
+    page.locator('[data-finding="partial-rotation-loop"]'),
+  ).toBeVisible();
+  await page.locator('#loop').selectOption('none');
+  await expect(
+    page.locator('[data-finding="partial-rotation-loop"]'),
+  ).toHaveCount(0);
 });
 
 test('cinematic camera controls are understandable and work', async ({
@@ -195,13 +202,11 @@ test('invalid source files do not damage the last valid image', async ({
 }) => {
   await page.locator('#image-file').setInputFiles(source);
   const old = await page.locator('#source-preview').getAttribute('src');
-  await page
-    .locator('#image-file')
-    .setInputFiles({
-      name: 'bad.svg',
-      mimeType: 'image/svg+xml',
-      buffer: Buffer.from('<svg><script>bad()</script></svg>'),
-    });
+  await page.locator('#image-file').setInputFiles({
+    name: 'bad.svg',
+    mimeType: 'image/svg+xml',
+    buffer: Buffer.from('<svg><script>bad()</script></svg>'),
+  });
   await expect(page.locator('#toast')).toContainText('PNG');
   await expect(page.locator('#source-preview')).toHaveAttribute('src', old!);
 });
@@ -263,15 +268,13 @@ test('malformed preset import is atomic and cannot execute HTML or change prior 
   const before = await page.evaluate(() =>
     localStorage.getItem('video-prompts.presets.v1'),
   );
-  await page
-    .locator('#json-file')
-    .setInputFiles({
-      name: 'bad.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from(
-        '{"format":"video-prompt-generator-presets","schemaVersion":"1.0.0","presets":[{"__proto__":{"polluted":true}}]}',
-      ),
-    });
+  await page.locator('#json-file').setInputFiles({
+    name: 'bad.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from(
+      '{"format":"video-prompt-generator-presets","schemaVersion":"1.0.0","presets":[{"__proto__":{"polluted":true}}]}',
+    ),
+  });
   await expect(page.locator('#toast')).toContainText('不安全');
   expect(
     await page.evaluate(() => localStorage.getItem('video-prompts.presets.v1')),

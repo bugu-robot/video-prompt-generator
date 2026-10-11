@@ -26,13 +26,16 @@ PWA tests exercise **real Service Workers**: root offline reload; Pages-base-pat
 
 CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit browser tests on Ubuntu. Review-artifact uploads are optional (3-day retention); the account's artifact quota can block them without suppressing any check or test failure. Results remain in job logs. There is no merge or deployment job. WebKit automation is not an assertion that native Safari/iOS installation has been manually accepted.
 
-## Results at milestone 2
+## Results and verification history
 
 - 168 unit tests pass, 0 fail, 0 skip (3 files).
 - 26 local Chromium browser tests pass, 0 fail, 0 skip, including native clipboard readback and real H.264 video decode.
 - Typecheck/lint pass; root/Pages production builds pass; dependency audit currently reports 0 vulnerabilities.
 - Local standard Playwright CDN downloads were unavailable; Chromium 153 was provisioned separately for the actual browser run via `VPG_CHROMIUM_PATH`. Firefox/WebKit claims require the real GitHub Actions results. This environment limitation is not represented as a passed browser check.
-- Final clean-install results and CI outcome are recorded in STATUS.md at handoff.
+- Final clean install completed successfully. Final rotation-loop review adds two regressions: the unit suite is now **170 tests**, with 170 locally passing and 0 failures/skips.
+- Actual inspected CI baseline at `cb3e624d04b6b04d2efb33ed70966bc2459459f9`: Ubuntu and Windows each passed 168 units and all build/tool/audit checks; Chromium 26 + Firefox 25 + WebKit 25 = **76 passed, 0 failed/skipped**. [Evidence run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38130744331).
+- Every push/PR reruns the full 170-unit / 76-browser suite. Current commit results are attached to the Draft PR; STATUS.md records the review snapshot and device/provider limitations.
+- GitHub artifact storage quota blocked optional review uploads; no validation test is optional and no existing account artifacts were deleted.
 
 ## Windows product UAT
 

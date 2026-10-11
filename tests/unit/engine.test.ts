@@ -453,6 +453,41 @@ describe('curated presets and variations', () => {
       expect(v.output.plan.rotation).toEqual(p.rotation);
     }
   });
+  it('continuous rotation loops describe angular motion without inventing environmental animation', () => {
+    const p = rotation();
+    p.loop = 'continuous';
+    for (const provider of PROVIDERS) {
+      const output = compilePrompt(switchProvider(p, provider));
+      expect(output.english).toContain('continuous angular movement');
+      expect(output.english).not.toContain('ambient movement');
+      expect(output.chinese).toContain('連續的角度移動');
+    }
+  });
+  it('partial turns warn about loop boundaries without requesting the starting orientation', () => {
+    for (const angle of [90, 180] as const) {
+      const p = rotation();
+      p.rotation.angle = angle;
+      p.rotation.returnToStart = false;
+      for (const loop of ['match-pose', 'continuous'] as const) {
+        p.loop = loop;
+        const output = compilePrompt(p);
+        expect(
+          output.findings.some((f) => f.id === 'partial-rotation-loop'),
+        ).toBe(true);
+        expect(output.english).toContain('separately designed return path');
+        expect(output.english).not.toContain(
+          'Finish at the starting object orientation',
+        );
+        expect(output.english).not.toContain(
+          'continuous angular movement across',
+        );
+      }
+      p.loop = 'none';
+      expect(
+        compilePrompt(p).findings.some((f) => f.id === 'partial-rotation-loop'),
+      ).toBe(false);
+    }
+  });
   it('every model entry has source-backed statuses and distinct API scope', () => {
     for (const cap of Object.values(PROVIDER_CAPABILITIES)) {
       for (const feature of Object.values(cap.consumer)) {

@@ -13,6 +13,6 @@ Locked camera and one primary plus a small number of secondary motions are the d
 
 For Flow models whose consumer registry confirms first/last frames, manually place the same image in both external frame slots if suitable, describe the in-between movement, and verify that all requested movement actually occurs. This generator neither fills those slots nor uploads images. For Grok, consumer frame support remains unverified. See the dated sources in PROVIDER_CAPABILITIES.md.
 
-For 360° turns prefer stable framing and uniform angular speed; easing may pause at the loop boundary. Matching orientations are a request, not evidence of a full revolution. Review the whole video and several repeated plays. Endpoint MAE metrics cannot prove motion is correct or perceptually seamless.
+For 360° turns prefer stable framing and uniform angular speed; easing may pause at the loop boundary. Continuous rotation describes angular motion rather than unrelated environmental movement. One-way 90°/180° turns do not close their path; the app warns and does not request a contradictory return orientation. Matching orientations are a request, not evidence of a full revolution. Review the whole video and several repeated plays. Endpoint MAE metrics cannot prove motion is correct or perceptually seamless.
 
 In the Little Jazz Stories workflow, remove generated audio, attach separately produced jazz music and inspect transitions after rendering. The app does not render the final loop or crossfade.

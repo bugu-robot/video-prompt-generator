@@ -8,7 +8,7 @@
 
 Turntable: object rotates about its own selected axis, stationary camera. Camera orbit: object remains stationary, camera moves around it. Direction is observed from the positive selected axis toward the object center; Y-axis direction is observed from above. Depth-axis orbit is unusual and gets an advisory.
 
-360° requests one full revolution and, if selected, the starting orientation/camera view at completion. 90°/180° with return-to-start is rejected as a contradictory single-direction request. The UI clears that return option when partial angles are selected.
+360° requests one full revolution and, if selected, the starting orientation/camera view at completion. 90°/180° with return-to-start is rejected as a contradictory single-direction request. The UI clears that return option when partial angles are selected. Partial turns with any loop preference also warn that endpoints differ; pose/continuous prompt clauses describe coherent motion within the turn and a separately designed edit/return path rather than inventing a completed loop. Continuous 360° loop intent describes angular movement, not unselected ambient animation.
 
 Uniform speed is the usual loop-friendly request. Slow means steady but slower motion. Ease-in/ease-out changes angular cadence and may create a pause at the boundary. A fixed uniform rotation leaves no variation freedom, so A/B/C disclose identical core prompts; eased cadence supports distinct variants without changing angle/direction/axis.
 
