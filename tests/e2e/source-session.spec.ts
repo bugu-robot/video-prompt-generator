@@ -175,7 +175,11 @@ test('real backward/forward history cannot revive discarded image confirmation',
     window.addEventListener('pageshow', (e) =>
       sessionStorage.setItem(
         'test.pageshow',
-        JSON.stringify({ marker, persisted: e.persisted }),
+        JSON.stringify({
+          marker,
+          persisted: e.persisted,
+          url: location.href,
+        }),
       ),
     );
   });
@@ -196,11 +200,97 @@ test('real backward/forward history cannot revive discarded image confirmation',
   await expect(
     page.getByRole('heading', { name: 'History destination' }),
   ).toBeVisible();
-  await page.goBack();
-  await assertNewSession(page, presets);
-  const transition = await page.evaluate(() =>
+  // Playwright documents that native BFCache desynchronizes its Page lifecycle.
+  // Use Chromium's protocol for traversal and the current live realm instead
+  // of waiting for a new load/commit event that a cached document never fires.
+  const cdp =
+    browserName === 'chromium'
+      ? await page.context().newCDPSession(page)
+      : null;
+  async function inPage<T>(fn: () => T | Promise<T>): Promise<T> {
+    if (!cdp) return page.evaluate(fn);
+    const response = await cdp.send('Runtime.evaluate', {
+      expression: `(${fn.toString()})()`,
+      returnByValue: true,
+      awaitPromise: true,
+    });
+    expect(response.exceptionDetails).toBeUndefined();
+    return response.result.value as T;
+  }
+  async function travel(delta: -1 | 1): Promise<void> {
+    if (cdp) {
+      const history = await cdp.send('Page.getNavigationHistory');
+      const entry = history.entries[history.currentIndex + delta];
+      if (!entry)
+        throw new Error('The requested history entry is missing');
+      await cdp.send('Page.navigateToHistoryEntry', { entryId: entry.id });
+      await expect.poll(() => inPage(() => location.href)).toBe(entry.url);
+    } else if (delta === -1) await page.goBack();
+    else await page.goForward();
+  }
+  async function historyPlan(): Promise<MotionPlan> {
+    return inPage(async () => {
+      // Observe the real export Blob without changing its bytes, download or
+      // URL lifecycle. This also proves active intent, not just checkbox state.
+      let captured: Blob | undefined;
+      const create = URL.createObjectURL;
+      URL.createObjectURL = (blob) => {
+        if (blob instanceof Blob && blob.type === 'application/json')
+          captured = blob;
+        return create.call(URL, blob);
+      };
+      try {
+        document
+          .querySelector<HTMLButtonElement>('[data-action="export-json"]')!
+          .click();
+      } finally {
+        URL.createObjectURL = create;
+      }
+      if (!captured)
+        throw new Error('The UI did not produce a JSON export');
+      return (
+        JSON.parse(await captured.text()) as { motionPlan: MotionPlan }
+      ).motionPlan;
+    });
+  }
+  await travel(-1);
+  await expect
+    .poll(() =>
+      inPage(() => ({
+        confirmed: document.querySelector<HTMLInputElement>(
+          '[data-field="source.elementsConfirmed"]',
+        )?.checked,
+        previews: document.querySelectorAll('#source-preview').length,
+        provider:
+          document.querySelector<HTMLSelectElement>('#provider')?.value,
+        length:
+          document.querySelector<HTMLSelectElement>('#length')?.value,
+        theme: document.querySelector<HTMLSelectElement>('#theme')?.value,
+        conditional: document
+          .querySelector('#final-prompt pre[lang="en"]')
+          ?.textContent?.includes('If '),
+      })),
+    )
+    .toEqual({
+      confirmed: false,
+      previews: 0,
+      provider: 'veo',
+      length: 'detailed',
+      theme: 'light',
+      conditional: true,
+    });
+  const restored = await historyPlan();
+  expect(restored.source).toMatchObject({
+    image: null,
+    region: null,
+    elementsConfirmed: false,
+  });
+  expect(restored.subjectMotions).toEqual(['breathing']);
+  expect(restored.environmentalMotions).toEqual(['steam', 'rain']);
+  const transition = await inPage(() =>
     JSON.parse(sessionStorage.getItem('test.pageshow')!),
   );
+  expect(transition.url).toBe('http://127.0.0.1:4173/');
   console.info(
     `History restoration: ${browserName}, pageshow.persisted=${transition.persisted}`,
   );
@@ -214,20 +304,38 @@ test('real backward/forward history cannot revive discarded image confirmation',
     expect(transition.persisted).toBe(true);
     expect(transition.marker).toBe(before);
   }
-  await confirmation(page).check();
-  await page.locator('#length').selectOption('balanced');
-  await expect(confirmation(page)).toBeChecked();
-  await page.goForward();
-  await expect(
-    page.getByRole('heading', { name: 'History destination' }),
-  ).toBeVisible();
-  await page.goBack();
-  await expect(confirmation(page)).not.toBeChecked();
-  await expect(page.locator('#length')).toHaveValue('balanced');
-  expect((await exportPlan(page)).source.elementsConfirmed).toBe(false);
+  await inPage(() => {
+    document
+      .querySelector<HTMLInputElement>(
+        '[data-field="source.elementsConfirmed"]',
+      )!
+      .click();
+    const length = document.querySelector<HTMLSelectElement>('#length')!;
+    length.value = 'balanced';
+    length.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  expect((await historyPlan()).source.elementsConfirmed).toBe(true);
+  await travel(1);
+  await expect
+    .poll(() => inPage(() => document.querySelector('h1')?.textContent))
+    .toBe('History destination');
+  await travel(-1);
+  await expect
+    .poll(() =>
+      inPage(() => ({
+        confirmed: document.querySelector<HTMLInputElement>(
+          '[data-field="source.elementsConfirmed"]',
+        )?.checked,
+        length:
+          document.querySelector<HTMLSelectElement>('#length')?.value,
+      })),
+    )
+    .toEqual({ confirmed: false, length: 'balanced' });
+  expect((await historyPlan()).source.elementsConfirmed).toBe(false);
   expect(
-    await page.evaluate((key) => localStorage.getItem(key), presetsKey),
+    await inPage(() => localStorage.getItem('video-prompts.presets.v1')),
   ).toBe(presets);
+  await cdp?.detach();
 });
 
 test('persisted page lifecycle clears discarded source and browser-restored checkbox without blocking a new confirmation', async ({
