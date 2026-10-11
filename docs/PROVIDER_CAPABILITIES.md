@@ -1,6 +1,6 @@
 # Provider capabilities — evidence snapshot 2026-10-11
 
-The authoritative registry is `src/models/provider-capabilities.ts`. Statuses are **supported / unsupported / unknown**, scoped explicitly to the consumer website. No runtime provider connection exists. Source-backed does not mean the feature was exercised in Ricky's account.
+The authoritative registry is `src/models/provider-capabilities.ts`. Statuses are **supported / unsupported / unknown**, scoped explicitly to the consumer website. No runtime provider connection exists. Source-backed does not mean the feature was exercised in the user's account.
 
 ## Flow consumer website
 

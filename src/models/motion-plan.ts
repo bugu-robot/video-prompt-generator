@@ -1,25 +1,75 @@
 export const PROVIDERS = ['omni', 'veo', 'grok'] as const;
-export type Provider = typeof PROVIDERS[number];
+export type Provider = (typeof PROVIDERS)[number];
 export const MODES = ['ambient', 'rotation', 'cinematic'] as const;
-export type GenerationMode = typeof MODES[number];
+export type GenerationMode = (typeof MODES)[number];
 export const INTENSITIES = ['minimal', 'subtle', 'moderate'] as const;
-export type Intensity = typeof INTENSITIES[number];
-export const CAMERAS = ['locked', 'push-in', 'pull-out', 'pan', 'tilt', 'parallax', 'dolly', 'orbit'] as const;
-export type CameraMovement = typeof CAMERAS[number];
-export const LOOP_STRATEGIES = ['match-pose', 'continuous', 'crossfade', 'none'] as const;
-export type LoopStrategy = typeof LOOP_STRATEGIES[number];
-export const PRESERVATIONS = ['identity', 'face', 'proportions', 'objects', 'composition', 'lighting', 'palette', 'background', 'style'] as const;
-export type Preservation = typeof PRESERVATIONS[number];
-export const SUBJECT_TYPES = ['unspecified', 'character', 'cat', 'coffee-cup', 'window', 'tree', 'product', 'custom'] as const;
-export type SubjectType = typeof SUBJECT_TYPES[number];
-export const MODEL_IDS = ['omni-flash-1.1', 'veo-3.1-fast', 'veo-3.1-lite', 'veo-3.1-quality', 'grok-consumer-current'] as const;
-export type ModelId = typeof MODEL_IDS[number];
+export type Intensity = (typeof INTENSITIES)[number];
+export const CAMERAS = [
+  'locked',
+  'push-in',
+  'pull-out',
+  'pan',
+  'tilt',
+  'parallax',
+  'dolly',
+  'orbit',
+] as const;
+export type CameraMovement = (typeof CAMERAS)[number];
+export const LOOP_STRATEGIES = [
+  'match-pose',
+  'continuous',
+  'crossfade',
+  'none',
+] as const;
+export type LoopStrategy = (typeof LOOP_STRATEGIES)[number];
+export const PRESERVATIONS = [
+  'identity',
+  'face',
+  'proportions',
+  'objects',
+  'composition',
+  'lighting',
+  'palette',
+  'background',
+  'style',
+] as const;
+export type Preservation = (typeof PRESERVATIONS)[number];
+export const SUBJECT_TYPES = [
+  'unspecified',
+  'character',
+  'cat',
+  'coffee-cup',
+  'window',
+  'tree',
+  'product',
+  'custom',
+] as const;
+export type SubjectType = (typeof SUBJECT_TYPES)[number];
+export const MODEL_IDS = [
+  'omni-flash-1.1',
+  'veo-3.1-fast',
+  'veo-3.1-lite',
+  'veo-3.1-quality',
+  'grok-consumer-current',
+] as const;
+export type ModelId = (typeof MODEL_IDS)[number];
 export type PromptLength = 'concise' | 'balanced' | 'detailed';
 export type PromptView = 'en' | 'zh' | 'both';
 export type AudioPreference = 'none-requested' | 'ambient' | 'provider-default';
 export type VariationId = 'A' | 'B' | 'C';
-export interface Region { x: number; y: number; width: number; height: number }
-export interface SourceImageMetadata { name: string; mime: string; bytes: number; width: number; height: number }
+export interface Region {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+export interface SourceImageMetadata {
+  name: string;
+  mime: string;
+  bytes: number;
+  width: number;
+  height: number;
+}
 export interface SourceContext {
   subjectType: SubjectType;
   subjectEn: string;
@@ -65,8 +115,19 @@ export interface MotionPlan {
   length: PromptLength;
   presetId: string | null;
 }
-export interface AuditFinding { id: string; severity: 'error' | 'warning' | 'recommendation'; messageZh: string; messageEn: string }
-export interface PromptSection { id: string; titleEn: string; titleZh: string; en: string; zh: string }
+export interface AuditFinding {
+  id: string;
+  severity: 'error' | 'warning' | 'recommendation';
+  messageZh: string;
+  messageEn: string;
+}
+export interface PromptSection {
+  id: string;
+  titleEn: string;
+  titleZh: string;
+  en: string;
+  zh: string;
+}
 export interface CompiledPrompt {
   compilerVersion: string;
   plan: MotionPlan;
@@ -81,11 +142,16 @@ export interface MotionPreset {
   nameEn: string;
   nameZh: string;
   descriptionZh: string;
-  category: 'cafe' | 'character' | 'nature' | 'rotation' | 'cinematic' | 'custom';
+  category:
+    'cafe' | 'character' | 'nature' | 'rotation' | 'cinematic' | 'custom';
   mode: GenerationMode;
   plan: MotionPlan;
   providerNotesZh: string[];
   warningsZh: string[];
   updatedAt?: string;
 }
-export interface AppSettings { plan: MotionPlan; view: PromptView; theme: 'dark' | 'light' | 'system' }
+export interface AppSettings {
+  plan: MotionPlan;
+  view: PromptView;
+  theme: 'dark' | 'light' | 'system';
+}
