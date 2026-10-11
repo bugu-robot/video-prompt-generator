@@ -1,14 +1,16 @@
 # 獨立審核修正交接（compiler 1.1.0）
 
-Repo：bugu-robot/video-prompt-generator。分支：`feat/local-first-video-prompt-generator`。Draft PR：[#1](https://github.com/bugu-robot/video-prompt-generator/pull/1)。基線：`8858a181d116668ce9b78938b33d6b0724773411`。
+Repo：bugu-robot/video-prompt-generator。分支：`feat/local-first-video-prompt-generator`。Draft PR：[#1](https://github.com/bugu-robot/video-prompt-generator/pull/1)。本次 focused P2 基線：`da2a573d79b1f91e1cd8ef0e0fc2c7990b2ff06b`；上一輪六項修正基線：`8858a181d116668ce9b78938b33d6b0724773411`。
 
-修正提交：[71c318be](https://github.com/bugu-robot/video-prompt-generator/commit/71c318becf6a12e44af3be2126caf2e80195fca2)。沒有修改 main、合併、部署、登入供應商、提交生成或消耗額度；reference／Mochi repositories 未修改。
+上一輪修正提交：[71c318be](https://github.com/bugu-robot/video-prompt-generator/commit/71c318becf6a12e44af3be2126caf2e80195fca2)。本次來源會話修正：[9f90c4b2](https://github.com/bugu-robot/video-prompt-generator/commit/9f90c4b2bc2e5b52dc1cacd46fa728961d075f9a)，原生 BFCache 測試修正：[a772eb99](https://github.com/bugu-robot/video-prompt-generator/commit/a772eb99624b9e70a133bdc532f4c2aa4a6d997b)。沒有修改 main、合併、部署、登入供應商、提交生成或消耗額度；reference／Mochi repositories 未修改。
 
 ## 本次 focused P2：重載／歷史還原的來源確認
 
 本次基線為 `da2a573d79b1f91e1cd8ef0e0fc2c7990b2ff06b`。設定保存與讀取現在同時清除圖片 metadata、框選及確認；保存不改當前有效確認。pagehide 清除來源會話及舊框選操作，pageshow 防止沒有圖片時還原確認，並同步瀏覽器的表單狀態及 previous-plan snapshot。新會話可重新確認，同一會話內的無關改動仍保留確認。預設、動作、供應商編譯、版本遷移和 QC 播放修正保留。
 
-新增 7 單元／7 共用瀏覽器案例，完整 suite 為 474 單元（7 files）及 Chromium 68／Firefox 67／WebKit 67 = 202 個，包含 15 個真實 controlled PWA／離線案例。實際結果完成後記錄於 STATUS.md／PR；原生 Chromium BFCache 和 dispatched persisted handler 分開驗證，沒有把 synthetic event 冒充原生還原。
+新增 7 單元／7 共用瀏覽器案例。實際核對 [CI run 38158981283](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38158981283)（`a772eb99624b9e70a133bdc532f4c2aa4a6d997b`），conclusion **success**：Windows／Ubuntu 各 **474 單元通過（7 files）**，clean npm ci／typecheck／lint／root 與 Pages builds／audit **0 漏洞**。Chromium **68**／Firefox **67**／WebKit **67**，共 **202 個通過，0 失敗／跳過，10.2 分鐘**，含 **15 個真實 controlled PWA／離線案例**，以及原有私隱、preset、遷移和 QC 回歸。Chromium 原生歷史還原 log 有 `pageshow.persisted=true`，且測試要求同一 document marker；Firefox／WebKit 記錄實際 fresh-document 還原。Dispatched persisted handler 另作測試，沒有把 synthetic event 冒充原生還原。
+
+本機 clean checks／474 units／兩種 builds／audit 0 漏洞通過；修正後完整 Firefox **67 通過，0 失敗／跳過，58.4 秒**。本機完整 Chromium 受 Unix socket 政策阻擋，Headless Shell 的 native-cache assertion 不會放寬；WebKit 缺系統依賴。這些本機失敗不是通過證據，三瀏覽器驗收以實際 CI 完整結果為準。首輪 [38149834045](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38149834045) 的 **201 通過／1 失敗**仍於 STATUS 記錄：Playwright 等待 BFCache 不會重新發出的 load，已改用真實 CDP 歷史／當前 realm 及未改動的匯出 Blob 驗證，不跳過／削弱測試。兩個 optional artifact 上傳因配額已滿失敗，mandatory jobs 全過；沒有刪舊 artifacts。文件提交同樣跑完整 CI，最終 HEAD 結果核對後更新 Draft PR #1。
 
 相對本次已審核基線修改 13 個檔案：
 
