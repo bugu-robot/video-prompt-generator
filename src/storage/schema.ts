@@ -10,6 +10,7 @@ import {
 } from '../models/motion-plan';
 import { SUBJECT_MOTIONS, ENVIRONMENTAL_MOTIONS } from '../data/motions';
 import { isRecord } from '../engine/motion-planner';
+import { EXPORT_PROFILES } from './export-profiles';
 interface Schema {
   type?:
     'object' | 'array' | 'string' | 'number' | 'integer' | 'boolean' | 'null';
@@ -158,8 +159,10 @@ export const EXPORT_SCHEMA = {
     motionPlan: PLAN_SCHEMA,
     sourceImageReference: SOURCE_SCHEMA.properties!.image!,
     generatedEnglishPrompt: { type: 'string', minLength: 1, maxLength: 30000 },
-    compilerVersion: { const: '1.0.0' },
-    capabilitySnapshotDate: { const: '2026-10-11' },
+    compilerVersion: enumeration(EXPORT_PROFILES.map((p) => p.compilerVersion)),
+    capabilitySnapshotDate: enumeration([
+      ...new Set(EXPORT_PROFILES.map((p) => p.capabilitySnapshotDate)),
+    ]),
     presetIdentity: nullable(text(100)),
     loopSettings: object({
       strategy: enumeration(LOOP_STRATEGIES),

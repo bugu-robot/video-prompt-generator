@@ -5,7 +5,7 @@ Vanilla TypeScript + Vite. Runtime has no npm dependency, server, AI client or e
 - `src/models/`: complete shared Motion Plan and version-aware provider evidence.
 - `src/data/`: curated motion/camera catalogs and 23 presets; UI never defines motion knowledge.
 - `src/engine/`: normalization, rotation/camera separation, loop rules, intent sections, compiler dispatch, deterministic variations and rule audit.
-- `src/engine/compilers/`: Omni natural language, Veo cinematic sections, Grok direct motion intent; all consume shared semantic sections.
+- `src/engine/compilers/`: Omni natural language, Veo cinematic sections, Grok direct motion intent; all consume shared MotionCue semantics, use their own action expression and substantive priority order, and retain identical geometric/safety constraints.
 - `src/i18n/`: Traditional Chinese labels and explanations; every prompt section pairs English with Chinese intent.
 - `src/storage/`: strict schema validator, atomic preset persistence, JSON export/import and clipboard/download helpers.
 - `src/media/`: local image validation/decoding, rectangle metadata, local video decoding/frame metrics. No vision model.
@@ -13,7 +13,7 @@ Vanilla TypeScript + Vite. Runtime has no npm dependency, server, AI client or e
 - `src/pwa/`, `scripts/`, `vite.config.ts`: explicit waiting-worker update and content-derived scoped offline cache.
 - `tests/unit/`, `tests/e2e/`: deterministic engine regressions and real-browser application/offline acceptance.
 
-Data flow: user controls → normalized Motion Plan → shared semantic sections → provider compiler → original English / Chinese interpretation / audit. A/B/C derive separate plans; exports contain the exact selected derived plan. Source selection is manual. Provider comparison preserves intent and diagnoses capabilities per target.
+Data flow: user controls → normalized Motion Plan → shared MotionCue/constraint clauses → provider-specific composition/density → provider compiler → original English / Chinese interpretation / audit. A/B/C derive separate plans; exports contain the exact selected derived plan. Source selection is manual. Provider comparison preserves intent and diagnoses capabilities per target.
 
 Internal normalization tolerates old local settings; external JSON import is strict and versioned, rejects unknown fields, hostile keys, inconsistent mirrored fields and out-of-bound data before any preset write. Media bytes/object URLs are never written into LocalStorage or JSON reports. Settings persistence deliberately drops image metadata/regions because image bytes must be reselected after reload.
 
@@ -26,3 +26,11 @@ Motion conflicts are audited only for the actions active in the current mode. Ro
 Consumer capability status is independent of API evidence. Supported website workflow advice remains advice: the app cannot configure Flow or Grok. New provider versions require source/date/confidence and regression updates.
 
 Offline caches use build inputs and base path as identity. Install precaches every emitted static asset plus manifest/icons; it fails atomically if assets are unavailable. An update waits until the user chooses the visible update action; settings save first. Active media requires reselecting after reload. CI builds Pages artifacts but contains no hosting/deployment mutation.
+
+Compiler 1.1.0 separates semantic actions from provider composition. Omni leads with natural concurrent action, Veo with shot/camera and action hierarchy, Grok with direct animation plus timing. Density changes real clauses, not only whitespace; Detailed adds mode/timing-specific intermediate-motion guidance. All densities retain selected actions, mechanical constraints and applicable identity/preservation.
+
+Configuration import has two outputs: the byte-exact historical export and a current recompile of the unchanged plan. `export-profiles.ts` is an explicit version-pair registry; `storage/legacy-v1/` freezes v1 compilation, normalization, audit, data, labels and capabilities solely for verification. Strict mirrors/date/prompt/findings checks use the historical verifier. UI review and explicit adoption are required for migration; the original remains in session memory with a download route. Future incompatible/lossy plan changes must fail rather than fall back or silently change intent. Schema remains v1; custom preset data is not rewritten.
+
+Source-element confirmation tracks subject type/descriptions, scene notes, selected motion membership, image and region. `source-confirmation.ts` invalidates only changed semantic basis; new/replaced images and preset/config adoption always require confirmation. Provider/camera/density/language changes preserve it.
+
+Prompt and QC DOM subtrees are independent. Ordinary full/config/output renders replace only prompt/configuration/header parts, never detach/reparent or recreate the active QC player. Notes/checks remain in the QC result and controls remain in place. Video replacement/clear/pagehide explicitly abort decode, unload the old player and revoke its Blob URL; tokens discard stale decode completions. Restoring a cached page re-renders cleared media rather than showing stale QC. Media bytes remain session-only.

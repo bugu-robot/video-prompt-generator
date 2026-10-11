@@ -13,6 +13,7 @@ import {
   VERIFIED_AT,
 } from '../models/provider-capabilities';
 import { compilePrompt, compareProviders } from '../engine/compile';
+import { invalidateSourceConfirmation } from '../engine/source-confirmation';
 import { generateVariations } from '../engine/variations';
 import {
   defaultPlan,
@@ -57,6 +58,8 @@ import {
   createExport,
   downloadFile,
   importConfiguration,
+  reviewConfigurationImport,
+  type ConfigurationReview,
   plainText,
 } from '../storage/export';
 import { loadImage, aspectRatio, type LoadedImage } from '../media/image';
@@ -133,6 +136,9 @@ export function mountApp(root: HTMLElement): void {
     installEvent: InstallEvent | null = null,
     drawMode = false,
     qcBusy = false;
+  let previousPlan = structuredClone(settings.plan);
+  let configurationReview: ConfigurationReview | null = null;
+  let originalConfiguration: string | null = null;
   const plan = () => settings.plan;
   const presets = () => {
     const state = inspectCustomPresets(storage);
@@ -440,7 +446,7 @@ export function mountApp(root: HTMLElement): void {
       )
         .map(
           ([provider, c]) =>
-            `<article><h3>${PROVIDER_LABELS[provider as Provider]}</h3><p class="hint">${provider === 'omni' ? '以自然意圖敘述延續場景。' : provider === 'veo' ? '以鏡頭、動作與保留項目清楚分段。' : '直接描述動畫動作與節奏；網站規格未核實。'}</p>${promptMarkup(c.english, c.chinese, settings.view, true)}${c.findings
+            `<article><h3>${PROVIDER_LABELS[provider as Provider]}</h3><p class="hint">${provider === 'omni' ? '先表達主要動作，以自然敘述連接同時發生的動作，再列鏡頭與保留約束。' : provider === 'veo' ? '先定鏡頭，再分主要／次要動作、時長與接點，最後列原圖保留約束。' : '直接列動畫動作及節奏，再指定鏡頭與接點；網站規格未核實。'}</p>${promptMarkup(c.english, c.chinese, settings.view, true)}${c.findings
               .filter((f) => f.severity !== 'recommendation')
               .map((f) => `<p class="hint">${escape(f.messageZh)}</p>`)
               .join(
@@ -448,7 +454,28 @@ export function mountApp(root: HTMLElement): void {
               )}<button data-action="copy-provider" data-provider="${provider}" ${errors(c) ? 'disabled' : ''}>複製英文 · ${provider}</button></article>`,
         )
         .join('')}</div></details>
-      ${qcMarkup()}`;
+      ${configurationReviewMarkup()}`;
+  }
+  function configurationReviewMarkup(): string {
+    const review = configurationReview;
+    if (!review)
+      return originalConfiguration
+        ? `<section class="panel"><p>原匯出只保留在此會話，可另行備份；原檔不會更改。</p><button data-action="export-original-configuration">匯出原始設定檔</button></section>`
+        : '';
+    return `<section class="panel" id="configuration-import-review"><h2>確認舊版本設定遷移</h2><p>${review.changesZh.map(escape).join(' ')}</p><h3>原英文提示 · compiler ${escape(review.original.compilerVersion)}</h3><pre lang="en">${escape(review.original.generatedEnglishPrompt)}</pre><h3>新英文提示 · compiler ${escape(review.recompiled.compilerVersion)}</h3><pre lang="en">${escape(review.recompiled.generatedEnglishPrompt)}</pre><ul>${review.recompiled.qcWarnings.map((f) => `<li>${escape(f.messageZh)}</li>`).join('')}</ul><p>確認後只採用原動作設定並用新規則重編譯；須重新選原圖和確認元素。原檔不會覆寫，原 prompt 不會當成新版 prompt。</p><div class="actions"><button data-action="export-original-configuration">匯出原始設定檔</button><button data-action="accept-configuration-migration">確認保留意圖並採用新編譯</button><button data-action="cancel-configuration-migration">取消遷移</button></div></section>`;
+  }
+  function adoptConfiguration(raw: string, acceptMigration = false): void {
+    const imported = importConfiguration(raw, { acceptMigration });
+    image?.dispose();
+    image = null;
+    imageToken++;
+    settings.plan = imported;
+    settings.plan.source.image = null;
+    settings.plan.source.region = null;
+    settings.plan.source.elementsConfirmed = false;
+    changed();
+    render();
+    notify('設定已匯入並重新編譯；請重新選取原圖及確認元素。');
   }
   function qcMarkup(): string {
     return `<section class="panel video-panel"><div class="section-heading"><h2>本機影片 QC</h2><span class="pill">不會上傳</span></div><p class="hint">上載已生成影片，在本機擷取首幀及接近片尾的樣本。像素差異是量度訊號，不能證明無縫或 360° 完成。</p><label class="upload-label" for="video-file">${qcBusy ? '正在本機讀取，可選另一影片取消前一次' : '選擇影片作檢查'}</label><input id="video-file" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="選擇 QC 影片"/><p class="hint">MP4／WebM／MOV · 最多 300 MB／10 分鐘；codec 支援取決於瀏覽器。</p>
@@ -484,7 +511,8 @@ export function mountApp(root: HTMLElement): void {
       ),
     ].map((d) => d.dataset.section);
     const focus = document.activeElement?.id;
-    root.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-icon" aria-hidden="true">▶</span><div><h1>${t.appName}</h1><p>${t.subtitle}</p></div></div><div class="header-actions"><span class="status-dot" aria-hidden="true"></span><span id="pwa-status" class="hint">${pwaStatus}</span>${select(
+    const template = document.createElement('template');
+    template.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-icon" aria-hidden="true">▶</span><div><h1>${t.appName}</h1><p>${t.subtitle}</p></div></div><div class="header-actions"><span class="status-dot" aria-hidden="true"></span><span id="pwa-status" class="hint">${pwaStatus}</span>${select(
       'theme',
       '主題',
       [
@@ -497,8 +525,27 @@ export function mountApp(root: HTMLElement): void {
     )}<button data-action="install">${installEvent ? '安裝 App' : '安裝說明'}</button></div></header>
       <div id="update-banner" class="update-banner" ${applyUpdate ? '' : 'hidden'}><span>有新版本可用。設定會先儲存；重新載入後需重新選取圖片／影片。</span><button data-action="update">儲存設定並更新</button></div>
       <details class="quick-guide" data-section="guide"><summary>使用說明與資料私隱</summary><p>選圖 → 指定主體 → 選模型及動作 → 檢查提示及提醒 → 複製英文，在外部網站自行生成。預設設定適合低幅度 Cozy Jazz 背景。</p><p>${t.privacy} 沒有 vision model、LLM、登入、生成服務或外部 API。原圖及影片只留在當次會話；設定與自訂 presets 存於此瀏覽器。</p><p>Chrome／Edge 可使用瀏覽器安裝功能；Safari 可加入 Dock 或主畫面。首次在線開啟 production build，待「離線已就緒」後可離線使用。localhost 與 HTTPS 才支援 Service Worker。</p>${!persistent ? '<p class="error-note">瀏覽器不允許永久儲存；目前改用記憶體，離開後會遺失，請匯出備份。</p>' : ''}<a href="https://github.com/bugu-robot/video-prompt-generator/blob/feat/local-first-video-prompt-generator/docs/USER_GUIDE_ZH_HK.md" target="_blank" rel="noopener noreferrer">完整繁中使用指南</a></details>
-      <main class="workspace"><div class="configuration" aria-label="提示詞設定">${imageMarkup()}${providerMarkup()}${motionMarkup()}${advancedMarkup()}${presetMarkup()}</div><div class="output" id="output" tabindex="-1" aria-label="提示詞輸出">${outputMarkup()}</div></main>
+      <main class="workspace"><div class="configuration" aria-label="提示詞設定">${imageMarkup()}${providerMarkup()}${motionMarkup()}${advancedMarkup()}${presetMarkup()}</div><div class="output" id="output" tabindex="-1" aria-label="提示詞輸出"><div id="prompt-output">${outputMarkup()}</div><div id="qc-output">${qcMarkup()}</div></div></main>
       <footer>Video Prompt Generator · deterministic local engine · guidelines verified ${VERIFIED_AT}<p>提示符合指南不保證影片品質。所有外部生成及額度使用均由你自行操作。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div class="mobile-copy"><a href="#output">查看提示詞</a><button data-action="copy" ${errors() ? 'disabled' : ''}>複製英文</button></div>`;
+    if (!root.querySelector('.workspace'))
+      root.replaceChildren(template.content);
+    else {
+      // The media subtree is never detached/reparented by ordinary rendering.
+      // Reusing it in place preserves playback, buffered data and text focus.
+      for (const selector of [
+        '.app-header',
+        '#update-banner',
+        '.quick-guide',
+        '.configuration',
+        'footer',
+        '.mobile-copy',
+      ]) {
+        root
+          .querySelector(selector)!
+          .replaceWith(template.content.querySelector(selector)!);
+      }
+      root.querySelector('#prompt-output')!.innerHTML = outputMarkup();
+    }
     for (const id of open)
       root
         .querySelector<HTMLDetailsElement>(`details[data-section="${id}"]`)
@@ -512,7 +559,7 @@ export function mountApp(root: HTMLElement): void {
     applyTheme();
   }
   function renderOutput(): void {
-    const el = root.querySelector<HTMLElement>('#output')!,
+    const el = root.querySelector<HTMLElement>('#prompt-output')!,
       open = [
         ...el.querySelectorAll<HTMLDetailsElement>(
           'details[open][data-section]',
@@ -525,6 +572,9 @@ export function mountApp(root: HTMLElement): void {
       )?.setAttribute('open', '');
     root.querySelector<HTMLButtonElement>('.mobile-copy button')!.disabled =
       errors();
+  }
+  function renderQc(): void {
+    root.querySelector('#qc-output')!.innerHTML = qcMarkup();
   }
   async function setImage(file: File): Promise<void> {
     const token = ++imageToken;
@@ -540,7 +590,7 @@ export function mountApp(root: HTMLElement): void {
       plan().source.region = null;
       plan().source.elementsConfirmed = false;
       drawMode = false;
-      persist();
+      changed();
       render();
       notify('圖片已在本機載入；沒有傳送至外部網站。');
     } catch (error) {
@@ -551,6 +601,12 @@ export function mountApp(root: HTMLElement): void {
     ++videoToken;
     videoController?.abort();
     videoController = null;
+    const player = root.querySelector<HTMLVideoElement>('.video-panel video');
+    if (player) {
+      player.pause();
+      player.removeAttribute('src');
+      player.load();
+    }
     if (videoUrl) URL.revokeObjectURL(videoUrl);
     videoUrl = null;
     qc = null;
@@ -561,25 +617,34 @@ export function mountApp(root: HTMLElement): void {
     const token = ++videoToken;
     videoController = new AbortController();
     qcBusy = true;
-    renderOutput();
+    renderQc();
     try {
       const result = await inspectVideo(file, videoController.signal);
       if (token !== videoToken) return;
       qc = result;
       videoUrl = URL.createObjectURL(file);
       qcBusy = false;
-      renderOutput();
+      renderQc();
       notify('首尾樣本及 metadata 已擷取，請完成人手驗收。');
     } catch (error) {
       if (token === videoToken) {
         qcBusy = false;
-        renderOutput();
+        renderQc();
         notify(resolveError(error));
       }
     }
   }
   function changed(): void {
-    settings.plan = normalizePlan(plan());
+    settings.plan = invalidateSourceConfirmation(
+      previousPlan,
+      normalizePlan(plan()),
+    );
+    previousPlan = structuredClone(settings.plan);
+    const confirmation = root.querySelector<HTMLInputElement>(
+      '[data-field="source.elementsConfirmed"]',
+    );
+    if (confirmation)
+      confirmation.checked = settings.plan.source.elementsConfirmed;
     activeVariant = 'base';
     persist();
   }
@@ -703,16 +768,19 @@ export function mountApp(root: HTMLElement): void {
                 render();
                 notify(`已匯入 ${imported.length} 個預設；原有預設已保留。`);
               } else {
-                const imported = importConfiguration(raw);
-                image?.dispose();
-                image = null;
-                imageToken++;
-                settings.plan = imported;
-                settings.plan.source.image = null;
-                settings.plan.source.region = null;
-                changed();
-                render();
-                notify('設定已匯入並重新編譯；請重新選取原圖。');
+                const review = reviewConfigurationImport(raw);
+                if (review.migrationRequired) {
+                  configurationReview = review;
+                  originalConfiguration = raw;
+                  renderOutput();
+                  notify(
+                    '舊版本已通過驗證；請先比較原提示與新提示，再確認遷移。',
+                  );
+                } else {
+                  configurationReview = null;
+                  originalConfiguration = raw;
+                  adoptConfiguration(raw);
+                }
               }
             } catch (error) {
               notify(resolveError(error));
@@ -728,7 +796,7 @@ export function mountApp(root: HTMLElement): void {
       plan()[key] = el.checked
         ? [...plan()[key], el.value]
         : plan()[key].filter((id) => id !== el.value);
-      if (el.checked) plan().source.elementsConfirmed = false;
+      plan().source.elementsConfirmed = false;
       changed();
       render();
       return;
@@ -965,13 +1033,30 @@ export function mountApp(root: HTMLElement): void {
         notify('提示設定及原圖已重設；自訂預設仍保留。');
         return;
       }
+      if (action === 'export-original-configuration' && originalConfiguration) {
+        downloadFile('video-motion-plan-original.json', originalConfiguration);
+        return;
+      }
+      if (action === 'cancel-configuration-migration') {
+        configurationReview = null;
+        renderOutput();
+        notify('已取消遷移；目前設定及原匯出未更改。');
+        return;
+      }
+      if (action === 'accept-configuration-migration' && configurationReview) {
+        const raw = configurationReview.originalRaw;
+        // Revalidate the immutable raw input at the explicit adoption boundary.
+        configurationReview = null;
+        adoptConfiguration(raw, true);
+        return;
+      }
       if (action === 'export-qc' && qc) {
         downloadFile('video-qc-report.json', qcReport(qc));
         return;
       }
       if (action === 'clear-qc') {
         clearQc();
-        renderOutput();
+        renderQc();
         return;
       }
       if (action === 'install') {
@@ -1082,7 +1167,10 @@ export function mountApp(root: HTMLElement): void {
     clearQc();
   });
   window.addEventListener('pageshow', (event) => {
-    if (event.persisted) render();
+    if (event.persisted) {
+      render();
+      renderQc();
+    }
   });
   render();
   void registerPwa(

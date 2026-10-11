@@ -33,5 +33,37 @@ export function loopSection(plan: MotionPlan): PromptSection | null {
       'Keep the beginning and ending visually calm and similar enough for a short crossfade during editing.';
     zh = '讓片頭和片尾平靜、外觀接近，方便剪輯時作短交叉淡化。';
   }
+  if (plan.length === 'concise') {
+    if (
+      plan.mode === 'rotation' &&
+      plan.rotation.angle !== 360 &&
+      plan.loop !== 'crossfade'
+    ) {
+      en =
+        'Keep this one-way partial turn coherent; repetition needs editing or a separate return path.';
+      zh = '單向部分旋轉保持連貫；重複播放須另行剪輯或設計回程。';
+    } else if (plan.loop === 'match-pose') {
+      en =
+        plan.mode === 'rotation'
+          ? 'Aim for matching boundary framing and appearance.'
+          : 'Settle selected motions to the starting pose and framing at the end.';
+      zh =
+        plan.mode === 'rotation'
+          ? '首尾構圖及外觀以相配為目標。'
+          : '結尾回到所選動作的起始姿勢及構圖。';
+    } else if (plan.loop === 'continuous') {
+      en =
+        plan.mode === 'rotation'
+          ? 'Keep angular motion continuous across the boundary; no abrupt reset.'
+          : 'Keep ambient motion steady across the boundary; no stop or restart.';
+      zh =
+        plan.mode === 'rotation'
+          ? '接點角度移動連續，不突然重設。'
+          : '接點環境動作穩定，不停頓或重啟。';
+    } else {
+      en = 'Keep calm, similar endpoints for an editing crossfade.';
+      zh = '首尾平靜而接近，方便剪輯交叉淡化。';
+    }
+  }
   return { id: 'loop', titleEn: 'Loop intention', titleZh: '循環意圖', en, zh };
 }

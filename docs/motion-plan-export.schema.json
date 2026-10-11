@@ -516,10 +516,17 @@
       "maxLength": 30000
     },
     "compilerVersion": {
-      "const": "1.0.0"
+      "type": "string",
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
     },
     "capabilitySnapshotDate": {
-      "const": "2026-10-11"
+      "type": "string",
+      "enum": [
+        "2026-10-11"
+      ]
     },
     "presetIdentity": {
       "anyOf": [

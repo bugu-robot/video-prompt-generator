@@ -28,12 +28,12 @@ Open http://localhost:4173/. Wait for the offline-ready indicator; dev mode deli
 ## Features
 
 - Ambient micro-motion loops, rigid object turntables, separate camera orbits, and cinematic camera movement.
-- Three provider compilers, source-aware conditional motion, 23 curated presets, relevant preservation, audio preferences and rule-based diagnostics.
+- Three provider composition strategies (motion-led Omni, shot-led Veo, direct-animation Grok), useful Concise/Balanced/Detailed densities, source-aware conditional motion, 23 curated presets, relevant preservation, audio preferences and rule-based diagnostics.
 - Deterministic A/B/C timing variations with no invented scene objects; fixed pure rotations disclose when constraints leave no motion freedom.
 - Local image preview, metadata, subject description and pointer/keyboard rectangle marking. No automatic vision or persistent image bytes.
 - Custom preset save/update/rename/duplicate/delete and validated atomic JSON import/export; consistent 1 MiB UTF-8 aggregate limit, protected unreadable data, raw backup and explicitly confirmed recovery.
-- Provider comparison, original-English clipboard, text export, versioned integration JSON and documented schema.
-- Local video metadata, first/near-last-frame capture, RGB/luma differences, real playback, manual QC and JSON report. No fake identity/rotation analyzer.
+- Provider comparison, original-English clipboard, text export, versioned integration JSON with historical verification, explicit old/new migration review and exact original backup; documented v1 schema.
+- Local video metadata, first/near-last-frame capture, RGB/luma differences, real playback preserved through prompt/provider/language editing, manual QC and JSON report. No fake identity/rotation analyzer.
 - Responsive dark/light/system themes, keyboard controls, installable offline PWA, hash-versioned shell and user-controlled updates.
 
 ## Verify

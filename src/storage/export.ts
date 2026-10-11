@@ -10,6 +10,7 @@ import {
   VERIFIED_AT,
 } from '../models/provider-capabilities';
 import { EXPORT_SCHEMA, PLAN_SCHEMA, parseSafeJson, validate } from './schema';
+import { EXPORT_PROFILES } from './export-profiles';
 export interface IntegrationExport {
   format: 'video-prompt-generator';
   schemaVersion: '1.0.0';
@@ -26,7 +27,7 @@ export interface IntegrationExport {
   qcWarnings: AuditFinding[];
   exportTimestamp: string;
 }
-export function validateMotionPlan(v: unknown): MotionPlan {
+export function validateMotionPlan(v: unknown, normalize = true): MotionPlan {
   validate(v, PLAN_SCHEMA);
   const p = v as MotionPlan;
   if (PROVIDER_CAPABILITIES[p.model].provider !== p.provider)
@@ -47,13 +48,19 @@ export function validateMotionPlan(v: unknown): MotionPlan {
     p.source.image.width * p.source.image.height > 40_000_000
   )
     throw new Error('圖片像素過大。');
-  return normalizePlan(v);
+  return normalize ? normalizePlan(v) : structuredClone(p);
 }
 export function createExport(
   p: MotionPlan,
   timestamp = new Date().toISOString(),
 ): IntegrationExport {
-  const output = compilePrompt(p);
+  return exportFromOutput(compilePrompt(p), timestamp, VERIFIED_AT);
+}
+function exportFromOutput(
+  output: CompiledPrompt,
+  timestamp: string,
+  snapshot: string,
+): IntegrationExport {
   return {
     format: 'video-prompt-generator',
     schemaVersion: '1.0.0',
@@ -64,7 +71,7 @@ export function createExport(
     sourceImageReference: output.plan.source.image,
     generatedEnglishPrompt: output.english,
     compilerVersion: output.compilerVersion,
-    capabilitySnapshotDate: VERIFIED_AT,
+    capabilitySnapshotDate: snapshot,
     presetIdentity: output.plan.presetId,
     loopSettings: {
       strategy: output.plan.loop,
@@ -96,12 +103,32 @@ function sameJsonValue(a: unknown, b: unknown): boolean {
   }
   return a === b;
 }
-export function importConfiguration(raw: string): MotionPlan {
+export interface ConfigurationReview {
+  originalRaw: string;
+  original: IntegrationExport;
+  recompiled: IntegrationExport;
+  migrationRequired: boolean;
+  changesZh: string[];
+}
+export function reviewConfigurationImport(raw: string): ConfigurationReview {
   const v = parseSafeJson(raw);
   validate(v, EXPORT_SCHEMA);
   if (!isRecord(v)) throw new Error('JSON 無效。');
-  const p = validateMotionPlan(v.motionPlan);
-  const expected = createExport(p, String(v.exportTimestamp));
+  const profile = EXPORT_PROFILES.find(
+    (p) =>
+      p.compilerVersion === v.compilerVersion &&
+      p.capabilitySnapshotDate === v.capabilitySnapshotDate,
+  );
+  if (!profile)
+    throw new Error(
+      '此 compiler／能力版本組合尚未支援安全遷移；請保留原檔，勿修改版本欄位。',
+    );
+  const p = validateMotionPlan(v.motionPlan, false);
+  const expected = exportFromOutput(
+    profile.compile(p),
+    String(v.exportTimestamp),
+    profile.capabilitySnapshotDate,
+  );
   for (const key of [
     'provider',
     'modelSelection',
@@ -122,7 +149,44 @@ export function importConfiguration(raw: string): MotionPlan {
     new Date(v.exportTimestamp).toISOString() !== v.exportTimestamp
   )
     throw new Error('匯出時間無效。');
-  return p;
+  // Exporter-produced plans are already canonical. Reject any normalization
+  // that would silently discard/trim/change imported user intent.
+  if (!sameJsonValue(v.motionPlan, expected.motionPlan))
+    throw new Error(
+      'Motion Plan 不是原編譯器的標準表示；請保留原檔並檢查設定。',
+    );
+  const original = structuredClone(v) as unknown as IntegrationExport;
+  const recompiled = createExport(p, original.exportTimestamp);
+  if (!sameJsonValue(original.motionPlan, recompiled.motionPlan))
+    throw new Error(
+      '新編譯器不能無損保留此舊設定；請保留原檔並明確調整設定，不會自動改寫意圖。',
+    );
+  const migrationRequired =
+    original.compilerVersion !== recompiled.compilerVersion ||
+    original.capabilitySnapshotDate !== recompiled.capabilitySnapshotDate;
+  return {
+    originalRaw: raw,
+    original,
+    recompiled,
+    migrationRequired,
+    changesZh: migrationRequired
+      ? [
+          `原檔 compiler ${original.compilerVersion}／能力快照 ${original.capabilitySnapshotDate} 已通過其歷史驗證器；新編譯使用 ${recompiled.compilerVersion}／${recompiled.capabilitySnapshotDate}。`,
+          '原英文提示及原始 JSON 保留供備份；動作設定不變，新提示及新審核須重新檢查。',
+        ]
+      : [],
+  };
+}
+export function importConfiguration(
+  raw: string,
+  options: { acceptMigration?: boolean } = {},
+): MotionPlan {
+  const review = reviewConfigurationImport(raw);
+  if (review.migrationRequired && !options.acceptMigration)
+    throw new Error(
+      '舊版本設定須先比較原提示與新提示，再明確確認遷移；原檔沒有更改。',
+    );
+  return structuredClone(review.recompiled.motionPlan);
 }
 export function plainText(output: CompiledPrompt): string {
   return [

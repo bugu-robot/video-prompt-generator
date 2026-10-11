@@ -6,8 +6,7 @@ import type {
 import { PROVIDER_CAPABILITIES } from '../../models/provider-capabilities';
 import { normalizePlan } from '../motion-planner';
 import { auditPlan } from '../quality-check';
-import { intentSections } from '../intent';
-export const COMPILER_VERSION = '1.0.0';
+export const COMPILER_VERSION = '1.1.0';
 export function workflow(p: MotionPlan): string[] {
   const cap = PROVIDER_CAPABILITIES[p.model];
   const result = [
@@ -42,26 +41,38 @@ export function workflow(p: MotionPlan): string[] {
     );
   return result;
 }
+export function orderSections(
+  sections: PromptSection[],
+  order: string[],
+): PromptSection[] {
+  return [...sections].sort(
+    (a, b) => order.indexOf(a.id) - order.indexOf(b.id),
+  );
+}
+export function actionOrder(p: MotionPlan): string[] {
+  return p.environmentalMotions.includes(p.primaryMotion ?? '')
+    ? ['environment', 'subject']
+    : ['subject', 'environment'];
+}
 export function compileWith(
   p: MotionPlan,
-  opening: PromptSection,
+  compose: (plan: MotionPlan) => PromptSection[],
   style: 'natural' | 'cinematic' | 'direct',
 ): CompiledPrompt {
   const plan = normalizePlan(p),
-    sections = [opening, ...intentSections(plan)];
+    sections = compose(plan);
   const english =
     plan.length === 'concise'
       ? sections.map((s) => s.en).join(' ')
       : style === 'cinematic'
         ? sections.map((s) => s.titleEn + ': ' + s.en).join('\n\n')
         : sections.map((s) => s.en).join('\n\n');
-  const chinese = sections.map((s) => s.titleZh + '：' + s.zh).join('\n\n');
   return {
     compilerVersion: COMPILER_VERSION,
     plan,
     sections,
     english,
-    chinese,
+    chinese: sections.map((s) => s.titleZh + '：' + s.zh).join('\n\n'),
     findings: auditPlan(plan),
     workflowZh: workflow(plan),
   };

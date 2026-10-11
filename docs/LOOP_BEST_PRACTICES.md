@@ -18,3 +18,7 @@ An intended one-way 90°/180° turntable or camera orbit has different ending or
 For 360° turns prefer stable framing and uniform angular speed; easing may pause at the loop boundary. Continuous rotation describes angular motion rather than unrelated environmental movement. One-way 90°/180° turns do not close their path; the app warns and does not request a contradictory return orientation. Matching orientations are a request, not evidence of a full revolution. Review the whole video and several repeated plays. Endpoint MAE metrics cannot prove motion is correct or perceptually seamless.
 
 In the Little Jazz Stories workflow, remove generated audio, attach separately produced jazz music and inspect transitions after rendering. The app does not render the final loop or crossfade.
+
+## Compiler 1.1.0 density and review
+
+Concise retains return-pose/boundary/editing intent in shorter clauses. Detailed adds coherent intermediate poses or progressive rotation orientations; a one-way partial turn never gains an extra return leg. Provider composition changes instruction priority, not the chosen loop/camera/angle/direction. Old exported loop instructions remain preserved verbatim and are validated using their historical compiler before explicit migration; current warnings and any copy-blocking errors are rerun. Ordinary prompt editing or provider/language comparison preserves the QC player's position, playback state, notes and checklist, so full-timeline inspection can continue.

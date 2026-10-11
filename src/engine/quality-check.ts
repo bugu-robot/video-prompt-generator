@@ -56,15 +56,20 @@ export function auditPlan(p: MotionPlan): AuditFinding[] {
       '獨立動作較多；建議保留一個主要動作及一至兩個次要動作。',
       'Many independent motions are selected; prioritize one primary and one or two secondary motions.',
     );
+  const reportedPairs = new Set<string>();
   for (const id of motions)
     for (const other of MOTION_BY_ID.get(id)?.conflicts ?? []) {
-      if (motions.includes(other) && id < other)
+      const [first, second] = [id, other].sort() as [string, string];
+      const pair = first + '-' + second;
+      if (motions.includes(other) && !reportedPairs.has(pair)) {
+        reportedPairs.add(pair);
         add(
-          'motion-conflict-' + id + '-' + other,
+          'motion-conflict-' + pair,
           'error',
-          `${MOTION_BY_ID.get(id)?.nameZh}與${MOTION_BY_ID.get(other)?.nameZh}互相衝突，請先取消其中一項。`,
+          `${MOTION_BY_ID.get(first)?.nameZh}與${MOTION_BY_ID.get(second)?.nameZh}互相衝突，請先取消其中一項。`,
           'Conflicting subject movements must be resolved before copying.',
         );
+      }
     }
   if (p.mode === 'rotation') {
     if (p.source.subjectType === 'unspecified' && !p.source.subjectEn)

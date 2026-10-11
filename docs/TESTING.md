@@ -30,7 +30,17 @@ PWA tests exercise **real Service Workers**: root offline reload; Pages-base-pat
 
 CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit browser tests on Ubuntu. Review-artifact uploads are optional (3-day retention); the account's artifact quota can block them without suppressing any check or test failure. Results remain in job logs. There is no merge or deployment job. WebKit automation is not an assertion that native Safari/iOS installation has been manually accepted.
 
-## Results and verification history
+## Compiler 1.1.0 remediation coverage
+
+- Every declared conflict becomes one undirected pair; both selection orders are tested across all providers and Ambient/Cinematic base, A/B/C and comparison plans, plus retained dormant rotation behavior.
+- Provider tests remove openings/titles/whitespace to check substantive action syntax and priority, and compare equivalent plans. Density tests cover all selected action verbs, source conditions, camera/identity/preservation, both rotation types/angles/directions/axes and relevant continuity.
+- Historical-version validation: 27 immutable provider/mode/density exports, unchanged old fixture, current fixture, explicit migration, exact original backup, lossy-normalization rejection, canonical dates, mirrored/key-order values and tampered prompts/warnings/versions. A mocked later capability date verifies old/new snapshots independently without relaxing pair validation.
+- Confirmation tests cover subject descriptions/type, scene notes, adding/removing motions, image/region changes and unchanged unrelated controls. Real browser tests include same-file replacement and prompt conditions.
+- Real browser QC tests retain the same live HTMLVideoElement with no emptied event, playing/paused position/speed, notes/checklist and report across text/full/provider/language/density rendering; replacement, rapid selection and Blob disposal are tested. Media bytes/URLs are never persisted or uploaded.
+
+Current local suite: **467 units**, 0 fail/skip (6 files), and **61 Chromium passes**, 0 fail/skip (19 new shared browser cases). Current complete cross-browser suite contains Chromium 61 + Firefox 60 + WebKit 60 = **181** cases; final remote outcomes must be checked at the pushed revision. Typecheck/lint/root/Pages builds/audit pass. Later source follow-ups rerun affected/full checks before handoff. Local WebKit lacks system libraries and native dependency installation is blocked by the managed host; local Firefox launch is not accepted as a pass. CI installs required dependencies on its Ubuntu runner.
+
+## Earlier verification history
 
 - 221 unit tests pass, 0 fail, 0 skip (4 files), after the independent-review fixes.
 - 42 local Chromium browser tests pass, 0 fail, 0 skip, including native clipboard readback, all new review regressions and real H.264 video decode.
@@ -39,7 +49,7 @@ CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit brows
 - Final clean install completed successfully. Schema/example contract tests pass without changing version 1.0.0.
 - Actual inspected independently reviewed CI baseline at `1f47146f8fb2500ed52093d0ce38bea52214af11`: Ubuntu and Windows each passed 170 units and all build/tool/audit checks; Chromium 26 + Firefox 25 + WebKit 25 = **76 passed, 0 failed/skipped**. [Evidence run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38131499051).
 - Review-fix commit `ca6840e34a9ffb94b3dad04328cb9de89cbfddb1`: [CI run 38138096115](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38138096115) completed successfully. Actual inspected Windows and Ubuntu logs each show **221 unit passes, 0 failures/skips**, clean install/typecheck/lint/root/Pages builds and **0 audit vulnerabilities**. Actual browser log shows **Chromium 42 + Firefox 41 + WebKit 41 = 124 passed, 0 failed/skipped** (3.9 minutes). The original browser cases remain in the suite.
-- Every push/PR reruns that complete 221-unit / 124-browser suite, including later documentation-only commits. Current-head outcomes are attached to the Draft PR; STATUS.md records the verified code snapshot.
+- At that earlier revision every push/PR reran the complete 221-unit / 124-browser suite, including later documentation-only commits. Current-head outcomes are attached to the Draft PR; STATUS.md records the verified code snapshot.
 - GitHub artifact storage quota blocked both optional Ubuntu static-review and browser-report uploads in this run. They did **not** succeed. Mandatory validation passed; no validation test is optional, Windows intentionally has no static-artifact upload and no existing account artifacts were deleted.
 
 ## Windows product UAT
@@ -60,16 +70,18 @@ npm run preview -- --port 4173 --strictPort
 
 Open **http://127.0.0.1:4173/** in Chrome or Edge. Keep the PowerShell process running while first loading/installing.
 
-1. Default UI is Traditional Chinese with English ambient-loop output. Select an existing Mochi image; verify filename, dimensions, aspect ratio and local preview.
-2. Choose custom subject, provide English/Chinese Mochi descriptions and mark its position by mouse or keyboard. Confirm no AI scene analysis is claimed.
-3. Select only motions actually visible/applicable. Inspect English/Chinese/side-by-side; copy from the Chinese view and paste into Notepad. It must be the English original.
-4. Inspect A/B/C. A has fewer/sparser movements; C prolongs only the selected actions and retains the amplitude cap. Switch providers and verify camera/actions stay selected; unsupported preferences get an explicit finding.
-5. Use Rotation, choose a subject and verify 360° turntable keeps camera fixed. Switch to Camera Orbit and verify the object is fixed. Try 90°/180° and confirm return-to-start clears; inspect reconstruction/completion reminders and **different endpoint** workflow advice. Full 360°/returning-pose plans can retain matching endpoint advice. Select sleep + blink in Ambient, enter Rotation and verify copy works with a valid Product rotation; return to Ambient/Cinematic and verify the selections/conflict return. Check base, A/B/C and provider comparison.
-6. Save, update, rename, duplicate and delete custom presets. Export a batch, import it and verify original presets remain. Malformed JSON must fail without changing stored presets. Two individually valid batches that together exceed 1 MiB must reject the second atomically and remain readable after reload/later save. If old data is unreadable, export the original raw backup and keep it; ordinary mutations must stay blocked. Only after saving the backup and explicitly checking recovery consent, supply a corrected subset/bundle to replace unreadable data. Failed recovery leaves the original raw string intact.
-7. Export current English text and Motion Plan JSON. Import the JSON, confirm settings and original prompt recompile. Media must be reselected after reload.
-8. Upload an existing MP4/WebM for QC. Verify real metadata/first/near-last samples, watch the full video and mark checklist items. Export the report; untouched items must remain pending.
-9. Wait for **離線已就緒**. Install via browser UI if desired. Disable network or stop the preview server, then reload the already controlled app. Prompts, preset changes and media inspection should work. Restore network/start preview afterward.
-10. Inspect 390 px mobile sizing via device tools, dark/light themes, keyboard Tab/Space/Enter and focus labels. Native iPhone/Safari installation is a separate device check.
+This is one consolidated **no-credit** UAT; no Flow/Grok login or generation is needed.
+
+1. Load an existing Mochi image, choose Custom, enter English/Chinese subject descriptions and select only visible/applicable motions. Check local preview/metadata and English/Chinese/bilingual display. Copy from Chinese view into Notepad: it must be the English original.
+2. Compare Omni/Veo/Grok from the same plan: Omni leads with main motion, Veo camera/shot hierarchy, Grok direct action/timing. Select Concise/Balanced/Detailed: clauses should actually shorten or add relevant temporal guidance while all selected actions and camera/identity constraints remain.
+3. Confirm elements, then change subject type, either description, scene notes, motion membership (including removal), source image or region: confirmation must clear and conditional wording return. Reconfirm and change provider/language/density/intensity/camera: it must stay checked. Same-image replacement, preset loading and configuration import still require reconfirmation.
+4. Select only sleep plus breathing (also repeat with blink/look/gesture). Set either as primary. Verify one conflict and disabled base/A/B/C/comparison copy buttons while active. Switch to valid Product Rotation: dormant biological actions must neither appear nor block; return to Ambient/Cinematic and the stored conflict must return.
+5. Compare 360 turntable (object moves, camera fixed) with orbit (object fixed, camera moves). Try one-way 90/180: no return-to-start/identical-end-frame advice; a distinct endpoint or no-loop/editing guidance is shown. Geometry/direction/axis/scale remain in all lengths; completion and hidden-surface warnings remain.
+6. Save/update/rename/duplicate/delete presets; export/import a batch without losing originals. Invalid/oversized merges must leave prior data intact, including reload/later save. For unreadable old data, download the raw backup and use only the explicitly confirmed validated recovery route; failed recovery keeps original bytes. Aggregate UTF-8 limit stays 1 MiB/100 presets.
+7. Import `docs/motion-plan-export.example.json`: do not change current settings before review. Compare original 1.0.0 prompt and new 1.1.0 prompt, download original JSON (unchanged), cancel once, reimport and explicitly accept. Reselect image/reconfirm elements. New JSON must have compiler 1.1.0/new prompt/current findings; original backup remains original. Current fixture/current exports round-trip without a migration prompt. A modified historical prompt must fail without changing settings. Unknown versions remain rejected.
+8. Load a local MP4/WebM for QC, seek partway and pause; enter notes and checklist decisions. Edit the prompt, switch provider/model/language/density/presets and check position/notes/checklist remain. Resume playback and repeat; it must continue without reset. Export QC report; pending items stay pending. Choose another video/clear QC to release the old media and reset only the old QC.
+9. Wait for **離線已就緒**, install via browser UI if desired, stop preview/disable network and reload the already controlled app. Prompt, presets and reselected local media must still work. Restart preview/network afterward. Repeat Pages build locally if base-path UAT is needed: `npm run build:pages`, then `npm run preview -- --outDir dist-pages --base /video-prompt-generator/ --port 4174 --strictPort`; open http://127.0.0.1:4174/video-prompt-generator/.
+10. Check 390 px device sizing, dark/light themes, keyboard controls and focus. Native iPhone/Safari installation remains a separate device check. An actual PWA update intentionally reloads; local media must be reselected, while settings/presets remain.
 
 ## Optional real-provider acceptance — user initiated
 

@@ -45,3 +45,7 @@ Precise geometric reconstruction, actual 360° completion and mathematically sea
 Supported consumer durations are disabled where incompatible; retained imported/switching preferences raise an error rather than being silently discarded. Veo Quality References yields an explicit error. Unknown Grok workflows remain guidance with a warning. Free-text custom notes cannot configure external features and are audited only by a limited keyword rule set.
 
 Before updating a capability, verify a new official page, record date/URL/confidence and add or update a regression test. API evidence cannot upgrade a consumer status.
+
+## Compiler/capability provenance
+
+Compiler 1.1.0 uses the same verified consumer snapshot (2026-10-11); composition changes are not new capability claims. Historical compiler 1.0.0 exports use an immutable copy of that evidence and audit for original validation. `export-profiles.ts` registers exact dated pairs, permitting explicit reviewed migration to a separately compiled current prompt. Future capability revisions must preserve historical validators and fixtures; unknown pairs are rejected. See MOCHI_BOT_INTEGRATION.md.
