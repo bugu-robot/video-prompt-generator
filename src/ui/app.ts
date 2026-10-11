@@ -1,0 +1,255 @@
+import type { AppSettings, MotionPlan, MotionPreset, PromptView, Region, Provider } from '../models/motion-plan';
+import { PROVIDERS, PRESERVATIONS, SUBJECT_TYPES } from '../models/motion-plan';
+import { modelsFor, PROVIDER_CAPABILITIES, VERIFIED_AT } from '../models/provider-capabilities';
+import { compilePrompt, compareProviders } from '../engine/compile';
+import { generateVariations } from '../engine/variations';
+import { defaultPlan, normalizePlan, normalizeRegion, switchProvider } from '../engine/motion-planner';
+import { BUILT_IN_PRESETS, applyPreset } from '../data/motion-presets';
+import { CAMERAS_DATA } from '../data/cameras';
+import { ENVIRONMENTAL_MOTIONS, SUBJECT_MOTIONS, MOTION_BY_ID } from '../data/motions';
+import { COPY as t, INTENSITY_LABELS, LOOP_DESCRIPTIONS, LOOP_LABELS, MODE_LABELS, PRESERVATION_LABELS, PROVIDER_LABELS, SUBJECT_LABELS } from '../i18n/zh-HK';
+import { browserStorage, deletePreset, importPresets, listCustomPresets, loadSettings, presetBundle, renamePreset, savePreset, saveSettings } from '../storage/local-storage';
+import { copyEnglish, createExport, downloadFile, importConfiguration, plainText } from '../storage/export';
+import { loadImage, aspectRatio, type LoadedImage } from '../media/image';
+import { inspectVideo, QC_CHECKS, qcReport, type VideoQcResult, type QcCheckId } from '../media/video-qc';
+import { registerPwa } from '../pwa/register';
+
+const escape=(v:unknown):string=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+const option=(value:string,label:string,selected:string,disabled=false)=>`<option value="${escape(value)}" ${value===selected?'selected':''} ${disabled?'disabled':''}>${escape(label)}</option>`;
+const select=(id:string,label:string,options:readonly [string,string][],value:string,key=id)=>`<label class="field" for="${id}"><span>${escape(label)}</span><select id="${id}" data-field="${key}">${options.map(([v,l])=>option(v,l,value)).join('')}</select></label>`;
+const input=(id:string,label:string,value:string,key=id,placeholder='')=>`<label class="field" for="${id}"><span>${escape(label)}</span><input id="${id}" data-field="${key}" value="${escape(value)}" maxlength="${id.includes('Notes')?500:160}" placeholder="${escape(placeholder)}" /></label>`;
+const checkbox=(key:string,label:string,checked:boolean,disabled=false)=>`<label class="check"><input type="checkbox" data-field="${key}" ${checked?'checked':''} ${disabled?'disabled':''}/><span>${escape(label)}</span></label>`;
+const providerOptions=PROVIDERS.map(p=>[p,PROVIDER_LABELS[p]] as [string,string]);
+interface InstallEvent extends Event {prompt:()=>Promise<void>;userChoice:Promise<{outcome:string}>}
+export function mountApp(root:HTMLElement):void {
+  const {storage,persistent}=browserStorage();
+  const settings:AppSettings=loadSettings(storage);
+  let image:LoadedImage|null=null,imageToken=0,videoToken=0,videoController:AbortController|null=null,videoUrl:string|null=null,qc:VideoQcResult|null=null;
+  let activeVariant:'base'|'A'|'B'|'C'='base',presetName='',presetFilter='all',toastTimer:ReturnType<typeof setTimeout>|undefined;
+  let pwaStatus='首次載入後準備離線快取',applyUpdate:(()=>void)|null=null,installEvent:InstallEvent|null=null,drawMode=false,qcBusy=false;
+  const plan=()=>settings.plan;
+  const presets=()=>[...BUILT_IN_PRESETS,...listCustomPresets(storage)];
+  const output=()=>activeVariant==='base'?compilePrompt(plan()):generateVariations(plan()).find(v=>v.id===activeVariant)!.output;
+  const notify=(message:string)=>{const el=root.querySelector<HTMLElement>('#toast');if(el){el.textContent=message;el.hidden=false;}clearTimeout(toastTimer);toastTimer=setTimeout(()=>{if(el)el.hidden=true;},5000);};
+  function persist():void {try{saveSettings(storage,settings);}catch{notify('無法儲存設定（瀏覽器儲存空間或政策限制）；目前操作仍可使用，請匯出備份。');}}
+  function applyTheme():void {document.documentElement.dataset.theme=settings.theme==='system'?(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):settings.theme;}
+  const resolveError=(error:unknown)=>error instanceof Error?error.message:'操作未能完成，請重試。';
+  const errors=(out=output())=>out.findings.some(f=>f.severity==='error');
+  function imageMarkup():string {
+    const r=plan().source.region;
+    return `<section class="panel" aria-labelledby="source-title"><div class="section-heading"><span class="step">01</span><h2 id="source-title">${t.source}</h2><span class="pill">${t.local}</span></div>
+      <div class="drop-zone" id="drop-zone">${image?`<div class="image-stage ${drawMode?'is-drawing':''}" id="image-stage"><img id="source-preview" src="${escape(image.url)}" alt="使用者提供的原圖" draggable="false"/><div class="region" id="region-overlay" ${r?'':'hidden'} style="${r?`left:${r.x*100}%;top:${r.y*100}%;width:${r.width*100}%;height:${r.height*100}%;`:''}"></div></div>`:`<div class="image-empty"><span class="empty-icon" aria-hidden="true">＋</span><strong>由一張原圖開始</strong><p>${t.noImage}</p></div>`}
+      <label for="image-file" class="upload-label">${image?'更換原圖':t.drop}</label><input id="image-file" type="file" accept="image/png,image/jpeg,image/webp" class="file-input" aria-label="選擇原圖"/></div>
+      ${image?`<p class="metadata">${escape(image.metadata.name)} · ${image.metadata.width} × ${image.metadata.height} · ${aspectRatio(image.metadata.width,image.metadata.height)}</p><div class="actions"><button data-action="draw" aria-pressed="${drawMode}" class="small">${drawMode?'結束框選':'框選主體位置'}</button><button data-action="clear-region" class="small">清除框選</button><button data-action="remove-image" class="small">移除原圖</button></div>`:''}
+      <p class="hint">PNG／JPEG／WebP · 最多 25 MB。圖片只留在本次會話，不儲存圖片內容；輸出僅包含 metadata。</p>
+      ${select('subjectType','要移動的主體',SUBJECT_TYPES.map(v=>[v,SUBJECT_LABELS[v].zh]),plan().source.subjectType,'source.subjectType')}
+      ${plan().source.subjectType==='custom'||plan().source.subjectEn?input('subjectEn','英文主體描述',plan().source.subjectEn,'source.subjectEn','例如 the hedgehog wearing cream headphones')+input('subjectZh','中文主體描述（自行填寫）',plan().source.subjectZh,'source.subjectZh','例如 戴米白色耳機的刺蝟'):''}
+      <details data-section="context"><summary>主體位置與場景補充</summary><p class="hint">沒有自動翻譯。只會把英文補充加入供應商提示；中文欄位用作解讀。</p>
+      ${input('sceneNotesEn','英文場景補充',plan().source.sceneNotesEn,'source.sceneNotesEn','只補充需要的動作限制或現有元素')}${input('sceneNotesZh','繁中場景補充',plan().source.sceneNotesZh,'source.sceneNotesZh')}
+      ${image?`<p class="hint">也可用鍵盤設定框選位置；百分比只是本機位置標記，不能控制外部供應商遮罩。</p><div class="region-fields">${(['x','y','width','height'] as const).map((k,i)=>`<label class="field" for="region-${k}"><span>${['左側 %','上方 %','闊度 %','高度 %'][i]}</span><input type="number" min="${k==='width'||k==='height'?1:0}" max="${k==='width'||k==='height'?100:99}" id="region-${k}" data-region="${k}" value="${Math.round((r??{x:0,y:0,width:1,height:1})[k]*100)}"/></label>`).join('')}</div>`:''}</details>
+    </section>`;
+  }
+  function providerMarkup():string {
+    const p=plan(),cap=PROVIDER_CAPABILITIES[p.model];
+    return `<section class="panel"><div class="section-heading"><span class="step">02</span><h2>${t.provider}</h2></div>${select('provider','目標供應商',providerOptions,p.provider)}
+      ${select('model','外部網站模型',modelsFor(p.provider).map(c=>[c.model,c.displayName]),p.model)}
+      <div class="mode-switch" role="group" aria-label="生成模式">${Object.entries(MODE_LABELS).map(([id,label])=>`<button data-action="mode" data-mode="${id}" aria-pressed="${p.mode===id}" class="mode-button ${p.mode===id?'selected':''}">${label}</button>`).join('')}</div>
+      <div class="form-grid">${select('intensity','動作幅度',Object.entries(INTENSITY_LABELS),p.intensity)}
+      <label class="field" for="duration"><span>${p.mode==='rotation'?'旋轉時長偏好':'時長偏好'}</span><select id="duration" data-field="durationSeconds">${option('auto','使用網站預設',p.durationSeconds===null?'auto':String(p.durationSeconds))}${[4,6,8,10,12,15,20,30].map(n=>option(String(n),`${n} 秒${cap.consumerDurations&&!cap.consumerDurations.includes(n)?' · 此模型未支援':!cap.consumerDurations?' · 待確認':''}`,String(p.durationSeconds),Boolean(cap.consumerDurations&&!cap.consumerDurations.includes(n)))).join('')}${p.durationSeconds!==null&&![4,6,8,10,12,15,20,30].includes(p.durationSeconds)?option(String(p.durationSeconds),p.durationSeconds+' 秒 · 匯入偏好',String(p.durationSeconds)):''}</select></label></div>
+      ${p.mode==='rotation'?'<p class="hint">旋轉模式使用角度、速度與時長控制；動作幅度只適用於另外兩個模式。</p>':''}
+      <p class="hint">功能核實：${VERIFIED_AT}。外部網站的帳戶、地區及介面可有差異；沒有自動設定或提交。</p></section>`;
+  }
+  function motionMarkup():string {
+    const p=plan();
+    const chips=(items:typeof SUBJECT_MOTIONS,key:'subjectMotions'|'environmentalMotions')=>`<div class="chips" role="group" aria-label="${key==='subjectMotions'?'主體動作':'環境動作'}">${items.map(m=>`<label class="chip ${p[key].includes(m.id)?'selected':''}"><input type="checkbox" data-motion="${key}" value="${m.id}" ${p[key].includes(m.id)?'checked':''}/><span>${m.nameZh}</span></label>`).join('')}</div>`;
+    const ids=[...p.subjectMotions,...p.environmentalMotions];
+    return `<section class="panel"><div class="section-heading"><span class="step">03</span><h2>${p.mode==='rotation'?'旋轉控制':t.motion}</h2></div>${p.mode==='rotation'?rotationMarkup():`
+      <h3>主體微動作</h3>${chips(SUBJECT_MOTIONS.slice(0,6),'subjectMotions')}<details data-section="more-subject"><summary>更多主體動作</summary>${chips(SUBJECT_MOTIONS.slice(6),'subjectMotions')}</details>
+      <h3>環境動作</h3>${chips(ENVIRONMENTAL_MOTIONS.slice(0,6),'environmentalMotions')}<details data-section="more-environment"><summary>水面、微風與其他環境動作</summary>${chips(ENVIRONMENTAL_MOTIONS.slice(6),'environmentalMotions')}</details>
+      ${select('primaryMotion','優先動作',ids.map(id=>[id,MOTION_BY_ID.get(id)?.nameZh??id]),p.primaryMotion??'')}
+      ${checkbox('source.elementsConfirmed','我已確認所有已選動作元素都在原圖存在',p.source.elementsConfirmed)}
+      <p class="hint">未勾選時使用「如原圖已有」描述。選一個主要動作，加一至兩個次要動作，通常較易保持穩定。</p>
+      ${select('camera','鏡頭行為',CAMERAS_DATA.filter(c=>c.modes.includes(p.mode)).map(c=>[c.id,c.nameZh]),p.camera)}`}</section>`;
+  }
+  function rotationMarkup():string {
+    const r=plan().rotation;
+    return `${select('rotationType','旋轉方式',[['turntable','物件自轉 · 鏡頭固定'],['orbit','鏡頭繞行 · 物件固定']],r.type,'rotation.type')}<div class="form-grid">
+      ${select('angle','轉動角度',[['90','90° · 四分之一圈'],['180','180° · 半圈'],['360','360° · 完整一圈']],String(r.angle),'rotation.angle')}
+      ${select('direction','方向',[['clockwise','順時針'],['counterclockwise','逆時針']],r.direction,'rotation.direction')}
+      ${select('speed','速度方式',[['uniform','等速 · 適合循環'],['slow','慢速而穩定'],['ease','緩入／緩出']],r.speed,'rotation.speed')}
+      ${select('axis','旋轉軸',[['y','Y 軸 · 垂直'],['x','X 軸 · 水平'],['z','Z 軸 · 深度／視線']],r.axis,'rotation.axis')}</div>
+      ${select('rotationInput','輸入來源／外部工作流程',[['single','單張圖片 · 近似重建'],['references','多角度參考圖 · 外部手動提供'],['3d','真正 3D 來源 · 外部 renderer']],r.inputMode,'rotation.inputMode')}
+      <p class="callout">單張圖並無已驗證背面。生成器不能確認幾何或是否轉足一圈；多參考圖也不會由此程式傳送至外部網站。</p>
+      <details data-section="rotation-advanced"><summary>構圖、幾何與旋轉穩定性</summary><div class="check-grid">${[['centered','主體置中'],['stableFraming','穩定構圖'],['consistentScale','保持物件大小'],['stableLighting','固定場景光源'],['geometry','保留可見幾何與比例'],['details','保留辨識細節']].map(([k,l])=>checkbox('rotation.'+k,l!,r[k as keyof typeof r]===true)).join('')}
+      ${checkbox('rotation.returnToStart','360° 後回到起始方向／鏡頭位置',r.returnToStart,r.angle!==360)}</div></details>`;
+  }
+  function advancedMarkup():string {
+    const p=plan();
+    return `<section class="panel"><div class="section-heading"><span class="step">04</span><h2>循環與保留</h2></div>${select('loop','循環策略',Object.entries(LOOP_LABELS),p.loop)}<p class="hint">${LOOP_DESCRIPTIONS[p.loop]}「Loop-friendly」不代表保證無縫。</p>
+      <details data-section="preservation"><summary>原圖保留項目與音訊</summary><div class="check-grid">${PRESERVATIONS.map(k=>`<label class="check"><input type="checkbox" data-preserve="${k}" ${p.preservation.includes(k)?'checked':''}/><span>${PRESERVATION_LABELS[k].zh}</span></label>`).join('')}</div>
+      ${select('audio','音訊偏好',[['none-requested','不要求音訊 · 預設'],['ambient','自然環境聲'],['provider-default','不寫音訊指示 · 供應商預設']],p.audio)}<p class="hint">未要求音訊不能保證靜音。Jazz 頻道可在最終渲染移除生成音軌。</p></details>
+      ${select('length','提示詞長度',[['concise','精簡 · 所有約束濃縮一段'],['balanced','平衡 · 清楚分段'],['detailed','詳細 · 加入時間連續性指示']],p.length)}</section>`;
+  }
+  function presetMarkup():string {
+    const items=presets().filter(p=>presetFilter==='all'||p.category===presetFilter),current=presets().find(p=>p.id===plan().presetId),isCustom=current?.category==='custom';
+    return `<section class="panel"><div class="section-heading"><span class="step">05</span><h2>動作預設</h2><span class="pill">${BUILT_IN_PRESETS.length} 個內置</span></div>
+      ${select('presetFilter','分類',[['all','全部'],['cafe','咖啡廳'],['character','角色／Mochi'],['nature','自然'],['rotation','旋轉'],['cinematic','電影感'],['custom','我的預設']],presetFilter,'ui.presetFilter')}
+      <div class="preset-list">${items.map(p=>`<button class="preset-card ${p.id===plan().presetId?'selected':''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id===plan().presetId}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('')||'<p class="hint">此分類還沒有自訂預設。</p>'}</div>
+      ${current?`<p class="hint">已選：${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>`:''}
+      <label class="field" for="presetName"><span>自訂預設名稱</span><input id="presetName" maxlength="80" value="${escape(presetName)}" placeholder="例如 Mochi 雨天微動作"/></label>
+      <div class="actions"><button data-action="save-preset">另存設定</button><button data-action="duplicate-preset">複製設定</button><button data-action="update-preset" ${isCustom?'':'disabled'}>更新自訂</button><button data-action="rename-preset" ${isCustom?'':'disabled'}>重新命名</button><button data-action="delete-preset" ${isCustom?'':'disabled'}>刪除自訂</button></div>
+      <div class="actions"><button data-action="export-presets" ${listCustomPresets(storage).length?'':'disabled'}>匯出全部自訂</button><button data-action="export-selected" ${current?'':'disabled'}>匯出已選預設</button><button data-action="import-json">匯入預設／設定 JSON</button></div><input id="json-file" class="file-input" type="file" accept="application/json,.json" aria-label="匯入 JSON"/>
+      <p class="hint">內置預設可複製後編輯。儲存的是動作設定，不包含圖片、影片或框選。匯入會先完整驗證，不覆蓋已有預設。</p></section>`;
+  }
+  function promptMarkup(english:string,chinese:string,view:PromptView,small=false):string {
+    return `<div class="prompt-grid ${view==='both'?'bilingual':''} ${small?'mini':''}">${view!=='zh'?`<div class="prompt-block"><h3>English Original</h3><pre lang="en">${escape(english)}</pre></div>`:''}${view!=='en'?`<div class="prompt-block interpretation"><h3>繁體中文解讀</h3><pre lang="zh-HK">${escape(chinese)}</pre></div>`:''}</div>`;
+  }
+  function outputMarkup():string {
+    const out=output(),p=out.plan,blocked=errors(out),variants=generateVariations(plan()),counts={error:0,warning:0,recommendation:0};out.findings.forEach(f=>counts[f.severity]++);
+    return `<div class="output-heading"><div><span class="eyebrow">MOTION → PROMPT</span><h2>${t.output}</h2></div><span class="pill accent">${activeVariant==='base'?'原設定':activeVariant+' 版本'}</span></div>
+      <section class="panel output-panel"><div class="output-toolbar"><div class="view-tabs" role="group" aria-label="提示顯示語言">${[['en','英文原文'],['zh','繁中解讀'],['both','中英對照']].map(([id,l])=>`<button data-action="view" data-view="${id}" aria-pressed="${settings.view===id}" class="${settings.view===id?'selected':''}">${l}</button>`).join('')}</div><button class="primary" data-action="copy" ${blocked?'disabled':''}>${t.copy}</button></div>
+      <p class="hint">${t.viewNote} 複製按鈕一直使用英文原文。</p>
+      <div class="config-summary"><span>${PROVIDER_LABELS[p.provider]}</span><span>${MODE_LABELS[p.mode]}</span><span>${p.mode==='rotation'?p.rotation.angle+'° · '+(p.rotation.type==='turntable'?'物件自轉':'鏡頭繞行'):INTENSITY_LABELS[p.intensity]}</span><span>${p.durationSeconds===null?'網站預設時長':p.durationSeconds+' 秒偏好'}</span><span>${LOOP_LABELS[p.loop]}</span></div>
+      <div id="final-prompt">${promptMarkup(out.english,out.chinese,settings.view)}</div>
+      <div class="actions export-actions"><button data-action="export-json">${t.exportJson}</button><button data-action="export-text">${t.exportText}</button><button data-action="base" ${activeVariant==='base'?'disabled':''}>回到原設定</button><button data-action="reset">清除／重設</button></div>
+      ${blocked?'<p class="error-note" role="alert">請先修正錯誤才可複製提示詞；JSON 仍可匯出作檢查。</p>':''}</section>
+      <section class="panel audit-panel"><div class="section-heading"><h2>品質與相容性檢查</h2><span class="pill">${counts.error} 錯誤 · ${counts.warning} 提醒</span></div>
+        <ul class="findings">${out.findings.map(f=>`<li class="finding ${f.severity}" data-finding="${f.id}"><span class="finding-tag">${{error:'錯誤',warning:'提醒',recommendation:'建議'}[f.severity]}</span><span>${escape(f.messageZh)}</span></li>`).join('')||'<li>目前規則沒有發現衝突。</li>'}</ul>
+        <details data-section="workflow"><summary>在外部供應商網站如何使用</summary><ol class="workflow">${out.workflowZh.map(s=>`<li>${escape(s)}</li>`).join('')}</ol></details>
+        <p class="hint">規則檢查沒有兼容率或成功率評分；未解析圖片，亦不能完整理解自由文字。</p></section>
+      <section class="variations" aria-labelledby="variation-title"><div class="section-heading"><h2 id="variation-title">Smart A／B／C</h2><span class="hint">同一意圖 · 可重現</span></div><div class="variation-grid">${variants.map(v=>`<article class="panel variation-card ${activeVariant===v.id?'active':''}"><span class="variation-letter">${v.id}</span><h3>${v.nameZh}</h3><p>${v.descriptionZh}</p><ul>${v.changesZh.map(x=>`<li>${escape(x)}</li>`).join('')}</ul><details data-section="variation-${v.id}"><summary>查看提示預覽</summary>${promptMarkup(v.output.english,v.output.chinese,settings.view,true)}</details><div class="actions"><button data-action="variant" data-variant="${v.id}">查看 ${v.id}</button><button data-action="copy-variant" data-variant="${v.id}" ${errors(v.output)?'disabled':''}>複製英文 ${v.id}</button></div></article>`).join('')}</div></section>
+      <details class="panel comparison" data-section="comparison"><summary>用相同 Motion Plan 比較 Omni／Veo／Grok</summary><p class="hint">保留主體、動作、鏡頭與保留規則；每個 provider 使用其預設或當前已選模型，各自檢查相容性。</p><div class="comparison-grid">${Object.entries(compareProviders(p)).map(([provider,c])=>`<article><h3>${PROVIDER_LABELS[provider as Provider]}</h3><p class="hint">${provider==='omni'?'以自然意圖敘述延續場景。':provider==='veo'?'以鏡頭、動作與保留項目清楚分段。':'直接描述動畫動作與節奏；網站規格未核實。'}</p>${promptMarkup(c.english,c.chinese,settings.view,true)}${c.findings.filter(f=>f.severity!=='recommendation').map(f=>`<p class="hint">${escape(f.messageZh)}</p>`).join('')}<button data-action="copy-provider" data-provider="${provider}" ${errors(c)?'disabled':''}>複製英文 · ${provider}</button></article>`).join('')}</div></details>
+      ${qcMarkup()}`;
+  }
+  function qcMarkup():string {
+    return `<section class="panel video-panel"><div class="section-heading"><h2>本機影片 QC</h2><span class="pill">不會上傳</span></div><p class="hint">上載已生成影片，在本機擷取首幀及接近片尾的樣本。像素差異是量度訊號，不能證明無縫或 360° 完成。</p><label class="upload-label" for="video-file">${qcBusy?'正在本機讀取，可選另一影片取消前一次':'選擇影片作檢查'}</label><input id="video-file" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="選擇 QC 影片"/><p class="hint">MP4／WebM／MOV · 最多 300 MB／10 分鐘；codec 支援取決於瀏覽器。</p>
+      ${qc?`<p class="metadata">${escape(qc.name)} · ${qc.durationSeconds.toFixed(3)} 秒 · ${qc.width} × ${qc.height}</p><video src="${escape(videoUrl)}" controls muted playsinline preload="metadata" aria-label="本機 QC 影片播放"></video>
+      <div class="frame-grid"><figure><img src="${qc.firstFrame}" alt="首幀樣本"/><figcaption>首幀 · ${qc.firstFrameTime.toFixed(3)} 秒</figcaption></figure><figure><img src="${qc.lastFrame}" alt="接近片尾的樣本"/><figcaption>近尾幀 · ${qc.lastFrameTime.toFixed(3)} 秒（非已驗證最後一幀）</figcaption></figure></div>
+      <p class="metric">RGB 平均絕對差異：<strong>${(qc.metric.meanAbsoluteRgbDifference*100).toFixed(2)}%</strong> · 亮度差異 ${(qc.metric.meanAbsoluteLumaDifference*100).toFixed(2)}% · ${qc.metric.sampleWidth} × ${qc.metric.sampleHeight} 樣本</p>
+      ${qc.metric.warningZh?`<p class="callout">${qc.metric.warningZh}</p>`:''}<p class="hint">低差異也可能來自全段靜止，不能確認循環、身份一致或旋轉角度。</p>
+      <h3>人手驗收 · 未選項目保持待檢</h3><div class="qc-checklist">${QC_CHECKS.map(([id,l])=>select('qc-'+id,l,[['pending','待檢查'],['pass','通過'],['fail','不通過'],['na','不適用']],qc!.checks[id]??'pending','qc.'+id)).join('')}</div>
+      <label class="field" for="qc-notes"><span>QC 備註</span><textarea id="qc-notes" maxlength="2000">${escape(qc.notes)}</textarea></label><div class="actions"><button data-action="export-qc">匯出 QC JSON 報告</button><button data-action="clear-qc">清除影片與 QC</button></div>`:''}</section>`;
+  }
+  function render():void {
+    const open=[...root.querySelectorAll<HTMLDetailsElement>('details[open][data-section]')].map(d=>d.dataset.section);
+    const focus=document.activeElement?.id;
+    root.innerHTML=`<header class="app-header"><div class="brand"><span class="brand-icon" aria-hidden="true">▶</span><div><h1>${t.appName}</h1><p>${t.subtitle}</p></div></div><div class="header-actions"><span class="status-dot" aria-hidden="true"></span><span id="pwa-status" class="hint">${pwaStatus}</span>${select('theme','主題',[['dark','深色'],['light','淺色'],['system','跟隨系統']],settings.theme,'ui.theme')}<button data-action="install">${installEvent?'安裝 App':'安裝說明'}</button></div></header>
+      <div id="update-banner" class="update-banner" ${applyUpdate?'':'hidden'}><span>有新版本可用。設定會先儲存；重新載入後需重新選取圖片／影片。</span><button data-action="update">儲存設定並更新</button></div>
+      <details class="quick-guide" data-section="guide"><summary>使用說明與資料私隱</summary><p>選圖 → 指定主體 → 選模型及動作 → 檢查提示及提醒 → 複製英文，在外部網站自行生成。預設設定適合低幅度 Cozy Jazz 背景。</p><p>${t.privacy} 沒有 vision model、LLM、登入、生成服務或外部 API。原圖及影片只留在當次會話；設定與自訂 presets 存於此瀏覽器。</p><p>Chrome／Edge 可使用瀏覽器安裝功能；Safari 可加入 Dock 或主畫面。首次在線開啟 production build，待「離線已就緒」後可離線使用。localhost 與 HTTPS 才支援 Service Worker。</p>${!persistent?'<p class="error-note">瀏覽器不允許永久儲存；目前改用記憶體，離開後會遺失，請匯出備份。</p>':''}<a href="https://github.com/bugu-robot/video-prompt-generator/blob/feat/local-first-video-prompt-generator/docs/USER_GUIDE_ZH_HK.md" target="_blank" rel="noopener noreferrer">完整繁中使用指南</a></details>
+      <main class="workspace"><div class="configuration" aria-label="提示詞設定">${imageMarkup()}${providerMarkup()}${motionMarkup()}${advancedMarkup()}${presetMarkup()}</div><div class="output" id="output" tabindex="-1" aria-label="提示詞輸出">${outputMarkup()}</div></main>
+      <footer>Video Prompt Generator · deterministic local engine · guidelines verified ${VERIFIED_AT}<p>提示符合指南不保證影片品質。所有外部生成及額度使用均由你自行操作。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div class="mobile-copy"><a href="#output">查看提示詞</a><button data-action="copy" ${errors()?'disabled':''}>複製英文</button></div>`;
+    for(const id of open)root.querySelector<HTMLDetailsElement>(`details[data-section="${id}"]`)?.setAttribute('open','');
+    if(focus)root.querySelector<HTMLElement>('#'+CSS.escape(focus))?.focus({preventScroll:true});
+    if(plan().mode==='rotation')root.querySelector<HTMLSelectElement>('#intensity')!.disabled=true;
+    applyTheme();
+  }
+  function renderOutput():void {
+    const el=root.querySelector<HTMLElement>('#output')!,open=[...el.querySelectorAll<HTMLDetailsElement>('details[open][data-section]')].map(d=>d.dataset.section);
+    el.innerHTML=outputMarkup();for(const id of open)el.querySelector<HTMLDetailsElement>(`details[data-section="${id}"]`)?.setAttribute('open','');
+    root.querySelector<HTMLButtonElement>('.mobile-copy button')!.disabled=errors();
+  }
+  async function setImage(file:File):Promise<void> {
+    const token=++imageToken;
+    try {const loaded=await loadImage(file);if(token!==imageToken){loaded.dispose();return;}image?.dispose();image=loaded;plan().source.image=loaded.metadata;plan().source.region=null;drawMode=false;persist();render();notify('圖片已在本機載入；沒有傳送至外部網站。');}
+    catch(error){if(token===imageToken)notify(resolveError(error));}
+  }
+  function clearQc():void {++videoToken;videoController?.abort();videoController=null;if(videoUrl)URL.revokeObjectURL(videoUrl);videoUrl=null;qc=null;qcBusy=false;}
+  async function setVideo(file:File):Promise<void> {
+    clearQc();const token=++videoToken;videoController=new AbortController();qcBusy=true;renderOutput();
+    try {const result=await inspectVideo(file,videoController.signal);if(token!==videoToken)return;qc=result;videoUrl=URL.createObjectURL(file);qcBusy=false;renderOutput();notify('首尾樣本及 metadata 已擷取，請完成人手驗收。');}catch(error){if(token===videoToken){qcBusy=false;renderOutput();notify(resolveError(error));}}
+  }
+  function changed():void {settings.plan=normalizePlan(plan());activeVariant='base';persist();}
+  function setField(key:string,value:string|boolean):void {
+    const p=plan();
+    if(key==='ui.presetFilter'){presetFilter=String(value);render();return;}
+    if(key==='ui.theme'){settings.theme=value as AppSettings['theme'];persist();applyTheme();return;}
+    if(key.startsWith('qc.')){if(qc){const id=key.slice(3) as QcCheckId;if(value==='pending')delete qc.checks[id];else qc.checks[id]=value as 'pass'|'fail'|'na';}return;}
+    if(key==='provider'){settings.plan=switchProvider(p,value as Provider);}
+    else if(key==='model'){p.model=value as MotionPlan['model'];}
+    else if(key==='durationSeconds'){p.durationSeconds=value==='auto'?null:Number(value);}
+    else if(key.startsWith('source.')){const source=p.source as unknown as Record<string,unknown>;source[key.slice(7)]=value;}
+    else if(key.startsWith('rotation.')){
+      const k=key.slice(9),rotation=p.rotation as unknown as Record<string,unknown>;rotation[k]=k==='angle'?Number(value):value;
+      if(k==='type')p.camera=value==='orbit'?'orbit':'locked';
+      if(k==='angle')p.rotation.returnToStart=Number(value)===360;
+    }else {(p as unknown as Record<string,unknown>)[key]=value;}
+    changed();
+    const isText=['source.subjectEn','source.subjectZh','source.sceneNotesEn','source.sceneNotesZh'].includes(key);if(isText)renderOutput();else render();
+  }
+  root.addEventListener('input',event=>{
+    const el=event.target;if(!(el instanceof HTMLInputElement||el instanceof HTMLTextAreaElement))return;
+    if(el.id==='presetName'){presetName=el.value;return;}
+    if(el.id==='qc-notes'){if(qc)qc.notes=el.value;return;}
+    if(el instanceof HTMLInputElement&&el.type==='text'&&el.dataset.field)setField(el.dataset.field,el.value);
+  });
+  root.addEventListener('change',event=>{
+    const el=event.target;if(!(el instanceof HTMLInputElement||el instanceof HTMLSelectElement))return;
+    if(el instanceof HTMLInputElement&&el.type==='file') {
+      const file=el.files?.[0];if(!file)return;
+      if(el.id==='image-file')void setImage(file);else if(el.id==='video-file')void setVideo(file);else if(el.id==='json-file') {
+        if(file.size>1024*1024){notify('JSON 不能超過 1 MB。');return;}
+        void file.text().then(raw=>{
+          try {
+            const parsed=JSON.parse(raw) as {format?:string};
+            if(parsed?.format==='video-prompt-generator-presets'){const imported=importPresets(storage,raw);notify(`已匯入 ${imported.length} 個預設；原有預設已保留。`);render();}
+            else {const imported=importConfiguration(raw);image?.dispose();image=null;imageToken++;settings.plan=imported;settings.plan.source.image=null;settings.plan.source.region=null;changed();render();notify('設定已匯入並重新編譯；請重新選取原圖。');}
+          }catch(error){notify(resolveError(error));}
+        }).catch(error=>notify(resolveError(error)));
+      }return;
+    }
+    if(el instanceof HTMLInputElement&&el.dataset.motion){const key=el.dataset.motion as 'subjectMotions'|'environmentalMotions';plan()[key]=el.checked?[...plan()[key],el.value]:plan()[key].filter(id=>id!==el.value);changed();render();return;}
+    if(el instanceof HTMLInputElement&&el.dataset.preserve){const id=el.dataset.preserve as MotionPlan['preservation'][number];plan().preservation=el.checked?[...plan().preservation,id]:plan().preservation.filter(k=>k!==id);changed();renderOutput();return;}
+    if(el instanceof HTMLInputElement&&el.dataset.region){const r={...(plan().source.region??{x:0,y:0,width:1,height:1})};r[el.dataset.region as keyof Region]=Number(el.value)/100;plan().source.region=normalizeRegion(r);changed();render();return;}
+    if(el.dataset.field&&(!(el instanceof HTMLInputElement)||el.type!=='text'))setField(el.dataset.field,el instanceof HTMLInputElement&&el.type==='checkbox'?el.checked:el.value);
+  });
+  root.addEventListener('click',event=>{
+    const button=(event.target as Element).closest<HTMLElement>('[data-action]');if(!button||button.hasAttribute('disabled'))return;const action=button.dataset.action;
+    try {
+      if(action==='copy'||action==='copy-variant'||action==='copy-provider') {
+        const out=action==='copy'?output():action==='copy-variant'?generateVariations(plan()).find(v=>v.id===button.dataset.variant)!.output:compareProviders(output().plan)[button.dataset.provider as Provider];
+        if(errors(out))return;void copyEnglish(out.english).then(()=>notify('已複製英文原始提示詞。')).catch(error=>notify(resolveError(error)));return;
+      }
+      if(action==='view'){settings.view=button.dataset.view as PromptView;persist();renderOutput();return;}
+      if(action==='variant'){activeVariant=button.dataset.variant as 'A'|'B'|'C';renderOutput();return;}
+      if(action==='base'){activeVariant='base';renderOutput();return;}
+      if(action==='mode'){
+        const p=plan();p.mode=button.dataset.mode as MotionPlan['mode'];p.camera=p.mode==='rotation'?(p.rotation.type==='orbit'?'orbit':'locked'):CAMERAS_DATA.find(c=>c.id===p.camera)?.modes.includes(p.mode)?p.camera:'locked';p.loop=p.mode==='cinematic'?'none':'match-pose';changed();render();return;
+      }
+      if(action==='preset'){const preset=presets().find(p=>p.id===button.dataset.id);if(preset){settings.plan=applyPreset(plan(),preset);presetName=preset.nameZh;changed();render();}return;}
+      if(action==='save-preset'||action==='duplicate-preset'||action==='update-preset'){
+        const id=action==='update-preset'?plan().presetId??undefined:undefined;
+        const name=action==='duplicate-preset'?(presetName||'動作設定')+'（副本）':presetName;
+        const saved=savePreset(storage,name,plan(),id);plan().presetId=saved.id;presetName=saved.nameZh;persist();render();notify('自訂預設已儲存。');return;
+      }
+      if(action==='rename-preset'){if(plan().presetId){renamePreset(storage,plan().presetId!,presetName);render();notify('預設已重新命名。');}return;}
+      if(action==='delete-preset'){if(plan().presetId){deletePreset(storage,plan().presetId!);plan().presetId=null;persist();render();notify('自訂預設已刪除。');}return;}
+      if(action==='export-presets'){downloadFile('video-motion-presets.json',presetBundle(listCustomPresets(storage)));return;}
+      if(action==='export-selected'){const preset=presets().find(p=>p.id===plan().presetId);if(preset){const clone:MotionPreset={...structuredClone(preset),category:'custom',updatedAt:new Date().toISOString()};downloadFile('video-motion-preset.json',presetBundle([clone]));}return;}
+      if(action==='import-json'){root.querySelector<HTMLInputElement>('#json-file')!.click();return;}
+      if(action==='export-json'){downloadFile('video-motion-plan.json',JSON.stringify(createExport(output().plan),null,2));return;}
+      if(action==='export-text'){downloadFile('video-prompt.txt',plainText(output()),'text/plain;charset=utf-8');return;}
+      if(action==='draw'){drawMode=!drawMode;render();notify(drawMode?'在圖片上拖曳框選；也可展開「主體位置」用鍵盤設定。':'框選模式已關閉。');return;}
+      if(action==='clear-region'){plan().source.region=null;changed();render();return;}
+      if(action==='remove-image'){++imageToken;image?.dispose();image=null;plan().source.image=null;plan().source.region=null;drawMode=false;changed();render();return;}
+      if(action==='reset'){++imageToken;image?.dispose();image=null;drawMode=false;settings.plan=defaultPlan();presetName='';changed();render();notify('提示設定及原圖已重設；自訂預設仍保留。');return;}
+      if(action==='export-qc'&&qc){downloadFile('video-qc-report.json',qcReport(qc));return;}
+      if(action==='clear-qc'){clearQc();renderOutput();return;}
+      if(action==='install'){if(installEvent){void installEvent.prompt().catch(error=>notify(resolveError(error)));installEvent=null;}else {root.querySelector<HTMLDetailsElement>('.quick-guide')!.open=true;notify('Chrome／Edge 使用瀏覽器「安裝」；Safari 加入 Dock／主畫面。');}return;}
+      if(action==='update'&&applyUpdate){persist();button.setAttribute('data-applying-update','true');applyUpdate();}
+    }catch(error){notify(resolveError(error));}
+  });
+  root.addEventListener('dragover',event=>{if((event.target as Element).closest('#drop-zone'))event.preventDefault();});
+  root.addEventListener('drop',event=>{if((event.target as Element).closest('#drop-zone')){event.preventDefault();const file=(event as DragEvent).dataTransfer?.files[0];if(file)void setImage(file);}});
+  let drawing:{x:number;y:number;pointer:number;stage:HTMLElement}|null=null;
+  const point=(event:PointerEvent,stage:HTMLElement)=>{const box=stage.getBoundingClientRect();return {x:Math.max(0,Math.min(1,(event.clientX-box.left)/box.width)),y:Math.max(0,Math.min(1,(event.clientY-box.top)/box.height))};};
+  root.addEventListener('pointerdown',event=>{const stage=(event.target as Element).closest<HTMLElement>('#image-stage');if(!drawMode||!stage||event.button!==0)return;event.preventDefault();const p=point(event,stage);drawing={...p,pointer:event.pointerId,stage};stage.setPointerCapture(event.pointerId);});
+  root.addEventListener('pointermove',event=>{if(!drawing||event.pointerId!==drawing.pointer)return;const pos=point(event,drawing.stage),r={x:Math.min(pos.x,drawing.x),y:Math.min(pos.y,drawing.y),width:Math.abs(pos.x-drawing.x),height:Math.abs(pos.y-drawing.y)},overlay=drawing.stage.querySelector<HTMLElement>('#region-overlay')!;overlay.hidden=false;Object.assign(overlay.style,{left:r.x*100+'%',top:r.y*100+'%',width:r.width*100+'%',height:r.height*100+'%'});});
+  root.addEventListener('pointerup',event=>{if(!drawing||event.pointerId!==drawing.pointer)return;const pos=point(event,drawing.stage);plan().source.region=normalizeRegion({x:Math.min(pos.x,drawing.x),y:Math.min(pos.y,drawing.y),width:Math.abs(pos.x-drawing.x),height:Math.abs(pos.y-drawing.y)});drawing=null;drawMode=false;changed();render();});
+  root.addEventListener('pointercancel',()=>{drawing=null;render();});
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installEvent=event as InstallEvent;render();});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
+  window.addEventListener('pagehide',()=>{++imageToken;image?.dispose();clearQc();});
+  render();
+  void registerPwa(status=>{pwaStatus=status;const el=root.querySelector('#pwa-status');if(el)el.textContent=status;},apply=>{applyUpdate=apply;const banner=root.querySelector<HTMLElement>('#update-banner');if(banner)banner.hidden=false;});
+  if(!persistent)notify('永久儲存不可用；可使用匯出功能備份。');
+}
