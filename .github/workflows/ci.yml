@@ -30,8 +30,9 @@ jobs:
       - run: npm run build
       - run: npm run build:pages
       - run: npm audit
-      - name: Upload static build for review (no deployment)
+      - name: Optional static review artifact (no deployment)
         if: matrix.os == 'ubuntu-latest'
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: static-pwa-review
@@ -39,6 +40,7 @@ jobs:
             dist/
             dist-pages/
           if-no-files-found: error
+          retention-days: 3
   browsers:
     name: Chromium, Firefox and WebKit acceptance
     needs: checks
@@ -54,11 +56,14 @@ jobs:
       - run: npm run build
       - run: npm run build:pages
       - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - name: Optional browser report artifact
+        uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: browser-acceptance-report
           path: |
             playwright-report/
             test-results/
           if-no-files-found: error
+          retention-days: 3

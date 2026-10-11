@@ -24,7 +24,7 @@ Browser acceptance covers main interactions, original-English copy, language/the
 
 PWA tests exercise **real Service Workers**: root offline reload; Pages-base-path offline reload; manifest/icons; version waiting; visible user update; settings retained; old-cache cleanup. A test-only fixture server changes worker identity without external services. It is never part of the built app.
 
-CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit browser tests on Ubuntu. It uploads review artifacts and reports. There is no merge or deployment job. WebKit automation is not an assertion that native Safari/iOS installation has been manually accepted.
+CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit browser tests on Ubuntu. Review-artifact uploads are optional (3-day retention); the account's artifact quota can block them without suppressing any check or test failure. Results remain in job logs. There is no merge or deployment job. WebKit automation is not an assertion that native Safari/iOS installation has been manually accepted.
 
 ## Results at milestone 2
 
