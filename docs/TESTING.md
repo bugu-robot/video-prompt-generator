@@ -38,8 +38,9 @@ CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit brows
 - Local standard Playwright CDN downloads were unavailable; Chromium 153 was provisioned separately for the actual browser run via `VPG_CHROMIUM_PATH`. Firefox/WebKit claims require the real GitHub Actions results. This environment limitation is not represented as a passed browser check.
 - Final clean install completed successfully. Schema/example contract tests pass without changing version 1.0.0.
 - Actual inspected independently reviewed CI baseline at `1f47146f8fb2500ed52093d0ce38bea52214af11`: Ubuntu and Windows each passed 170 units and all build/tool/audit checks; Chromium 26 + Firefox 25 + WebKit 25 = **76 passed, 0 failed/skipped**. [Evidence run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38131499051).
-- Every push/PR now reruns the full 221-unit / 124-browser suite (Chromium 42, Firefox 41, WebKit 41 cases). Current commit outcomes are attached to the Draft PR and are verified separately from these local measurements.
-- GitHub artifact storage quota blocked optional review uploads; no validation test is optional and no existing account artifacts were deleted.
+- Review-fix commit `ca6840e34a9ffb94b3dad04328cb9de89cbfddb1`: [CI run 38138096115](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38138096115) completed successfully. Actual inspected Windows and Ubuntu logs each show **221 unit passes, 0 failures/skips**, clean install/typecheck/lint/root/Pages builds and **0 audit vulnerabilities**. Actual browser log shows **Chromium 42 + Firefox 41 + WebKit 41 = 124 passed, 0 failed/skipped** (3.9 minutes). The original browser cases remain in the suite.
+- Every push/PR reruns that complete 221-unit / 124-browser suite, including later documentation-only commits. Current-head outcomes are attached to the Draft PR; STATUS.md records the verified code snapshot.
+- GitHub artifact storage quota blocked both optional Ubuntu static-review and browser-report uploads in this run. They did **not** succeed. Mandatory validation passed; no validation test is optional, Windows intentionally has no static-artifact upload and no existing account artifacts were deleted.
 
 ## Windows product UAT
 

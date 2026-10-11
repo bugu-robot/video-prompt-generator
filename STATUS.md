@@ -17,10 +17,10 @@ All six feasible implementation phases are complete on `feat/local-first-video-p
 | Local Node 24 clean install | npm ci, typecheck, lint, root/Pages builds, audit pass; 0 vulnerabilities |
 | Local unit suite after independent-review fixes | 221 pass, 0 fail/skip, 4 files |
 | Actual local Chromium 153 | 42 browser tests pass, 0 fail/skip |
-| Independently reviewed Ubuntu and Windows Node 24 CI baseline | 170 unit tests each plus typecheck/lint/root/Pages builds/audit pass |
-| Independently reviewed Chromium / Firefox / WebKit CI baseline | 26 / 25 / 25 pass = 76; 0 fail/skip |
+| Ubuntu and Windows Node 24 CI after review fixes | 221 unit tests each, 0 fail/skip; npm ci/typecheck/lint/root/Pages builds/audit pass, 0 vulnerabilities |
+| Chromium / Firefox / WebKit CI after review fixes | 42 / 41 / 41 pass = 124; 0 fail/skip |
 
-Independently reviewed baseline: commit `1f47146f8fb2500ed52093d0ce38bea52214af11`, [CI run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38131499051). The follow-up adds 51 unit cases and 16 shared browser cases: the full suite now contains 221 units and Chromium 42 / Firefox 41 / WebKit 41 = 124 browser cases. Local outcomes above are measured; current remote outcomes must be verified from the feature branch's new PR checks.
+Verified review-fix revision: `ca6840e34a9ffb94b3dad04328cb9de89cbfddb1`, [successful CI run 38138096115](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38138096115). Actual inspected job logs confirm the counts above. The follow-up adds 51 unit cases and 16 shared browser cases to independently reviewed baseline `1f47146f8fb2500ed52093d0ce38bea52214af11` ([baseline CI](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38131499051)). Later documentation-only commits rerun the same complete suite; current-head status is attached to Draft PR #1.
 
 ## Independent-review fixes (2026-10-11)
 
@@ -32,7 +32,7 @@ Independently reviewed baseline: commit `1f47146f8fb2500ed52093d0ce38bea52214af1
 
 Real browser acceptance includes clipboard readback, H.264 decode, image privacy/region interaction, atomic imports, responsive layouts and real Service Worker root/Pages offline reload plus explicit waiting-worker update. Fixed CORS Vary cache matching, update-worker lifecycle, import notifications, source confirmation reset, axis convention and canonical dates. Final rotation-loop clauses never invent ambient movement or demand contradictory partial-turn closure.
 
-Local Playwright CDN downloads were blocked; a separately provisioned Chromium was actually run. Firefox/WebKit results above are actual inspected GitHub CI logs, not simulated local success. CI artifact storage is full in the GitHub account; optional uploads fail visibly while all validation remains mandatory. No existing artifacts were deleted.
+Local Playwright CDN downloads were blocked; a separately provisioned Chromium was actually run. Firefox/WebKit results above are actual inspected GitHub CI logs, not simulated local success. Both Ubuntu static-review and browser-report uploads failed with the account artifact-storage quota error in the verified CI run. These optional uploads did **not** succeed; mandatory validation passed and remains enforced. Windows intentionally has no static-artifact upload. No existing artifacts were deleted.
 
 ## Remaining limitations and manual acceptance
 
