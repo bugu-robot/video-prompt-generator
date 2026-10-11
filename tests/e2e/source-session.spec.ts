@@ -229,7 +229,9 @@ test('real backward/forward history cannot revive discarded image confirmation',
     else await page.goForward();
   }
   async function historyPlan(): Promise<MotionPlan> {
-    return inPage(async () => {
+    if (!cdp) return exportPlan(page);
+    const download = page.waitForEvent('download');
+    const exported = await inPage(async () => {
       // Observe the real export Blob without changing its bytes, download or
       // URL lifecycle. This also proves active intent, not just checkbox state.
       let captured: Blob | undefined;
@@ -252,6 +254,10 @@ test('real backward/forward history cannot revive discarded image confirmation',
         JSON.parse(await captured.text()) as { motionPlan: MotionPlan }
       ).motionPlan;
     });
+    // A still-starting download can be mistaken for the next navigation by
+    // browser automation. Finish the real download before traversing history.
+    await (await download).path();
+    return exported;
   }
   await travel(-1);
   await expect

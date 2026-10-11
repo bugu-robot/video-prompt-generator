@@ -12,6 +12,8 @@ Repo：bugu-robot/video-prompt-generator。分支：`feat/local-first-video-prom
 
 本機 clean checks／474 units／兩種 builds／audit 0 漏洞通過；修正後完整 Firefox **67 通過，0 失敗／跳過，58.4 秒**。本機完整 Chromium 受 Unix socket 政策阻擋，Headless Shell 的 native-cache assertion 不會放寬；WebKit 缺系統依賴。這些本機失敗不是通過證據，三瀏覽器驗收以實際 CI 完整結果為準。首輪 [38149834045](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38149834045) 的 **201 通過／1 失敗**仍於 STATUS 記錄：Playwright 等待 BFCache 不會重新發出的 load，已改用真實 CDP 歷史／當前 realm 及未改動的匯出 Blob 驗證，不跳過／削弱測試。兩個 optional artifact 上傳因配額已滿失敗，mandatory jobs 全過；沒有刪舊 artifacts。文件提交同樣跑完整 CI，最終 HEAD 結果核對後更新 Draft PR #1。
 
+後續純文件 HEAD `517bcf800ee08fd2842b80508951c29e00773173` 的 [run 38160084093](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38160084093) 有 **201 通過／1 失敗，0 跳過，10.4 分鐘**（68 Chromium／66 Firefox／67 WebKit），原因是 Firefox Forward 和前一次仍開始中的 JSON download 重疊；不是來源確認或原生 Chromium BFCache 失敗。已讓每次真正的下載完成後才導航，Firefox／WebKit 讀實際完成檔案，Chromium 仍驗證未改動 Blob 並等待下載完成；沒有改 runtime、timeout 或 retry，也沒有放寬斷言。新的完整 HEAD CI 結論核對後固定記錄於 Draft PR #1，歷史成功／失敗均保留於 STATUS，不把這次失敗冒充通過。
+
 相對本次已審核基線修改 13 個檔案：
 
 - `README.md`
