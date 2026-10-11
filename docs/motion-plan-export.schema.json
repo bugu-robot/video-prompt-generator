@@ -1,0 +1,623 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bugu-robot/video-prompt-generator/blob/main/docs/motion-plan-export.schema.json",
+  "title": "Video Prompt Generator export v1",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "video-prompt-generator"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "omni",
+        "veo",
+        "grok"
+      ]
+    },
+    "modelSelection": {
+      "type": "string",
+      "enum": [
+        "omni-flash-1.1",
+        "veo-3.1-fast",
+        "veo-3.1-lite",
+        "veo-3.1-quality",
+        "grok-consumer-current"
+      ]
+    },
+    "generationMode": {
+      "type": "string",
+      "enum": [
+        "ambient",
+        "rotation",
+        "cinematic"
+      ]
+    },
+    "motionPlan": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "provider": {
+          "type": "string",
+          "enum": [
+            "omni",
+            "veo",
+            "grok"
+          ]
+        },
+        "model": {
+          "type": "string",
+          "enum": [
+            "omni-flash-1.1",
+            "veo-3.1-fast",
+            "veo-3.1-lite",
+            "veo-3.1-quality",
+            "grok-consumer-current"
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "ambient",
+            "rotation",
+            "cinematic"
+          ]
+        },
+        "durationSeconds": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 60
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "source": {
+          "type": "object",
+          "properties": {
+            "subjectType": {
+              "type": "string",
+              "enum": [
+                "unspecified",
+                "character",
+                "cat",
+                "coffee-cup",
+                "window",
+                "tree",
+                "product",
+                "custom"
+              ]
+            },
+            "subjectEn": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "subjectZh": {
+              "type": "string",
+              "maxLength": 160
+            },
+            "sceneNotesEn": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "sceneNotesZh": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "elementsConfirmed": {
+              "type": "boolean"
+            },
+            "image": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    "mime": {
+                      "type": "string",
+                      "enum": [
+                        "image/png",
+                        "image/jpeg",
+                        "image/webp"
+                      ]
+                    },
+                    "bytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 26214400
+                    },
+                    "width": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12000
+                    },
+                    "height": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 12000
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "mime",
+                    "bytes",
+                    "width",
+                    "height"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "region": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 0.99
+                    },
+                    "y": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 0.99
+                    },
+                    "width": {
+                      "type": "number",
+                      "minimum": 0.01,
+                      "maximum": 1
+                    },
+                    "height": {
+                      "type": "number",
+                      "minimum": 0.01,
+                      "maximum": 1
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y",
+                    "width",
+                    "height"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "subjectType",
+            "subjectEn",
+            "subjectZh",
+            "sceneNotesEn",
+            "sceneNotesZh",
+            "elementsConfirmed",
+            "image",
+            "region"
+          ],
+          "additionalProperties": false
+        },
+        "subjectMotions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "blink",
+              "breathing",
+              "head",
+              "look",
+              "ears",
+              "tail",
+              "paw",
+              "fur",
+              "sleep",
+              "gesture"
+            ]
+          },
+          "maxItems": 10,
+          "uniqueItems": true
+        },
+        "environmentalMotions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "steam",
+              "rain",
+              "leaves",
+              "snow",
+              "fire",
+              "candle",
+              "trees",
+              "ripples",
+              "waves",
+              "clouds",
+              "curtains",
+              "particles",
+              "light"
+            ]
+          },
+          "maxItems": 13,
+          "uniqueItems": true
+        },
+        "primaryMotion": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 80
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "intensity": {
+          "type": "string",
+          "enum": [
+            "minimal",
+            "subtle",
+            "moderate"
+          ]
+        },
+        "motionTiming": {
+          "type": "string",
+          "enum": [
+            "sparse",
+            "natural",
+            "sustained"
+          ]
+        },
+        "camera": {
+          "type": "string",
+          "enum": [
+            "locked",
+            "push-in",
+            "pull-out",
+            "pan",
+            "tilt",
+            "parallax",
+            "dolly",
+            "orbit"
+          ]
+        },
+        "loop": {
+          "type": "string",
+          "enum": [
+            "match-pose",
+            "continuous",
+            "crossfade",
+            "none"
+          ]
+        },
+        "preservation": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "identity",
+              "face",
+              "proportions",
+              "objects",
+              "composition",
+              "lighting",
+              "palette",
+              "background",
+              "style"
+            ]
+          },
+          "maxItems": 9,
+          "uniqueItems": true
+        },
+        "rotation": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": [
+                "turntable",
+                "orbit"
+              ]
+            },
+            "angle": {
+              "type": "integer",
+              "enum": [
+                90,
+                180,
+                360
+              ]
+            },
+            "direction": {
+              "type": "string",
+              "enum": [
+                "clockwise",
+                "counterclockwise"
+              ]
+            },
+            "speed": {
+              "type": "string",
+              "enum": [
+                "uniform",
+                "slow",
+                "ease"
+              ]
+            },
+            "axis": {
+              "type": "string",
+              "enum": [
+                "y",
+                "x",
+                "z"
+              ]
+            },
+            "centered": {
+              "type": "boolean"
+            },
+            "stableFraming": {
+              "type": "boolean"
+            },
+            "consistentScale": {
+              "type": "boolean"
+            },
+            "stableLighting": {
+              "type": "boolean"
+            },
+            "geometry": {
+              "type": "boolean"
+            },
+            "details": {
+              "type": "boolean"
+            },
+            "returnToStart": {
+              "type": "boolean"
+            },
+            "inputMode": {
+              "type": "string",
+              "enum": [
+                "single",
+                "references",
+                "3d"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "angle",
+            "direction",
+            "speed",
+            "axis",
+            "centered",
+            "stableFraming",
+            "consistentScale",
+            "stableLighting",
+            "geometry",
+            "details",
+            "returnToStart",
+            "inputMode"
+          ],
+          "additionalProperties": false
+        },
+        "audio": {
+          "type": "string",
+          "enum": [
+            "none-requested",
+            "ambient",
+            "provider-default"
+          ]
+        },
+        "length": {
+          "type": "string",
+          "enum": [
+            "concise",
+            "balanced",
+            "detailed"
+          ]
+        },
+        "presetId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "provider",
+        "model",
+        "mode",
+        "durationSeconds",
+        "source",
+        "subjectMotions",
+        "environmentalMotions",
+        "primaryMotion",
+        "intensity",
+        "motionTiming",
+        "camera",
+        "loop",
+        "preservation",
+        "rotation",
+        "audio",
+        "length",
+        "presetId"
+      ],
+      "additionalProperties": false
+    },
+    "sourceImageReference": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "mime": {
+              "type": "string",
+              "enum": [
+                "image/png",
+                "image/jpeg",
+                "image/webp"
+              ]
+            },
+            "bytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 26214400
+            },
+            "width": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12000
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12000
+            }
+          },
+          "required": [
+            "name",
+            "mime",
+            "bytes",
+            "width",
+            "height"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "generatedEnglishPrompt": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30000
+    },
+    "compilerVersion": {
+      "type": "string",
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
+    },
+    "capabilitySnapshotDate": {
+      "type": "string",
+      "enum": [
+        "2026-10-11"
+      ]
+    },
+    "presetIdentity": {
+      "anyOf": [
+        {
+          "type": "string",
+          "maxLength": 100
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "loopSettings": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": [
+            "match-pose",
+            "continuous",
+            "crossfade",
+            "none"
+          ]
+        },
+        "returnToStart": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "strategy",
+        "returnToStart"
+      ],
+      "additionalProperties": false
+    },
+    "qcWarnings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "error",
+              "warning",
+              "recommendation"
+            ]
+          },
+          "messageZh": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "messageEn": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "id",
+          "severity",
+          "messageZh",
+          "messageEn"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 200
+    },
+    "exportTimestamp": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 40
+    }
+  },
+  "required": [
+    "format",
+    "schemaVersion",
+    "provider",
+    "modelSelection",
+    "generationMode",
+    "motionPlan",
+    "sourceImageReference",
+    "generatedEnglishPrompt",
+    "compilerVersion",
+    "capabilitySnapshotDate",
+    "presetIdentity",
+    "loopSettings",
+    "qcWarnings",
+    "exportTimestamp"
+  ],
+  "additionalProperties": false
+}

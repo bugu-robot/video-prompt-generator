@@ -1,0 +1,69 @@
+name: CI — local generator verification
+on:
+  pull_request:
+  push:
+    branches: [feat/local-first-video-prompt-generator]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: video-prompts-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  checks:
+    name: Node 24 checks (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:pages
+      - run: npm audit
+      - name: Optional static review artifact (no deployment)
+        if: matrix.os == 'ubuntu-latest'
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-pwa-review
+          path: |
+            dist/
+            dist-pages/
+          if-no-files-found: error
+          retention-days: 3
+  browsers:
+    name: Chromium, Firefox and WebKit acceptance
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run build
+      - run: npm run build:pages
+      - run: npm run test:e2e
+      - name: Optional browser report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: browser-acceptance-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: error
+          retention-days: 3

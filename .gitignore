@@ -1,0 +1,11 @@
+node_modules/
+dist/
+dist-pages/
+playwright-report/
+test-results/
+coverage/
+*.tsbuildinfo
+.artifacts/
+
+core
+core.*

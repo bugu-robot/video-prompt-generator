@@ -1,0 +1,30 @@
+{
+  "name": "video-prompt-generator",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "build": "tsc --noEmit && vite build",
+    "build:pages": "npm run build -- --mode pages",
+    "preview": "vite preview --host 127.0.0.1",
+    "check": "npm run typecheck && npm run lint && npm test && npm run build && npm audit"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.0.0",
+    "@playwright/test": "^1.56.1",
+    "eslint": "^10.12.0",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "^8.71.1",
+    "vite": "^7.1.7",
+    "vitest": "^4.1.11"
+  }
+}
