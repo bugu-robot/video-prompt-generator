@@ -21,9 +21,11 @@ All six feasible implementation phases are complete on `feat/local-first-video-p
 | Environment | Current measured outcome |
 | --- | --- |
 | Local Node 24 | clean npm ci, typecheck/lint pass; **467 unit tests**, 0 fail/skip, 6 files; root/Pages builds and audit 0 vulnerabilities pass |
-| Actual local Chromium 153 | **61 browser tests**, 0 fail/skip (complete original suite plus 19 new shared cases); latest source follow-up is undergoing a final rerun before handoff |
-| Local Firefox/WebKit | attempted; host browser dependencies/launch environment unavailable, not accepted as passes; remote CI supplies full platform evidence |
-| Current Windows/Ubuntu / three-browser CI | pending this revision's push; outcomes will be recorded from actual completed jobs |
+| Actual local Chromium 153 | **61 browser tests**, 0 fail/skip (complete original suite plus 19 new shared cases), final run 35.2 seconds |
+| Actual local Firefox | **60 browser tests**, 0 fail/skip, final run 49.1 seconds; test-process sandbox overrides resolve the managed host's decoder restriction |
+| Local WebKit | full suite attempted, but browser launch is blocked by missing system libraries; not counted as a pass |
+| Windows/Ubuntu CI | [code-fix run 38143409461](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38143409461) **completed successfully** at `71c318becf6a12e44af3be2126caf2e80195fca2`: each platform passes **467 units**, 0 fail/skip, clean install/typecheck/lint/root/Pages builds/audit (0 vulnerabilities) |
+| Chromium / Firefox / WebKit CI | Same completed run: **61 / 60 / 60 = 181 passed**, 0 fail/skip, 8.7 minutes; actual inspected logs include **9 real Service Worker offline/update passes** plus privacy/preset/QC regressions |
 
 Preserved reviewed baseline `8858a181d116668ce9b78938b33d6b0724773411`: Windows/Ubuntu each 221 units; Chromium/Firefox/WebKit 42/41/41 = 124, 0 fail/skip, [verified run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38138566600). The current suite adds 246 units (including 27 fixed historical export fixtures plus current contract) and 19 shared browser tests, for **467 units and 61/60/60 = 181 browser cases**. Original checks remain mandatory.
 
@@ -37,7 +39,9 @@ Preserved reviewed baseline `8858a181d116668ce9b78938b33d6b0724773411`: Windows/
 
 Real browser acceptance includes clipboard readback, H.264 decode, image privacy/region interaction, atomic imports, responsive layouts and real Service Worker root/Pages offline reload plus explicit waiting-worker update. Fixed CORS Vary cache matching, update-worker lifecycle, import notifications, source confirmation reset, axis convention and canonical dates. Final rotation-loop clauses never invent ambient movement or demand contradictory partial-turn closure.
 
-Local Playwright CDN downloads were blocked; a separately provisioned Chromium was actually run. Firefox/WebKit results above are actual inspected GitHub CI logs, not simulated local success. Both Ubuntu static-review and browser-report uploads failed with the account artifact-storage quota error in the verified CI run. These optional uploads did **not** succeed; mandatory validation passed and remains enforced. Windows intentionally has no static-artifact upload. No existing artifacts were deleted.
+Local browser provisioning required alternate downloads and a separately provisioned Chromium. Firefox initially hit host sandbox/decoder restrictions; its final complete run passed with test-process environment overrides, without application or test changes. Local WebKit launch failures are not counted as successful acceptance; its complete **60-pass** acceptance is from the actual CI runner with installed dependencies. Both optional Ubuntu static-review and browser-report uploads in run 38143409461 failed with the account artifact-storage quota error. They **did not succeed**, even though the mandatory jobs passed. Windows intentionally has no static-artifact upload. No existing artifacts were deleted.
+
+This document records the verified code snapshot. Documentation-only follow-ups also trigger the same full mandatory workflow; final-head results are attached to Draft PR #1 after checking actual logs. The [remediation handoff](docs/REMEDIATION_HANDOFF.md) lists all 45 changed files and the consolidated Windows UAT.
 
 ## Remaining limitations and manual acceptance
 

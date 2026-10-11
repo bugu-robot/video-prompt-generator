@@ -52,4 +52,4 @@ npm run test:e2e
 
 The Pages-mode build writes `dist-pages/` with `/video-prompt-generator/` paths. CI verifies builds and browser tests, **but no deployment workflow exists**.
 
-Read [STATUS.md](STATUS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [the user guide](docs/USER_GUIDE_ZH_HK.md), [testing](docs/TESTING.md) and [provider evidence](docs/PROVIDER_CAPABILITIES.md). Guidelines and prompt requests do not guarantee good video, silent audio, exact geometry or a seamless loop. Real-provider acceptance is manual and opt-in.
+Read [the remediation handoff](docs/REMEDIATION_HANDOFF.md), [STATUS.md](STATUS.md), [ARCHITECTURE.md](ARCHITECTURE.md), [the user guide](docs/USER_GUIDE_ZH_HK.md), [testing](docs/TESTING.md) and [provider evidence](docs/PROVIDER_CAPABILITIES.md). Guidelines and prompt requests do not guarantee good video, silent audio, exact geometry or a seamless loop. Real-provider acceptance is manual and opt-in.

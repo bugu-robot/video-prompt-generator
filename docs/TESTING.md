@@ -38,7 +38,9 @@ CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit brows
 - Confirmation tests cover subject descriptions/type, scene notes, adding/removing motions, image/region changes and unchanged unrelated controls. Real browser tests include same-file replacement and prompt conditions.
 - Real browser QC tests retain the same live HTMLVideoElement with no emptied event, playing/paused position/speed, notes/checklist and report across text/full/provider/language/density rendering; replacement, rapid selection and Blob disposal are tested. Media bytes/URLs are never persisted or uploaded.
 
-Current local suite: **467 units**, 0 fail/skip (6 files), and **61 Chromium passes**, 0 fail/skip (19 new shared browser cases). Current complete cross-browser suite contains Chromium 61 + Firefox 60 + WebKit 60 = **181** cases; final remote outcomes must be checked at the pushed revision. Typecheck/lint/root/Pages builds/audit pass. Later source follow-ups rerun affected/full checks before handoff. Local WebKit lacks system libraries and native dependency installation is blocked by the managed host; local Firefox launch is not accepted as a pass. CI installs required dependencies on its Ubuntu runner.
+Current local suite: **467 units**, 0 fail/skip (6 files), **61 Chromium passes** in 35.2 seconds and **60 Firefox passes** in 49.1 seconds, 0 fail/skip (19 new shared browser cases). Typecheck/lint/root/Pages builds/audit pass. Firefox initially encountered managed-host sandbox/decoder restrictions; the final complete run uses test-process-only `MOZ_DISABLE_CONTENT_SANDBOX=1 MOZ_DISABLE_RDD_SANDBOX=1 MOZ_DISABLE_GMP_SANDBOX=1`, without application/test changes. Local WebKit was attempted but cannot launch: it lacks system libraries and native dependency installation is blocked by the managed host. That launch failure is not counted as a pass. CI installs required dependencies on its Ubuntu runner and uses the normal Playwright browser configuration.
+
+Actual inspected code-fix [CI run 38143409461](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38143409461), commit `71c318becf6a12e44af3be2126caf2e80195fca2`, **completed successfully**. Ubuntu and Windows each pass **467 units**, clean npm ci/typecheck/lint/root build/Pages build/audit (**0 vulnerabilities**). Browser log confirms **Chromium 61 + Firefox 60 + WebKit 60 = 181 passed**, **0 failed/skipped**, in **8.7 minutes**, including all **9 real PWA root/Pages/offline/update cases**. Original privacy/preset-storage tests and all new playback/confirmation/migration/conflict tests pass. Both optional static-review/browser-report uploads **failed** with artifact-storage quota; mandatory validation remains enforced. Later documentation-only pushes run the same complete workflow; final-head evidence is reported on Draft PR #1.
 
 ## Earlier verification history
 
@@ -57,9 +59,12 @@ Current local suite: **467 units**, 0 fail/skip (6 files), and **61 Chromium pas
 Use your existing repository access; the application itself needs no account:
 
 ```powershell
-git clone https://github.com/bugu-robot/video-prompt-generator.git
-cd video-prompt-generator
+# For a first checkout, clone then enter the repository:
+# git clone https://github.com/bugu-robot/video-prompt-generator.git
+# cd video-prompt-generator
+git fetch origin
 git switch feat/local-first-video-prompt-generator
+git pull --ff-only
 npm ci
 npm run typecheck
 npm run lint
