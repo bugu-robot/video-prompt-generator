@@ -1,5 +1,13 @@
 import type { MotionPlan } from '../models/motion-plan';
 
+// Image bytes are session-only. Discarding that session also invalidates its
+// manual confirmation, even if a persisted plan had no image metadata.
+export function clearSourceSession(p: MotionPlan): void {
+  p.source.image = null;
+  p.source.region = null;
+  p.source.elementsConfirmed = false;
+}
+
 // Confirmation refers to this source and this semantic selection, not to a
 // provider, output density, camera setting or UI language.
 function basis(p: MotionPlan): string {

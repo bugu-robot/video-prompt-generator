@@ -29,6 +29,13 @@ for (const port of [4191, 4192, 4193]) {
       res.end('ready');
       return;
     }
+    if (pathname === '/__test/history') {
+      res.setHeader('Content-Type', 'text/html');
+      res.end(
+        '<!doctype html><title>History destination</title><h1>History destination</h1>',
+      );
+      return;
+    }
     const path = resolve(
       root,
       '.' + (pathname === '/' ? '/index.html' : pathname),

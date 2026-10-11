@@ -13,7 +13,10 @@ import {
   VERIFIED_AT,
 } from '../models/provider-capabilities';
 import { compilePrompt, compareProviders } from '../engine/compile';
-import { invalidateSourceConfirmation } from '../engine/source-confirmation';
+import {
+  clearSourceSession,
+  invalidateSourceConfirmation,
+} from '../engine/source-confirmation';
 import { generateVariations } from '../engine/variations';
 import {
   defaultPlan,
@@ -640,13 +643,16 @@ export function mountApp(root: HTMLElement): void {
       normalizePlan(plan()),
     );
     previousPlan = structuredClone(settings.plan);
+    syncSourceConfirmation();
+    activeVariant = 'base';
+    persist();
+  }
+  function syncSourceConfirmation(): void {
     const confirmation = root.querySelector<HTMLInputElement>(
       '[data-field="source.elementsConfirmed"]',
     );
     if (confirmation)
       confirmation.checked = settings.plan.source.elementsConfirmed;
-    activeVariant = 'base';
-    persist();
   }
   function setField(key: string, value: string | boolean): void {
     const p = plan();
@@ -1162,15 +1168,25 @@ export function mountApp(root: HTMLElement): void {
     ++imageToken;
     image?.dispose();
     image = null;
-    plan().source.image = null;
-    plan().source.region = null;
+    clearSourceSession(plan());
+    previousPlan = structuredClone(plan());
+    syncSourceConfirmation();
+    root.querySelector<HTMLInputElement>('#image-file')!.value = '';
+    drawMode = false;
+    drawing = null;
     clearQc();
   });
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
+      if (!image) clearSourceSession(plan());
+      previousPlan = structuredClone(plan());
       render();
       renderQc();
     }
+    // History traversal can restore browser-owned form state after pageshow.
+    // Synchronize now and on the next frame without altering a new confirmation.
+    syncSourceConfirmation();
+    requestAnimationFrame(syncSourceConfirmation);
   });
   render();
   void registerPwa(

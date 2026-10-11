@@ -17,6 +17,7 @@ import {
   validate,
 } from './schema';
 import { validateMotionPlan } from './export';
+import { clearSourceSession } from '../engine/source-confirmation';
 export interface StorageLike {
   getItem(k: string): string | null;
   setItem(k: string, v: string): void;
@@ -61,8 +62,7 @@ export function loadSettings(s: StorageLike): AppSettings {
       return fallback;
     const x = v.settings,
       plan = normalizePlan(x.plan);
-    plan.source.image = null;
-    plan.source.region = null;
+    clearSourceSession(plan);
     return {
       plan,
       view: ['en', 'zh', 'both'].includes(String(x.view))
@@ -78,8 +78,7 @@ export function loadSettings(s: StorageLike): AppSettings {
 }
 export function saveSettings(s: StorageLike, settings: AppSettings): void {
   const clean = structuredClone(settings);
-  clean.plan.source.image = null;
-  clean.plan.source.region = null;
+  clearSourceSession(clean.plan);
   s.setItem(
     SETTINGS_KEY,
     JSON.stringify({ schemaVersion: '1.0.0', settings: clean }),

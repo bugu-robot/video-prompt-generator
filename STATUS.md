@@ -10,7 +10,18 @@ All six feasible implementation phases are complete on `feat/local-first-video-p
 - Installable offline PWA for root/Pages, content-versioned cache, visible waiting updates and settings retention. No external runtime resources, AI calls, accounts or backend.
 - Strict schema/example and documented future Mochi adapter preserving existing approval/kill switch. All requested engineering/provider/preset/loop/rotation/testing/Hong Kong Chinese user documents.
 
-## Current remediation snapshot (compiler 1.1.0)
+## Current focused P2: source confirmation across sessions
+
+Reviewed baseline: `da2a573d79b1f91e1cd8ef0e0fc2c7990b2ff06b`, [verified CI](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38144374385): 467 units per OS / 181 browser passes.
+
+- Settings save/load discard image metadata, region and confirmation together. Saving does not mutate the live session; old stored true flags cannot restore confirmation.
+- Pagehide releases media and invalidates confirmation, file input and pending drawing. Persisted pageshow rechecks missing media, refreshes the previous-plan snapshot, and synchronizes browser-restored form state immediately/next frame. New explicit confirmation survives unrelated changes in the restored session.
+- Source-independent controls, all selected motions, presets, typed plan/export versions, frozen migration verifiers, provider compilers and ordinary QC playback behavior remain unchanged.
+- Added 7 unit cases and 7 shared real-browser cases: normal/legacy reload, root/Pages controlled offline reload, replacement/unrelated changes, actual backward/forward traversal and explicit persisted lifecycle dispatch. Native Chromium BFCache requires full Chromium and explicitly asserts `pageshow.persisted=true`; fresh-document history and dispatched lifecycle evidence are identified separately.
+
+Current measured local validation: clean npm ci/typecheck/lint, **474 unit passes** (7 files, 0 fail/skip), root/Pages production builds and audit **0 vulnerabilities**. Full Firefox suite: **67 passed**, 0 fail/skip (test-process sandbox overrides). Full local Headless Shell run: **67 passed / 1 failed** (43.2 seconds), with the native BFCache assertion blocked by its delegate; full Chrome launch is blocked by the host Unix-socket policy. Full local WebKit run: **67 launch failures**, caused by missing system dependencies. These runs are not accepted as complete passes; full native cross-browser acceptance must come from completed CI. Full CI suite contains Chromium 68 + Firefox 67 + WebKit 67 = **202** cases, including **15** PWA/offline cases; current revision CI is pending push. No critical test is skipped or weakened.
+
+## Earlier remediation snapshot (compiler 1.1.0)
 
 - Genuinely separate provider composition: natural motion-led Omni, camera/shot and action-hierarchy Veo, direct action/timing Grok. Shared typed cues/constraints preserve user intent; explicit density modes shorten clauses or add relevant temporal detail.
 - Undirected conflict pairs report once regardless of declaration/selection order, including sleep/breathing; all active copy gates block real conflicts. Rotation's dormant motion behavior is retained.
@@ -18,7 +29,7 @@ All six feasible implementation phases are complete on `feat/local-first-video-p
 - Source confirmation invalidates for subject/scene/motion membership/image/region changes; unrelated controls retain it. Same-file replacement, presets and configuration adoption require reconfirmation.
 - Prompt/config rendering never replaces or moves the QC player. Position, playing/paused state, playback speed, notes and checklist survive ordinary editing; replacement/clear/navigation abort/release old media with stale completion protection.
 
-| Environment | Current measured outcome |
+| Environment | Verified earlier outcome |
 | --- | --- |
 | Local Node 24 | clean npm ci, typecheck/lint pass; **467 unit tests**, 0 fail/skip, 6 files; root/Pages builds and audit 0 vulnerabilities pass |
 | Actual local Chromium 153 | **61 browser tests**, 0 fail/skip (complete original suite plus 19 new shared cases), final run 35.2 seconds |
