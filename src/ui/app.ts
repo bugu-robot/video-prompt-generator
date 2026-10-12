@@ -142,7 +142,53 @@ export function mountApp(root: HTMLElement): void {
   let previousPlan = structuredClone(settings.plan);
   let configurationReview: ConfigurationReview | null = null;
   let originalConfiguration: string | null = null;
+  type PresetSnapshot = { plan: MotionPlan; name: string };
+  type EditSnapshot = PresetSnapshot & { presetRestore: PresetSnapshot | null };
+  const undoHistory: EditSnapshot[] = [];
+  let presetRestore: PresetSnapshot | null = null;
+  let previousPresetName = '';
+  let previousPresetRestore: PresetSnapshot | null = null;
+  let lastHistoryField = '';
+  let lastHistoryTime = 0;
   const plan = () => settings.plan;
+  // A selected preset is no longer an exact preset once any motion setting is edited.
+  function motionSignature(p: MotionPlan): string {
+    return JSON.stringify({
+      mode: p.mode, subjectMotions: p.subjectMotions,
+      environmentalMotions: p.environmentalMotions, primaryMotion: p.primaryMotion,
+      intensity: p.intensity, motionTiming: p.motionTiming, camera: p.camera, loop: p.loop,
+      rotation: p.rotation, durationSeconds: p.durationSeconds,
+      preservation: p.preservation, audio: p.audio,
+    });
+  }
+  function dropHistoryForMediaChange(): void {
+    undoHistory.length = 0;
+    presetRestore = null;
+    previousPresetRestore = null;
+    lastHistoryField = '';
+  }
+  function undoLastEdit(): void {
+    const entry = undoHistory.pop();
+    if (!entry) return;
+    const restored = structuredClone(entry.plan);
+    // A browser session never resurrects image bytes, removed images, or confirmations.
+    if (!image || JSON.stringify(restored.source.image) !== JSON.stringify(image.metadata))
+      clearSourceSession(restored);
+    settings.plan = normalizePlan(restored);
+    presetName = entry.name;
+    presetRestore = structuredClone(entry.presetRestore);
+    if (presetRestore &&
+        JSON.stringify(presetRestore.plan.source.image) !== JSON.stringify(image?.metadata ?? null))
+      presetRestore = null;
+    previousPlan = structuredClone(plan());
+    previousPresetName = presetName;
+    previousPresetRestore = structuredClone(presetRestore);
+    lastHistoryField = '';
+    activeVariant = 'base';
+    persist();
+    render();
+    notify('已復原上一項設定變更。');
+  }
   const presets = () => {
     const state = inspectCustomPresets(storage);
     return [
@@ -243,8 +289,8 @@ export function mountApp(root: HTMLElement): void {
       p.mode === 'rotation'
         ? rotationMarkup()
         : `
-      <h3>主體微動作</h3>${chips(SUBJECT_MOTIONS.slice(0, 6), 'subjectMotions')}<details data-section="more-subject"><summary>更多主體動作</summary>${chips(SUBJECT_MOTIONS.slice(6), 'subjectMotions')}</details>
-      <h3>環境動作</h3>${chips(ENVIRONMENTAL_MOTIONS.slice(0, 6), 'environmentalMotions')}<details data-section="more-environment"><summary>水面、微風與其他環境動作</summary>${chips(ENVIRONMENTAL_MOTIONS.slice(6), 'environmentalMotions')}</details>
+      <div class="section-heading"><h3>主體微動作</h3><button class="small" data-action="clear-subject-motions" ${p.subjectMotions.length ? '' : 'disabled'}>清空主體動作</button></div>${chips(SUBJECT_MOTIONS.slice(0, 6), 'subjectMotions')}<details data-section="more-subject"><summary>更多主體動作</summary>${chips(SUBJECT_MOTIONS.slice(6), 'subjectMotions')}</details>
+      <div class="section-heading"><h3>環境動作</h3><button class="small" data-action="clear-environment-motions" ${p.environmentalMotions.length ? '' : 'disabled'}>清空環境動作</button></div>${chips(ENVIRONMENTAL_MOTIONS.slice(0, 6), 'environmentalMotions')}<details data-section="more-environment"><summary>水面、微風與其他環境動作</summary>${chips(ENVIRONMENTAL_MOTIONS.slice(6), 'environmentalMotions')}</details>
       ${select(
         'primaryMotion',
         '優先動作',
@@ -399,8 +445,9 @@ export function mountApp(root: HTMLElement): void {
         'ui.presetFilter',
       )}
       ${blocked ? `<div class="callout" role="alert" id="preset-recovery"><p>${escape(state.messageZh)}</p><button data-action="export-raw-presets" ${state.raw === null ? 'disabled' : ''}>匯出原始預設備份</button><details data-section="preset-recovery"><summary>復原不可讀的自訂預設</summary><p>先下載原始備份並確認檔案已保存。修復 JSON 格式，或將過大的資料分拆為符合 schema、最多 100 個預設及 1 MiB 的檔案。復原只替換自訂預設；未放入復原檔案的項目仍保留在你下載的原始備份內。其他設定及媒體不受影響。</p><label class="check"><input id="preset-recovery-confirm" type="checkbox" ${recoveryBackup !== null && recoveryBackup === state.raw ? '' : 'disabled'}/><span>我已保存原始備份，確認以已修復的 JSON 替換目前不可讀的自訂預設</span></label><button data-action="restore-presets" disabled>選取已修復 JSON 並復原</button><input id="recovery-file" class="file-input" type="file" accept="application/json,.json" aria-label="復原預設 JSON"/></details></div>` : ''}
-      <div class="preset-list">${items.map((p) => `<button class="preset-card ${p.id === plan().presetId ? 'selected' : ''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id === plan().presetId}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('') || `<p class="hint">${blocked ? '自訂預設暫時無法顯示；原始資料仍在，請使用上方復原功能。' : '此分類還沒有自訂預設。'}</p>`}</div>
-      ${current ? `<p class="hint">已選：${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>` : ''}
+      <div class="preset-list">${items.map((p) => `<button class="preset-card ${p.id === plan().presetId && motionSignature(p.plan) === motionSignature(plan()) ? 'selected' : ''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id === plan().presetId && motionSignature(p.plan) === motionSignature(plan())}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('') || `<p class="hint">${blocked ? '自訂預設暫時無法顯示；原始資料仍在，請使用上方復原功能。' : '此分類還沒有自訂預設。'}</p>`}</div>
+      <p class="hint">再次點擊剛套用的預設，可恢復套用前設定；手動修改動作後，預設會取消選取。亦可使用「復原上一步」。</p>
+      ${current ? `<p class="hint">${current.category === 'custom' && motionSignature(current.plan) !== motionSignature(plan()) ? '修改中（可更新自訂）：' : '已選：'}${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>` : ''}
       <label class="field" for="presetName"><span>自訂預設名稱</span><input id="presetName" maxlength="80" value="${escape(presetName)}" placeholder="例如 Mochi 雨天微動作"/></label>
       <div class="actions"><button data-action="save-preset" ${blocked ? 'disabled' : ''}>另存設定</button><button data-action="duplicate-preset" ${blocked ? 'disabled' : ''}>複製設定</button><button data-action="update-preset" ${isCustom ? '' : 'disabled'}>更新自訂</button><button data-action="rename-preset" ${isCustom ? '' : 'disabled'}>重新命名</button><button data-action="delete-preset" ${isCustom ? '' : 'disabled'}>刪除自訂</button></div>
       <div class="actions"><button data-action="export-presets" ${state.status === 'ready' && state.presets.length ? '' : 'disabled'}>匯出全部自訂</button><button data-action="export-selected" ${current ? '' : 'disabled'}>匯出已選預設</button><button data-action="import-json">匯入預設／設定 JSON</button></div><input id="json-file" class="file-input" type="file" accept="application/json,.json" aria-label="匯入 JSON"/>
@@ -437,7 +484,7 @@ export function mountApp(root: HTMLElement): void {
       <p class="hint">${t.viewNote} 複製按鈕一直使用英文原文。</p>
       <div class="config-summary"><span>${PROVIDER_LABELS[p.provider]}</span><span>${MODE_LABELS[p.mode]}</span><span>${p.mode === 'rotation' ? p.rotation.angle + '° · ' + (p.rotation.type === 'turntable' ? '物件自轉' : '鏡頭繞行') : INTENSITY_LABELS[p.intensity]}</span><span>${p.durationSeconds === null ? '網站預設時長' : p.durationSeconds + ' 秒偏好'}</span><span>${LOOP_LABELS[p.loop]}</span></div>
       <div id="final-prompt">${promptMarkup(out.english, out.chinese, settings.view)}</div>
-      <div class="actions export-actions"><button data-action="export-json">${t.exportJson}</button><button data-action="export-text">${t.exportText}</button><button data-action="base" ${activeVariant === 'base' ? 'disabled' : ''}>回到原設定</button><button data-action="reset">清除／重設</button></div>
+      <div class="actions export-actions"><button data-action="export-json">${t.exportJson}</button><button data-action="export-text">${t.exportText}</button><button data-action="base" ${activeVariant === 'base' ? 'disabled' : ''}>回到原設定</button><button data-action="undo" ${undoHistory.length ? '' : 'disabled'}>復原上一步</button><button data-action="reset-motions">只重設動作（保留圖片）</button><button data-action="reset">清除／重設</button></div>
       ${blocked ? '<p class="error-note" role="alert">請先修正錯誤才可複製提示詞；JSON 仍可匯出作檢查。</p>' : ''}</section>
       <section class="panel audit-panel"><div class="section-heading"><h2>品質與相容性檢查</h2><span class="pill">${counts.error} 錯誤 · ${counts.warning} 提醒</span></div>
         <ul class="findings">${out.findings.map((f) => `<li class="finding ${f.severity}" data-finding="${f.id}"><span class="finding-tag">${{ error: '錯誤', warning: '提醒', recommendation: '建議' }[f.severity]}</span><span>${escape(f.messageZh)}</span></li>`).join('') || '<li>目前規則沒有發現衝突。</li>'}</ul>
@@ -473,10 +520,12 @@ export function mountApp(root: HTMLElement): void {
     image = null;
     imageToken++;
     settings.plan = imported;
+    dropHistoryForMediaChange();
     settings.plan.source.image = null;
     settings.plan.source.region = null;
     settings.plan.source.elementsConfirmed = false;
     changed();
+    dropHistoryForMediaChange();
     render();
     notify('設定已匯入並重新編譯；請重新選取原圖及確認元素。');
   }
@@ -593,7 +642,9 @@ export function mountApp(root: HTMLElement): void {
       plan().source.region = null;
       plan().source.elementsConfirmed = false;
       drawMode = false;
+      dropHistoryForMediaChange();
       changed();
+      dropHistoryForMediaChange();
       render();
       notify('圖片已在本機載入；沒有傳送至外部網站。');
     } catch (error) {
@@ -637,12 +688,37 @@ export function mountApp(root: HTMLElement): void {
       }
     }
   }
-  function changed(): void {
-    settings.plan = invalidateSourceConfirmation(
-      previousPlan,
-      normalizePlan(plan()),
-    );
-    previousPlan = structuredClone(settings.plan);
+  function changed(field = ''): void {
+    const next = invalidateSourceConfirmation(previousPlan, normalizePlan(plan()));
+    if (next.presetId && next.presetId === previousPlan.presetId &&
+        motionSignature(previousPlan) !== motionSignature(next)) {
+      // Built-ins are no longer selected once edited. Custom presets keep
+      // their identity so Update/Rename/Delete remain available for editing.
+      if (presets().find((p) => p.id === next.presetId)?.category !== 'custom')
+        next.presetId = null;
+      presetRestore = null;
+    }
+    const modified = JSON.stringify(previousPlan) !== JSON.stringify(next);
+    if (modified) {
+      const now = Date.now();
+      // Group consecutive keystrokes in one text field into one Undo step.
+      const continuousTyping = Boolean(field) && field === lastHistoryField &&
+        now - lastHistoryTime < 1200;
+      if (!continuousTyping) {
+        undoHistory.push({
+          plan: structuredClone(previousPlan),
+          name: previousPresetName,
+          presetRestore: structuredClone(previousPresetRestore),
+        });
+        if (undoHistory.length > 30) undoHistory.shift();
+      }
+      lastHistoryField = field;
+      lastHistoryTime = now;
+    }
+    settings.plan = next;
+    previousPlan = structuredClone(next);
+    previousPresetName = presetName;
+    previousPresetRestore = structuredClone(presetRestore);
     syncSourceConfirmation();
     activeVariant = 'base';
     persist();
@@ -654,6 +730,7 @@ export function mountApp(root: HTMLElement): void {
     if (confirmation)
       confirmation.checked = settings.plan.source.elementsConfirmed;
   }
+  function isTextField(key: string): boolean { return ['source.subjectEn','source.subjectZh','source.sceneNotesEn','source.sceneNotesZh'].includes(key); }
   function setField(key: string, value: string | boolean): void {
     const p = plan();
     if (key === 'ui.presetFilter') {
@@ -694,7 +771,7 @@ export function mountApp(root: HTMLElement): void {
       (p as unknown as Record<string, unknown>)[key] = value;
     }
     const previousVariant = activeVariant;
-    changed();
+    changed(isTextField(key) ? key : '');
     if (key === 'provider' || key === 'model') activeVariant = previousVariant;
     const isText = [
       'source.subjectEn',
@@ -711,6 +788,7 @@ export function mountApp(root: HTMLElement): void {
       return;
     if (el.id === 'presetName') {
       presetName = el.value;
+      previousPresetName = presetName;
       return;
     }
     if (el.id === 'qc-notes') {
@@ -902,11 +980,62 @@ export function mountApp(root: HTMLElement): void {
       if (action === 'preset') {
         const preset = presets().find((p) => p.id === button.dataset.id);
         if (preset) {
-          settings.plan = applyPreset(plan(), preset);
-          presetName = preset.nameZh;
+          if (plan().presetId === preset.id &&
+              motionSignature(plan()) === motionSignature(preset.plan)) {
+            if (presetRestore) {
+              const before = structuredClone(presetRestore);
+              settings.plan = before.plan;
+              presetName = before.name;
+              presetRestore = null;
+              notify('已取消動作預設，恢復套用前設定。');
+            } else if (preset.category === 'custom') {
+              // A restored/saved custom preset has no pre-apply snapshot.
+              // Re-select it for editing instead of disabling Update/Delete.
+              settings.plan = applyPreset(plan(), preset);
+              presetName = preset.nameZh;
+              notify('已重新套用自訂預設，可繼續更新或刪除。');
+            } else {
+              plan().presetId = null;
+              notify('已取消預設選取；目前設定保留。');
+            }
+          } else {
+            presetRestore = { plan: structuredClone(plan()), name: presetName };
+            settings.plan = applyPreset(plan(), preset);
+            presetName = preset.nameZh;
+          }
           changed();
           render();
         }
+        return;
+      }
+      if (action === 'undo') {
+        undoLastEdit();
+        return;
+      }
+      if (action === 'clear-subject-motions' || action === 'clear-environment-motions') {
+        const key = action === 'clear-subject-motions' ? 'subjectMotions' : 'environmentalMotions';
+        if (!plan()[key].length) return;
+        plan()[key] = [];
+        const remaining = [...plan().subjectMotions, ...plan().environmentalMotions];
+        if (!remaining.includes(plan().primaryMotion ?? '')) plan().primaryMotion = remaining[0] ?? null;
+        plan().source.elementsConfirmed = false;
+        changed();
+        render();
+        return;
+      }
+      if (action === 'reset-motions') {
+        const p = plan(), defaults = defaultPlan();
+        p.subjectMotions = [];
+        p.environmentalMotions = [];
+        p.primaryMotion = null;
+        p.intensity = defaults.intensity;
+        p.rotation = structuredClone(defaults.rotation);
+        p.camera = 'locked';
+        p.loop = p.mode === 'cinematic' ? 'none' : defaults.loop;
+        p.source.elementsConfirmed = false;
+        changed();
+        render();
+        notify('已重設動作及鏡頭設定，保留原圖、模型及主體描述。');
         return;
       }
       if (
@@ -925,6 +1054,10 @@ export function mountApp(root: HTMLElement): void {
         const saved = savePreset(storage, name, plan(), id);
         plan().presetId = saved.id;
         presetName = saved.nameZh;
+        presetRestore = null;
+        previousPlan = structuredClone(plan());
+        previousPresetName = presetName;
+        previousPresetRestore = null;
         persist();
         render();
         notify('自訂預設已儲存。');
@@ -942,6 +1075,9 @@ export function mountApp(root: HTMLElement): void {
         if (plan().presetId) {
           deletePreset(storage, plan().presetId!);
           plan().presetId = null;
+          presetRestore = null;
+          previousPlan = structuredClone(plan());
+          previousPresetRestore = null;
           persist();
           render();
           notify('自訂預設已刪除。');
@@ -1017,6 +1153,7 @@ export function mountApp(root: HTMLElement): void {
         return;
       }
       if (action === 'remove-image') {
+        dropHistoryForMediaChange();
         ++imageToken;
         image?.dispose();
         image = null;
@@ -1024,10 +1161,12 @@ export function mountApp(root: HTMLElement): void {
         plan().source.region = null;
         drawMode = false;
         changed();
+        dropHistoryForMediaChange();
         render();
         return;
       }
       if (action === 'reset') {
+        dropHistoryForMediaChange();
         ++imageToken;
         image?.dispose();
         image = null;
@@ -1035,6 +1174,7 @@ export function mountApp(root: HTMLElement): void {
         settings.plan = defaultPlan();
         presetName = '';
         changed();
+        dropHistoryForMediaChange();
         render();
         notify('提示設定及原圖已重設；自訂預設仍保留。');
         return;
@@ -1175,10 +1315,11 @@ export function mountApp(root: HTMLElement): void {
     drawMode = false;
     drawing = null;
     clearQc();
+    dropHistoryForMediaChange();
   });
   window.addEventListener('pageshow', (event) => {
     if (event.persisted) {
-      if (!image) clearSourceSession(plan());
+      if (!image) { clearSourceSession(plan()); dropHistoryForMediaChange(); }
       previousPlan = structuredClone(plan());
       render();
       renderQc();
