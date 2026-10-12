@@ -980,7 +980,8 @@ export function mountApp(root: HTMLElement): void {
       if (action === 'preset') {
         const preset = presets().find((p) => p.id === button.dataset.id);
         if (preset) {
-          if (plan().presetId === preset.id) {
+          if (plan().presetId === preset.id &&
+              motionSignature(plan()) === motionSignature(preset.plan)) {
             if (presetRestore) {
               const before = structuredClone(presetRestore);
               settings.plan = before.plan;
