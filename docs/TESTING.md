@@ -70,6 +70,19 @@ Actual inspected code-fix [CI run 38143409461](https://github.com/bugu-robot/vid
 - At that earlier revision every push/PR reran the complete 221-unit / 124-browser suite, including later documentation-only commits. Current-head outcomes are attached to the Draft PR; STATUS.md records the verified code snapshot.
 - GitHub artifact storage quota blocked both optional Ubuntu static-review and browser-report uploads in this run. They did **not** succeed. Mandatory validation passed; no validation test is optional, Windows intentionally has no static-artifact upload and no existing account artifacts were deleted.
 
+## Preset Undo and non-destructive reset regression
+
+The additional `tests/e2e/preset-undo.spec.ts` verifies in all three Playwright browsers:
+
+- A built-in preset can be applied then toggled off to restore the immediately prior configuration, preserving the loaded local image and selected provider.
+- Subject and environmental motions can be cleared independently, and Undo restores the exact previous motion selection.
+- A motion-only reset clears motion/camera controls without discarding the current image, subject description or provider.
+- Manual motion edits remove misleading preset selection; Undo can reselect the prior preset, including its reversible pre-apply snapshot.
+- Removing an image clears Undo history so no discarded image metadata can be resurrected; reload starts a fresh history.
+- The same actions remain available in a 390 px mobile viewport.
+
+Undo is session-only, bounded to 30 edits and grouped for rapid consecutive text input; image replacement/removal and history navigation invalidate stale undo/preset restoration. These checks do not call Flow, Veo or Grok or consume generation credits.
+
 ## Windows product UAT
 
 Use your existing repository access; the application itself needs no account:
