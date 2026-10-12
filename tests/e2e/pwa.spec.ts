@@ -117,3 +117,33 @@ test('online reload sees changed entry HTML despite an installed offline shell',
   await expect(page.locator('#camera')).toHaveValue('pan');
   await expect(page.getByRole('heading', { name: 'Video Prompt Generator' })).toBeVisible();
 });
+
+test('known pre-fix cache automatically adopts recovery worker and preserves presets', async ({
+  page,
+  request,
+  browserName,
+}) => {
+  const port = { chromium: 4191, firefox: 4192, webkit: 4193 }[browserName];
+  const base = `http://127.0.0.1:${port}`;
+  await request.get(base + '/__test/reset');
+  await page.goto(base + '/');
+  await ready(page);
+  await page.locator('#presetName').fill('Before PWA recovery');
+  await page.getByRole('button', { name: '另存設定', exact: true }).click();
+
+  const legacy = 'video-prompts-/-82515efa691a7e44';
+  await page.evaluate(async (name) => { await caches.open(name); }, legacy);
+  await request.get(base + '/__test/update');
+  await page.evaluate(async () => (await navigator.serviceWorker.ready).update());
+
+  // Only known old production caches are eligible for emergency activation.
+  await expect.poll(() => page.evaluate(async () => {
+    const keys = await caches.keys();
+    return keys.some((key) => key.includes('-updated')) && !keys.includes('video-prompts-/-82515efa691a7e44');
+  })).toBe(true);
+
+  await page.reload();
+  await expect(page.locator('body')).toHaveAttribute('data-test-deployment', 'updated');
+  await page.locator('#presetFilter').selectOption('custom');
+  await expect(page.getByRole('button', { name: /Before PWA recovery/ })).toHaveCount(1);
+});
