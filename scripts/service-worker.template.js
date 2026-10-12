@@ -1,6 +1,12 @@
 const PREFIX = 'video-prompts-' + __SCOPE_ID__ + '-';
 const CACHE = PREFIX + '__BUILD_ID__';
 const PRECACHE = __PRECACHE__;
+// One-time migration for already-installed production builds whose cache-first
+// navigation can trap an older UI. Do not auto-activate unrelated future builds.
+const STALE_NAVIGATION_BUILDS = new Set([
+  'ef21498a2b6bb87c', // initial gh-pages deployment
+  '82515efa691a7e44', // prior deployed preset release
+]);
 self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
@@ -15,6 +21,13 @@ self.addEventListener('install', (event) => {
             await cache.put(url, response);
           }),
         );
+        // Replace only the two known stale-cache production workers. The
+        // existing page remains open; its local settings are never deleted.
+        const installedCaches = await caches.keys();
+        if (installedCaches.some((key) =>
+            [...STALE_NAVIGATION_BUILDS].some((id) => key === PREFIX + id))) {
+          await self.skipWaiting();
+        }
       } catch (error) {
         await caches.delete(CACHE);
         throw error;
