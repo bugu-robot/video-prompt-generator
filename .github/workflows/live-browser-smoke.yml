@@ -1,0 +1,60 @@
+name: Smoke test published site in fresh browsers
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - name: Verify public site in clean desktop/mobile browser contexts
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium, firefox, webkit, devices } from 'playwright';
+          const site = 'https://bugu-robot.github.io/video-prompt-generator/';
+          const cases = [
+            {name:'Fresh Chromium desktop',engine:chromium,opts:{}},
+            {name:'Fresh Chromium Pixel 7',engine:chromium,opts:devices['Pixel 7']},
+            {name:'Fresh Firefox desktop',engine:firefox,opts:{}},
+            {name:'Fresh WebKit iPhone 13',engine:webkit,opts:devices['iPhone 13']}
+          ];
+          let failures=0;
+          for(const item of cases) {
+            const browser=await item.engine.launch();
+            try {
+              const context=await browser.newContext(item.opts);
+              const page=await context.newPage();
+              const errors=[];
+              const resources=[];
+              page.on('pageerror',error=>errors.push(error.message));
+              page.on('console',message=>{if(message.type()==='error') errors.push(message.text())});
+              page.on('response',r=>{if(r.status()>=400)resources.push([r.status(),r.url()])});
+              const response=await page.goto(site+'?smoke='+Date.now(),{waitUntil:'load',timeout:40000});
+              await page.locator('#app h1').waitFor({state:'visible',timeout:20000}).catch(()=>{});
+              const info=await page.evaluate(()=>({
+                 pageTitle:document.title,
+                 appText:document.querySelector('#app')?.textContent?.slice(0,220),
+                 h1:document.querySelector('#app h1')?.textContent,
+                 panels:document.querySelectorAll('.panel').length,
+                 cssFont:getComputedStyle(document.querySelector('body')).fontFamily
+              }));
+              const ok=response?.status()===200&&Boolean(info.h1)&&info.panels>0&&!errors.length&&!resources.length;
+              console.log(JSON.stringify({browser:item.name,status:response?.status(),...info,errors,failedResources:resources,passed:ok},null,2));
+              if(!ok) failures++;
+              await context.close();
+            } catch(e) {failures++;console.error(item.name,'FAILED:',String(e));}
+            finally {await browser.close()}
+          }
+          if(failures){console.error(failures,'live browsers failed');process.exit(1)}
+          NODE
