@@ -156,7 +156,7 @@ export function mountApp(root: HTMLElement): void {
     return JSON.stringify({
       mode: p.mode, subjectMotions: p.subjectMotions,
       environmentalMotions: p.environmentalMotions, primaryMotion: p.primaryMotion,
-      intensity: p.intensity, camera: p.camera, loop: p.loop,
+      intensity: p.intensity, motionTiming: p.motionTiming, camera: p.camera, loop: p.loop,
       rotation: p.rotation, durationSeconds: p.durationSeconds,
       preservation: p.preservation, audio: p.audio,
     });
@@ -525,6 +525,7 @@ export function mountApp(root: HTMLElement): void {
     settings.plan.source.region = null;
     settings.plan.source.elementsConfirmed = false;
     changed();
+    dropHistoryForMediaChange();
     render();
     notify('設定已匯入並重新編譯；請重新選取原圖及確認元素。');
   }
@@ -1150,6 +1151,7 @@ export function mountApp(root: HTMLElement): void {
         plan().source.region = null;
         drawMode = false;
         changed();
+        dropHistoryForMediaChange();
         render();
         return;
       }
@@ -1162,6 +1164,7 @@ export function mountApp(root: HTMLElement): void {
         settings.plan = defaultPlan();
         presetName = '';
         changed();
+        dropHistoryForMediaChange();
         render();
         notify('提示設定及原圖已重設；自訂預設仍保留。');
         return;
