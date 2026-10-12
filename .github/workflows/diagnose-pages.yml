@@ -1,0 +1,28 @@
+name: Diagnose live GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Fetch live site and assets via an external GitHub-hosted runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://bugu-robot.github.io/video-prompt-generator/"
+          for suffix in "" "index.html" "manifest.webmanifest" "sw.js" "assets/index-xUO_xvAl.js" "assets/index-DAz1W4XF.css" ; do
+            printf '\n===== %s =====\n' "${base}${suffix}"
+            curl -sS -L --max-time 20 -D /tmp/headers -o /tmp/body -w 'status=%{http_code} type=%{content_type} bytes=%{size_download} url=%{url_effective}\n' "${base}${suffix}?probe=${GITHUB_SHA}" || true
+            grep -iE '^HTTP/|^content-type:|^cache-control:|^location:' /tmp/headers || true
+            if [ -z "$suffix" ] || [ "$suffix" = "index.html" ]; then
+              head -c 1100 /tmp/body || true
+            fi
+            printf '\n'
+          done
+          printf '\n===== domain root =====\n'
+          curl -sS -L --max-time 20 -o /dev/null -w 'root_status=%{http_code} url=%{url_effective}\n' "https://bugu-robot.github.io/" || true
