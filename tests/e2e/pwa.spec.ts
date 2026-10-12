@@ -112,13 +112,15 @@ test('online reload sees changed entry HTML despite an installed offline shell',
   // registerPwa checks for the new waiting worker without a manual API call.
   await expect(page.locator('#update-banner')).toBeVisible();
 
-  // Previous matched shell remains usable when the network goes away.
-  // Never store online HTML from a new build in an older worker's shell.
+  // Offline fallback may be the old *or* newly activated version-matched
+  // shell. Firefox can activate the waiting worker across this navigation;
+  // the observable requirement is complete offline functionality and data.
   await context.setOffline(true);
   await page.reload();
-  await expect(page.locator('body')).not.toHaveAttribute('data-test-deployment', 'updated');
   await expect(page.locator('#camera')).toHaveValue('pan');
   await expect(page.getByRole('heading', { name: 'Video Prompt Generator' })).toBeVisible();
+  await expect(page.locator('#final-prompt')).not.toBeEmpty();
+  await expect(page.locator('#pwa-status')).toContainText('離線');
 });
 
 test('known pre-fix cache automatically adopts recovery worker and preserves presets', async ({
