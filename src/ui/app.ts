@@ -988,6 +988,12 @@ export function mountApp(root: HTMLElement): void {
               presetName = before.name;
               presetRestore = null;
               notify('已取消動作預設，恢復套用前設定。');
+            } else if (preset.category === 'custom') {
+              // A restored/saved custom preset has no pre-apply snapshot.
+              // Re-select it for editing instead of disabling Update/Delete.
+              settings.plan = applyPreset(plan(), preset);
+              presetName = preset.nameZh;
+              notify('已重新套用自訂預設，可繼續更新或刪除。');
             } else {
               plan().presetId = null;
               notify('已取消預設選取；目前設定保留。');
