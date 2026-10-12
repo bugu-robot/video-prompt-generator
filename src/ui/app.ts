@@ -445,6 +445,7 @@ export function mountApp(root: HTMLElement): void {
         'ui.presetFilter',
       )}
       ${blocked ? `<div class="callout" role="alert" id="preset-recovery"><p>${escape(state.messageZh)}</p><button data-action="export-raw-presets" ${state.raw === null ? 'disabled' : ''}>匯出原始預設備份</button><details data-section="preset-recovery"><summary>復原不可讀的自訂預設</summary><p>先下載原始備份並確認檔案已保存。修復 JSON 格式，或將過大的資料分拆為符合 schema、最多 100 個預設及 1 MiB 的檔案。復原只替換自訂預設；未放入復原檔案的項目仍保留在你下載的原始備份內。其他設定及媒體不受影響。</p><label class="check"><input id="preset-recovery-confirm" type="checkbox" ${recoveryBackup !== null && recoveryBackup === state.raw ? '' : 'disabled'}/><span>我已保存原始備份，確認以已修復的 JSON 替換目前不可讀的自訂預設</span></label><button data-action="restore-presets" disabled>選取已修復 JSON 並復原</button><input id="recovery-file" class="file-input" type="file" accept="application/json,.json" aria-label="復原預設 JSON"/></details></div>` : ''}
+      <p class="hint preset-scroll-hint">可在此清單內向下捲動查看更多預設；手機版請直接向下滑動頁面。</p>
       <div class="preset-list">${items.map((p) => `<button class="preset-card ${p.id === plan().presetId && motionSignature(p.plan) === motionSignature(plan()) ? 'selected' : ''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id === plan().presetId && motionSignature(p.plan) === motionSignature(plan())}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('') || `<p class="hint">${blocked ? '自訂預設暫時無法顯示；原始資料仍在，請使用上方復原功能。' : '此分類還沒有自訂預設。'}</p>`}</div>
       <p class="hint">再次點擊剛套用的預設，可恢復套用前設定；手動修改動作後，預設會取消選取。亦可使用「復原上一步」。</p>
       ${current ? `<p class="hint">${current.category === 'custom' && motionSignature(current.plan) !== motionSignature(plan()) ? '修改中（可更新自訂）：' : '已選：'}${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>` : ''}
@@ -563,6 +564,10 @@ export function mountApp(root: HTMLElement): void {
       ),
     ].map((d) => d.dataset.section);
     const focus = document.activeElement?.id;
+    // Rebuilding .configuration must not reset the desktop preset-list
+    // scroll position after selecting or toggling a preset.
+    const presetScrollTop =
+      root.querySelector<HTMLElement>('.preset-list')?.scrollTop ?? 0;
     const template = document.createElement('template');
     template.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-icon" aria-hidden="true">▶</span><div><h1>${t.appName}</h1><p>${t.subtitle}</p></div></div><div class="header-actions"><span class="status-dot" aria-hidden="true"></span><span id="pwa-status" class="hint">${pwaStatus}</span>${select(
       'theme',
@@ -606,6 +611,8 @@ export function mountApp(root: HTMLElement): void {
       root
         .querySelector<HTMLElement>('#' + CSS.escape(focus))
         ?.focus({ preventScroll: true });
+    const presetList = root.querySelector<HTMLElement>('.preset-list');
+    if (presetList && presetScrollTop > 0) presetList.scrollTop = presetScrollTop;
     if (plan().mode === 'rotation')
       root.querySelector<HTMLSelectElement>('#intensity')!.disabled = true;
     applyTheme();
