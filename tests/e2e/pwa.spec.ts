@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+// The versioned update fixture shares one server per browser; do not let
+// update/reset cases race against each other within a browser project.
+test.describe.configure({ mode: 'serial' });
 async function ready(page: import('@playwright/test').Page): Promise<void> {
   await expect(page.locator('#pwa-status')).toContainText('離線已就緒');
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
@@ -87,4 +90,65 @@ test('new worker waits visibly, preserves settings and activates only after user
       original,
     ),
   ).toBe(false);
+});
+
+test('online reload sees changed entry HTML despite an installed offline shell', async ({
+  page,
+  context,
+  request,
+  browserName,
+}) => {
+  const port = { chromium: 4191, firefox: 4192, webkit: 4193 }[browserName];
+  const base = `http://127.0.0.1:${port}`;
+  await request.get(base + '/__test/reset');
+  await page.goto(base + '/');
+  await ready(page);
+  await page.locator('#camera').selectOption('pan');
+
+  await request.get(base + '/__test/update');
+  await page.reload();
+  await expect(page.locator('body')).toHaveAttribute('data-test-deployment', 'updated');
+  await expect(page.locator('#camera')).toHaveValue('pan');
+  // registerPwa checks for the new waiting worker without a manual API call.
+  await expect(page.locator('#update-banner')).toBeVisible();
+
+  // Offline fallback may be the old *or* newly activated version-matched
+  // shell. Firefox can activate the waiting worker across this navigation;
+  // the observable requirement is complete offline functionality and data.
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator('#camera')).toHaveValue('pan');
+  await expect(page.getByRole('heading', { name: 'Video Prompt Generator' })).toBeVisible();
+  await expect(page.locator('#final-prompt')).not.toBeEmpty();
+  await expect(page.locator('#pwa-status')).toContainText('離線');
+});
+
+test('known pre-fix cache automatically adopts recovery worker and preserves presets', async ({
+  page,
+  request,
+  browserName,
+}) => {
+  const port = { chromium: 4191, firefox: 4192, webkit: 4193 }[browserName];
+  const base = `http://127.0.0.1:${port}`;
+  await request.get(base + '/__test/reset');
+  await page.goto(base + '/');
+  await ready(page);
+  await page.locator('#presetName').fill('Before PWA recovery');
+  await page.getByRole('button', { name: '另存設定', exact: true }).click();
+
+  const legacy = 'video-prompts-/-82515efa691a7e44';
+  await page.evaluate(async (name) => { await caches.open(name); }, legacy);
+  await request.get(base + '/__test/update');
+  await page.evaluate(async () => (await navigator.serviceWorker.ready).update());
+
+  // Only known old production caches are eligible for emergency activation.
+  await expect.poll(() => page.evaluate(async () => {
+    const keys = await caches.keys();
+    return keys.some((key) => key.includes('-updated')) && !keys.includes('video-prompts-/-82515efa691a7e44');
+  })).toBe(true);
+
+  await page.reload();
+  await expect(page.locator('body')).toHaveAttribute('data-test-deployment', 'updated');
+  await page.locator('#presetFilter').selectOption('custom');
+  await expect(page.getByRole('button', { name: /Before PWA recovery/ })).toHaveCount(1);
 });

@@ -48,6 +48,14 @@ for (const port of [4191, 4192, 4193]) {
     }
     try {
       let content = await readFile(path);
+      // Simulate a newly deployed HTML entry while the previous version's
+      // worker still controls this client. Files stay fixed; only the online
+      // response changes, as it would at GitHub Pages after deployment.
+      if (updated && (pathname === '/' || pathname === '/index.html')) {
+        content = Buffer.from(
+          content.toString().replace('<body>', '<body data-test-deployment="updated">'),
+        );
+      }
       if (pathname === '/sw.js')
         content = Buffer.from(
           content

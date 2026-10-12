@@ -1,6 +1,12 @@
 const PREFIX = 'video-prompts-' + __SCOPE_ID__ + '-';
 const CACHE = PREFIX + '__BUILD_ID__';
 const PRECACHE = __PRECACHE__;
+// One-time migration for already-installed production builds whose cache-first
+// navigation can trap an older UI. Do not auto-activate unrelated future builds.
+const STALE_NAVIGATION_BUILDS = new Set([
+  'ef21498a2b6bb87c', // initial gh-pages deployment
+  '82515efa691a7e44', // prior deployed preset release
+]);
 self.addEventListener('install', (event) => {
   event.waitUntil(
     (async () => {
@@ -15,6 +21,13 @@ self.addEventListener('install', (event) => {
             await cache.put(url, response);
           }),
         );
+        // Replace only the two known stale-cache production workers. The
+        // existing page remains open; its local settings are never deleted.
+        const installedCaches = await caches.keys();
+        if (installedCaches.some((key) =>
+            [...STALE_NAVIGATION_BUILDS].some((id) => key === PREFIX + id))) {
+          await self.skipWaiting();
+        }
       } catch (error) {
         await caches.delete(CACHE);
         throw error;
@@ -52,10 +65,22 @@ self.addEventListener('fetch', (event) => {
       const cache = await caches.open(CACHE);
       // Precached same-origin static files are invariant; dev/preview CORS Vary headers
       // must not force a network fetch for module requests while offline.
+      // Online navigations must not be trapped on a previously deployed HTML shell.
+      // Keep the installed, version-matched shell intact for offline fallback.
+      if (request.mode === 'navigate') {
+        try {
+          const fresh = await fetch(request, { cache: 'no-store' });
+          if (fresh.ok) return fresh;
+          return (await cache.match(scope)) ?? fresh;
+        } catch {
+          return (await cache.match(scope)) ?? Response.error();
+        }
+      }
+      // Immutable fingerprinted JS/CSS and the installed offline shell stay
+      // cache-first. Do not silently cache newer HTML into an older shell cache:
+      // it could reference JS that the previous worker has not precached.
       const cached = await cache.match(request, { ignoreVary: true });
       if (cached) return cached;
-      if (request.mode === 'navigate')
-        return (await cache.match(scope)) ?? fetch(request);
       return fetch(request);
     })(),
   );
