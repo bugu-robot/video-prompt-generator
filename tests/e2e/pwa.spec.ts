@@ -1,4 +1,7 @@
 import { test, expect } from '@playwright/test';
+// The versioned update fixture shares one server per browser; do not let
+// update/reset cases race against each other within a browser project.
+test.describe.configure({ mode: 'serial' });
 async function ready(page: import('@playwright/test').Page): Promise<void> {
   await expect(page.locator('#pwa-status')).toContainText('離線已就緒');
   await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
