@@ -52,10 +52,22 @@ self.addEventListener('fetch', (event) => {
       const cache = await caches.open(CACHE);
       // Precached same-origin static files are invariant; dev/preview CORS Vary headers
       // must not force a network fetch for module requests while offline.
+      // Online navigations must not be trapped on a previously deployed HTML shell.
+      // Keep the installed, version-matched shell intact for offline fallback.
+      if (request.mode === 'navigate') {
+        try {
+          const fresh = await fetch(request, { cache: 'no-store' });
+          if (fresh.ok) return fresh;
+          return (await cache.match(scope)) ?? fresh;
+        } catch {
+          return (await cache.match(scope)) ?? Response.error();
+        }
+      }
+      // Immutable fingerprinted JS/CSS and the installed offline shell stay
+      // cache-first. Do not silently cache newer HTML into an older shell cache:
+      // it could reference JS that the previous worker has not precached.
       const cached = await cache.match(request, { ignoreVary: true });
       if (cached) return cached;
-      if (request.mode === 'navigate')
-        return (await cache.match(scope)) ?? fetch(request);
       return fetch(request);
     })(),
   );
