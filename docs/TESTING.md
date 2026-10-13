@@ -4,9 +4,9 @@
 
 **265 new unit cases**, total **739** in 8 files, cover all provider/group/density/ABC timing, every catalog action, dormant rotation, affirmative/negated camera directions/all copy plans, pure preset restoration, waiting-worker presentation and 27 fixed 1.1.0 exports with migration/tampering validation, plus 15 byte-immutability checks. Local units pass, 0 failed/skipped; clean npm ci/typecheck/lint/root/Pages/audit pass (0 vulnerabilities).
 
-Eleven shared browser cases cover desktop/mobile interleaved preset edits, all-provider copy gates and cleared groups/comparison, Veo input roles, exact historical backup/adoption and five rapid native QC selections with stable input/last-file ownership. Two new real-SW cases cover dismissal/reopen, repeated foreground/online offers, image/QC position/notes/checklist/preset retention, explicit update cleanup and a genuinely newer worker. **93/92/92 = 277 defined cases**, including **21 PWA** cases, is not an execution claim. Native BFCache/privacy/storage/QC checks remain mandatory, with no retries/expected failures.
+Eleven shared browser cases cover desktop/mobile interleaved preset edits, all-provider copy gates and cleared groups/comparison, Veo input roles, exact historical backup/adoption and five rapid native QC selections with stable input/last-file ownership. Two new real-SW cases cover dismissal/reopen, repeated foreground/online offers, image/QC position/notes/checklist/preset retention, explicit update cleanup and a genuinely newer worker. **93/92/92 = 277 native passes**, including **21 PWA** cases, are verified in corrected CI 38407379814. Native BFCache/privacy/storage/QC checks remain mandatory, with no retries/expected failures.
 
-The host denies native dependencies and standard browser downloads yield invalid/truncated ZIPs. Real acceptance requires complete GitHub Actions execution with installed dependencies; final outcomes are recorded only after inspecting logs. Earlier evidence below is historical.
+The host denies native dependencies and standard browser downloads yield invalid/truncated ZIPs. Accepted corrected native Actions execution is recorded below; later final-head outcomes are inspected separately. Earlier evidence below is historical.
 
 All automated tests are offline/local and consume **zero provider-generation credits**. Test image/video fixtures are synthetic local files. No provider login is needed. No critical test is conditionally skipped; Chromium-only clipboard readback is an additional explicitly scoped test.
 
@@ -93,10 +93,10 @@ Undo is session-only, bounded to 30 edits and grouped for rapid consecutive text
 
 ## Windows product UAT
 
-Use your existing repository access; the application itself needs no account:
+以下是唯一整合版 **Windows 無額度 UAT**，使用 Chrome／Edge；不登入 Flow／Grok、不生成影片。先安裝 Node.js 24 LTS 及 Git，保留你本機尚未提交的修改，不要用 reset 強行切換分支。
 
 ```powershell
-# For a first checkout, clone then enter the repository:
+# 首次使用才需 clone；已有 repo 則進入原資料夾
 # git clone https://github.com/bugu-robot/video-prompt-generator.git
 # cd video-prompt-generator
 git fetch origin
@@ -112,23 +112,20 @@ npm audit
 npm run preview -- --port 4173 --strictPort
 ```
 
-Open **http://127.0.0.1:4173/** in Chrome or Edge. Keep the PowerShell process running while first loading/installing.
+開啟 **http://127.0.0.1:4173/**，保留 PowerShell 執行中。檔案／自訂預設只屬這個 localhost 來源，不會更改你正式網站的瀏覽器資料。
 
-This is one consolidated **no-credit** UAT; no Flow/Grok login or generation is needed.
-
-1. Load an existing Mochi image, choose Custom, enter English/Chinese subject descriptions and select only visible/applicable motions. Check local preview/metadata and English/Chinese/bilingual display. Copy from Chinese view into Notepad: it must be the English original.
-2. Compare Omni/Veo/Grok from the same plan: Omni leads with main motion, Veo camera/shot hierarchy, Grok direct action/timing. Select Concise/Balanced/Detailed: clauses should actually shorten or add relevant temporal guidance while all selected actions and camera/identity constraints remain. Clear environment and select only blink: no environment motion in A/B/C. Clear subject and select only steam: no gestures or brief-action cadence. Locked camera plus `Keep the camera locked. No pan, no dolly, no push-in.` remains copyable; `Pan the camera slowly.` blocks all active copy routes. Remove it afterwards.
-3. Confirm elements, then change subject type, either description, scene notes, motion membership (including removal), source image or region: confirmation must clear and conditional wording return. Reconfirm and change provider/language/density/intensity/camera: it must stay checked. Same-image replacement, preset loading and configuration import still require reconfirmation. Reload with confirmation checked: image/region/confirmation must clear; selected motions, provider/length/theme and saved presets remain. Reconfirm in the new session, change unrelated settings and check it stays checked. Navigate to http://127.0.0.1:4173/icons/icon-192.png (an inline local image) and return with browser Back, then Forward/Back: discarded-source confirmation must not return, including a cached document.
-4. Select only sleep plus breathing (also repeat with blink/look/gesture). Set either as primary. Verify one conflict and disabled base/A/B/C/comparison copy buttons while active. Switch to valid Product Rotation: dormant biological actions must neither appear nor block; return to Ambient/Cinematic and the stored conflict must return.
-5. Compare 360 turntable (object moves, camera fixed) with orbit (object fixed, camera moves). Try one-way 90/180: no return-to-start/identical-end-frame advice; a distinct endpoint or no-loop/editing guidance is shown. Geometry/direction/axis/scale remain in all lengths; completion and hidden-surface warnings remain. Veo Fast 8s References opening describes views as references, not a configured starting frame. Single-image mode retains first-frame wording.
-6. Save/update/rename/duplicate/delete presets; export/import a batch without losing originals. Invalid/oversized merges must leave prior data intact, including reload/later save. For unreadable old data, download the raw backup and use only the explicitly confirmed validated recovery route; failed recovery keeps original bytes. Aggregate UTF-8 limit stays 1 MiB/100 presets. Apply nature-breeze, change provider/subject/density, then cancel the same preset: later edits and active image remain, prior motions return.
-7. Import both `docs/motion-plan-export.example.json` and `docs/motion-plan-export.compiler-1.1.example.json`: do not change current settings before review. Compare original 1.0.0/1.1.0 prompt and new 1.2.0 prompt, download original JSON (unchanged), cancel once, reimport and explicitly accept. Reselect image/reconfirm elements. New JSON must have compiler 1.2.0/new prompt/current findings; original backup remains original. Current fixture/current exports round-trip without a migration prompt. A modified historical prompt must fail without changing settings. Unknown versions remain rejected.
-8. Load a local MP4/WebM for QC, seek partway and pause; enter notes and checklist decisions. Edit the prompt, switch provider/model/language/density/presets and check position/notes/checklist remain. Resume playback and repeat; it must continue without reset. Export QC report; pending items stay pending. Choose another video/clear QC to release the old media and reset only the old QC.
-9. Wait for **離線已就緒**, install via browser UI if desired, stop preview/disable network and reload the already controlled app. Prompt and presets must still work; discarded images/regions/confirmation must remain cleared. Reselect a local image and reconfirm, then reload offline again: confirmation must clear again while all other controls/presets remain. Restart preview/network afterward. Repeat Pages build locally if base-path UAT is needed: `npm run build:pages`, then `npm run preview -- --outDir dist-pages --base /video-prompt-generator/ --port 4174 --strictPort`; open http://127.0.0.1:4174/video-prompt-generator/.
-10. Check 390 px device sizing, dark/light themes, keyboard controls and focus. Native iPhone/Safari installation remains a separate device check. An actual PWA update intentionally reloads; local media must be reselected, while settings/presets remain.
-
-11. For a **local-only** update check, run `node --experimental-strip-types tests/update-server.ts` in another PowerShell and open http://127.0.0.1:4191/. Wait for offline readiness; load image/video, seek/pause, add QC notes/checks and save a custom preset. In a third PowerShell run `Invoke-WebRequest http://127.0.0.1:4191/__test/update | Out-Null`, then return the browser to the foreground. **稍後／關閉** (also keyboard Enter) hides the notice without reload, media/QC loss or preset changes. Editing provider/density/theme/language and returning to the tab must not reopen the same-worker notice. **查看更新** reopens it; only **儲存設定並更新** reloads, preserving settings/presets and intentionally clearing session media/confirmation.
-12. Repeat in a fresh browser session after `Invoke-WebRequest http://127.0.0.1:4191/__test/reset | Out-Null`. Offer/dismiss the updated worker, then call `Invoke-WebRequest http://127.0.0.1:4191/__test/newer | Out-Null` and return to the browser. A genuinely newer worker may prompt again but must wait for acceptance. This fixture changes local worker identity only; it is never deployed and calls no provider.
+1. **基本與複製**：選本機圖片，填寫主體，選適用動作；切換英文／繁中／對照。從繁中模式複製到 Notepad，必須是英文原文。
+2. **動作及密度**：同一意圖比較 Omni／Veo／Grok 及 Concise／Balanced／Detailed。清空環境，只選眨眼：base／A/B/C／比較不可加入環境動作。清空主體，只選蒸氣：不可加入角色手勢或短動作節奏。所選動作、鏡頭及身份保留仍須存在。
+3. **鏡頭檢查**：Locked 加入 `Keep the camera locked. No pan, no dolly, no push-in.`，所有複製路徑保持可用。換成 `Pan the camera slowly.`，base／A/B/C／比較須阻擋；完成後刪掉衝突文字。
+4. **預設交錯編輯**：先儲存自訂預設，再套用 nature-breeze；改供應商、主體描述及長度，按同一預設取消。後來的修改、原圖及自訂資料須保留，動作恢復套用前。分別清空主體／環境、復原上一步、只重設動作：不可刪另一組、原圖或已儲存預設。
+5. **確認與導航**：確認元素後改主體、描述、場景補充、動作或框選，確認須清除；重新確認後改供應商／長度／語言／主題等無關設定，確認保留。同檔換圖仍須重確認。重載、前往本機 icon 再 Back／Forward：已退役圖／框選／確認不可復活；動作及預設保留，新會話可重新確認。
+6. **衝突與 Rotation**：sleep 配 breathing／blink／look／gesture，兩種選取次序均有一項衝突且阻擋複製。換到有效 Product Rotation，休眠中的微動作不可輸出或阻擋；返回 Ambient／Cinematic，衝突恢復。
+7. **旋轉與輸入角色**：比較物件自轉／鏡頭繞行、90／180／360、角度／方向／軸／速度。部分轉動不可同時要求回起點或相同尾幀；幾何約束及限制提示保留。Veo Fast 8 秒 References opening 是同物件多視角參考，不聲稱已設定首幀；single 回復首幀文字。不可憑首尾幀相似判定實際轉足一圈。
+8. **儲存與遷移**：預設匯出／匯入後原資料保留；格式錯誤、超限或 quota 失敗不可覆蓋舊資料。不可讀資料先保存原文備份，只有明確確認才復原。匯入 1.0.0 及 1.1.0 範例，比較舊／新 1.2.0，先下載 byte-exact 原檔、取消，再明確採用。未採用前設定不變；新匯出用 1.2.0，須重選圖／確認。改動舊 prompt／warnings 或未知版本須拒絕；當前範例可直接 round-trip。
+9. **QC 與快速換片**：選 MP4／WebM，seek 後暫停，填備註及 checklist；改 prompt／供應商／模型／長度／語言／預設，播放位置及記錄不重設。播放中重試亦須持續。快速連續選不同影片，最終只顯示最後選取；重新開啟 chooser 可重選同檔。清除 QC 只退役影片及檢查，不改圖片／預設。匯出不含影片／擷取圖 bytes，未檢項目保持 pending。
+10. **離線與手機尺寸**：待「離線已就緒」，停止 preview／關網絡，再重載：prompt／預設可用，但圖／region／確認須清除；新會話可重選／確認。恢復網絡。390 px、明暗主題、鍵盤及 focus 不應橫向溢出。Pages base path 用 `npm run preview -- --outDir dist-pages --base /video-prompt-generator/ --port 4174 --strictPort`，開 http://127.0.0.1:4174/video-prompt-generator/ 重複離線檢查。
+11. **更新關閉與 QC 保留**：另一 PowerShell 執行 `node --experimental-strip-types tests/update-server.ts`，開 http://127.0.0.1:4191/ 並等離線就緒；選圖／片、seek／暫停、填 QC、存預設。第三個 PowerShell 執行 `Invoke-WebRequest http://127.0.0.1:4191/__test/update | Out-Null`，返回瀏覽器前景等待提示。按「稍後／關閉」（亦試 Enter）：不可重載或重設媒體／QC／預設。改設定及離開再回前景，同一版本仍關閉；「查看更新」可重開。只有「儲存設定並更新」才套用：設定／預設留，圖片／影片／確認按會話規則清除。
+12. **另一新版本**：呼叫 `Invoke-WebRequest http://127.0.0.1:4191/__test/reset | Out-Null` 後，以新瀏覽器會話重做 offer／dismiss；再呼叫 `Invoke-WebRequest http://127.0.0.1:4191/__test/newer | Out-Null` 並回前景。真正另一版本可再次提示，但仍不能自動套用。這只是本機 test fixture，沒有供應商操作，也不部署。真正 iPhone／Safari 安裝與背景行為仍需實機驗收；目前正式網站未更新，須另行批准 merge／部署。
 
 ## Optional real-provider acceptance — user initiated
 
@@ -146,3 +143,7 @@ Using existing Flow/Grok accounts, manually copy prompts and attach the selected
 Start with one manually chosen representative prompt per trial. Record failures and provider UI differences rather than rerolling automatically. Precise 3D hidden surfaces, exact rotation completion, mathematically seamless loops and fully automatic identity QC remain outside the generator's guarantees.
 
 The initial correction PR run 38403664900 failed (264/10), and independent push run 38403660197 failed (265/9); neither is accepted. All 21 PWA cases passed in both. The comparison harness now explicitly expands the panel and checks visible text; native QC inputs are retained through asynchronous completion, with an additional latest-selection/retired-selection regression. All old cancellation, playback and privacy assertions remain mandatory. Full corrected native CI is required; no failure retry, skipped test or expected-failure marking is used.
+
+## Accepted corrected native CI
+
+[Corrected code CI 38407379814](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38407379814) at `b3a43b03f92d9eee857e4171b6247015fdd4859c` **completed successfully**. Inspected Windows/Ubuntu logs each show clean npm ci, typecheck/lint, **739 unit passes** in 8 files, root/Pages builds and audit **0 vulnerabilities**. Native browser log: **Chromium 93 / Firefox 92 / WebKit 92 = 277 passed**, **0 failed/skipped**, 6.2 minutes, including **21 real PWA cases** and all privacy/preset/migration/QC cases. Native Chromium again asserts `pageshow.persisted=true`; Firefox/WebKit report fresh-document restoration. Both new waiting-update cases and permanent-input/five-selection regression pass on every engine. The independent push run 38407373611 also concluded success. No retries/expected failures/test weakening. Intermediate 0df45a3 runs 38406648752/38406641934 were superseded/cancelled, not accepted passes. Optional artifacts uploaded successfully in the accepted PR run; prior quota failures remain historical.
