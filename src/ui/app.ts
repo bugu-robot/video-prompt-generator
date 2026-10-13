@@ -67,6 +67,7 @@ import {
   plainText,
 } from '../storage/export';
 import { loadImage, aspectRatio, type LoadedImage } from '../media/image';
+import { waitForMediaTask } from '../media/media-task';
 import {
   inspectVideo,
   QC_CHECKS,
@@ -690,6 +691,9 @@ export function mountApp(root: HTMLElement): void {
     // before starting another one, including when several changes are queued.
     const inspection = (async () => {
       await retiredInspection?.catch(() => undefined);
+      // A promise/microtask alone still runs inside native file-event dispatch.
+      // Let unloading the old player and that dispatch return before decoding.
+      await waitForMediaTask(controller.signal);
       if (token !== videoToken || controller.signal.aborted)
         throw new Error('影片檢查已取消。');
       return inspectVideo(file, controller.signal);
