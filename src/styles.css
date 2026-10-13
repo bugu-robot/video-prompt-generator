@@ -820,6 +820,10 @@ footer p {
   gap: 15px;
   justify-content: space-between;
 }
+.update-banner button,
+#show-update {
+  min-height: 44px;
+}
 [hidden] {
   display: none !important;
 }

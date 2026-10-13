@@ -18,6 +18,7 @@ import {
   invalidateSourceConfirmation,
 } from '../engine/source-confirmation';
 import { generateVariations } from '../engine/variations';
+import { motionSignature, restorePresetPlan } from '../engine/preset-state';
 import {
   defaultPlan,
   normalizePlan,
@@ -66,6 +67,7 @@ import {
   plainText,
 } from '../storage/export';
 import { loadImage, aspectRatio, type LoadedImage } from '../media/image';
+import { waitForMediaTask } from '../media/media-task';
 import {
   inspectVideo,
   QC_CHECKS,
@@ -74,6 +76,7 @@ import {
   type QcCheckId,
 } from '../media/video-qc';
 import { registerPwa } from '../pwa/register';
+import { UpdateNotice } from '../pwa/update-notice';
 
 const escape = (v: unknown): string =>
   String(v ?? '').replace(
@@ -127,6 +130,7 @@ export function mountApp(root: HTMLElement): void {
     imageToken = 0,
     videoToken = 0,
     videoController: AbortController | null = null,
+    videoInspection: Promise<VideoQcResult> | null = null,
     videoUrl: string | null = null,
     qc: VideoQcResult | null = null;
   let activeVariant: 'base' | 'A' | 'B' | 'C' = 'base',
@@ -140,6 +144,7 @@ export function mountApp(root: HTMLElement): void {
     drawMode = false,
     qcBusy = false;
   let previousPlan = structuredClone(settings.plan);
+  const updateNotice = new UpdateNotice();
   let configurationReview: ConfigurationReview | null = null;
   let originalConfiguration: string | null = null;
   type PresetSnapshot = { plan: MotionPlan; name: string };
@@ -151,16 +156,6 @@ export function mountApp(root: HTMLElement): void {
   let lastHistoryField = '';
   let lastHistoryTime = 0;
   const plan = () => settings.plan;
-  // A selected preset is no longer an exact preset once any motion setting is edited.
-  function motionSignature(p: MotionPlan): string {
-    return JSON.stringify({
-      mode: p.mode, subjectMotions: p.subjectMotions,
-      environmentalMotions: p.environmentalMotions, primaryMotion: p.primaryMotion,
-      intensity: p.intensity, motionTiming: p.motionTiming, camera: p.camera, loop: p.loop,
-      rotation: p.rotation, durationSeconds: p.durationSeconds,
-      preservation: p.preservation, audio: p.audio,
-    });
-  }
   function dropHistoryForMediaChange(): void {
     undoHistory.length = 0;
     presetRestore = null;
@@ -531,7 +526,7 @@ export function mountApp(root: HTMLElement): void {
     notify('設定已匯入並重新編譯；請重新選取原圖及確認元素。');
   }
   function qcMarkup(): string {
-    return `<section class="panel video-panel"><div class="section-heading"><h2>本機影片 QC</h2><span class="pill">不會上傳</span></div><p class="hint">上載已生成影片，在本機擷取首幀及接近片尾的樣本。像素差異是量度訊號，不能證明無縫或 360° 完成。</p><label class="upload-label" for="video-file">${qcBusy ? '正在本機讀取，可選另一影片取消前一次' : '選擇影片作檢查'}</label><input id="video-file" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="選擇 QC 影片"/><p class="hint">MP4／WebM／MOV · 最多 300 MB／10 分鐘；codec 支援取決於瀏覽器。</p>
+    return `<section class="panel video-panel"><div class="section-heading"><h2>本機影片 QC</h2><span class="pill">不會上傳</span></div><p class="hint">上載已生成影片，在本機擷取首幀及接近片尾的樣本。像素差異是量度訊號，不能證明無縫或 360° 完成。</p><label class="upload-label" for="video-file">${qcBusy ? '正在本機讀取，可選另一影片取消前一次' : '選擇影片作檢查'}</label><input id="video-file" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="選擇 QC 影片"/><p class="hint">MP4／WebM／MOV · 最多 300 MB／10 分鐘；codec 支援取決於瀏覽器。</p><div id="qc-result">
       ${
         qc
           ? `<p class="metadata">${escape(qc.name)} · ${qc.durationSeconds.toFixed(3)} 秒 · ${qc.width} × ${qc.height}</p><video src="${escape(videoUrl)}" controls muted playsinline preload="metadata" aria-label="本機 QC 影片播放"></video>
@@ -555,7 +550,7 @@ export function mountApp(root: HTMLElement): void {
       ).join('')}</div>
       <label class="field" for="qc-notes"><span>QC 備註</span><textarea id="qc-notes" maxlength="2000">${escape(qc.notes)}</textarea></label><div class="actions"><button data-action="export-qc">匯出 QC JSON 報告</button><button data-action="clear-qc">清除影片與 QC</button></div>`
           : ''
-      }</section>`;
+      }</div></section>`;
   }
   function render(): void {
     const open = [
@@ -579,9 +574,9 @@ export function mountApp(root: HTMLElement): void {
       ],
       settings.theme,
       'ui.theme',
-    )}<button data-action="install">${installEvent ? '安裝 App' : '安裝說明'}</button></div></header>
-      <div id="update-banner" class="update-banner" ${applyUpdate ? '' : 'hidden'}><span>有新版本可用。設定會先儲存；重新載入後需重新選取圖片／影片。</span><button data-action="update">儲存設定並更新</button></div>
-      <details class="quick-guide" data-section="guide"><summary>使用說明與資料私隱</summary><p>選圖 → 指定主體 → 選模型及動作 → 檢查提示及提醒 → 複製英文，在外部網站自行生成。預設設定適合低幅度 Cozy Jazz 背景。</p><p>${t.privacy} 沒有 vision model、LLM、登入、生成服務或外部 API。原圖及影片只留在當次會話；設定與自訂 presets 存於此瀏覽器。</p><p>Chrome／Edge 可使用瀏覽器安裝功能；Safari 可加入 Dock 或主畫面。首次在線開啟 production build，待「離線已就緒」後可離線使用。localhost 與 HTTPS 才支援 Service Worker。</p>${!persistent ? '<p class="error-note">瀏覽器不允許永久儲存；目前改用記憶體，離開後會遺失，請匯出備份。</p>' : ''}<a href="https://github.com/bugu-robot/video-prompt-generator/blob/feat/local-first-video-prompt-generator/docs/USER_GUIDE_ZH_HK.md" target="_blank" rel="noopener noreferrer">完整繁中使用指南</a></details>
+    )}<button data-action="install">${installEvent ? '安裝 App' : '安裝說明'}</button><button id="show-update" data-action="show-update" ${applyUpdate && !updateNotice.visible ? '' : 'hidden'}>查看更新</button></div></header>
+      <div id="update-banner" class="update-banner" ${updateNotice.visible ? '' : 'hidden'}><span>有新版本可用。設定會先儲存；重新載入後需重新選取圖片／影片。</span><div class="actions"><button data-action="update">儲存設定並更新</button><button data-action="dismiss-update" aria-label="稍後處理，關閉新版本提示">稍後／關閉</button></div></div>
+      <details class="quick-guide" data-section="guide"><summary>使用說明與資料私隱</summary><p>選圖 → 指定主體 → 選模型及動作 → 檢查提示及提醒 → 複製英文，在外部網站自行生成。預設設定適合低幅度 Cozy Jazz 背景。</p><p>${t.privacy} 沒有 vision model、LLM、登入、生成服務或外部 API。原圖及影片只留在當次會話；設定與自訂 presets 存於此瀏覽器。</p><p>Chrome／Edge 可使用瀏覽器安裝功能；Safari 可加入 Dock 或主畫面。首次在線開啟 production build，待「離線已就緒」後可離線使用。localhost 與 HTTPS 才支援 Service Worker。</p>${!persistent ? '<p class="error-note">瀏覽器不允許永久儲存；目前改用記憶體，離開後會遺失，請匯出備份。</p>' : ''}<a href="https://github.com/bugu-robot/video-prompt-generator/blob/main/docs/USER_GUIDE_ZH_HK.md" target="_blank" rel="noopener noreferrer">完整繁中使用指南</a></details>
       <main class="workspace"><div class="configuration" aria-label="提示詞設定">${imageMarkup()}${providerMarkup()}${motionMarkup()}${advancedMarkup()}${presetMarkup()}</div><div class="output" id="output" tabindex="-1" aria-label="提示詞輸出"><div id="prompt-output">${outputMarkup()}</div><div id="qc-output">${qcMarkup()}</div></div></main>
       <footer>Video Prompt Generator · deterministic local engine · guidelines verified ${VERIFIED_AT}<p>提示符合指南不保證影片品質。所有外部生成及額度使用均由你自行操作。</p></footer><div id="toast" class="toast" role="status" aria-live="polite" hidden></div><div class="mobile-copy"><a href="#output">查看提示詞</a><button data-action="copy" ${errors() ? 'disabled' : ''}>複製英文</button></div>`;
     if (!root.querySelector('.workspace'))
@@ -633,7 +628,14 @@ export function mountApp(root: HTMLElement): void {
       errors();
   }
   function renderQc(): void {
-    root.querySelector('#qc-output')!.innerHTML = qcMarkup();
+    // The native chooser remains in its original live document at all times:
+    // never detach/adopt it while a chooser or change event may be pending.
+    const template = document.createElement('template');
+    template.innerHTML = qcMarkup();
+    root.querySelector('#qc-result')!.innerHTML =
+      template.content.querySelector('#qc-result')!.innerHTML;
+    root.querySelector('label[for="video-file"]')!.textContent =
+      template.content.querySelector('label[for="video-file"]')!.textContent;
   }
   async function setImage(file: File): Promise<void> {
     const token = ++imageToken;
@@ -658,7 +660,7 @@ export function mountApp(root: HTMLElement): void {
       if (token === imageToken) notify(resolveError(error));
     }
   }
-  function clearQc(): void {
+  function clearQc(clearSelection = true): void {
     ++videoToken;
     videoController?.abort();
     videoController = null;
@@ -672,15 +674,33 @@ export function mountApp(root: HTMLElement): void {
     videoUrl = null;
     qc = null;
     qcBusy = false;
+    if (clearSelection) {
+      const input = root.querySelector<HTMLInputElement>('#video-file');
+      if (input) input.value = '';
+    }
   }
   async function setVideo(file: File): Promise<void> {
-    clearQc();
+    const retiredInspection = videoInspection;
+    clearQc(false);
     const token = ++videoToken;
-    videoController = new AbortController();
+    const controller = new AbortController();
+    videoController = controller;
     qcBusy = true;
     renderQc();
+    // Abort settles asynchronously. Release the retired decoder and its Blob
+    // before starting another one, including when several changes are queued.
+    const inspection = (async () => {
+      await retiredInspection?.catch(() => undefined);
+      // A promise/microtask alone still runs inside native file-event dispatch.
+      // Let unloading the old player and that dispatch return before decoding.
+      await waitForMediaTask(controller.signal);
+      if (token !== videoToken || controller.signal.aborted)
+        throw new Error('影片檢查已取消。');
+      return inspectVideo(file, controller.signal);
+    })();
+    videoInspection = inspection;
     try {
-      const result = await inspectVideo(file, videoController.signal);
+      const result = await inspection;
       if (token !== videoToken) return;
       qc = result;
       videoUrl = URL.createObjectURL(file);
@@ -693,6 +713,8 @@ export function mountApp(root: HTMLElement): void {
         renderQc();
         notify(resolveError(error));
       }
+    } finally {
+      if (videoInspection === inspection) videoInspection = null;
     }
   }
   function changed(field = ''): void {
@@ -923,12 +945,26 @@ export function mountApp(root: HTMLElement): void {
       );
   });
   root.addEventListener('click', (event) => {
+    const target = event.target;
+    // Opening the native chooser permits reselection of the same file, without
+    // changing the active player or cancelling inspection until a new selection.
+    if (target instanceof HTMLInputElement && target.id === 'video-file')
+      target.value = '';
     const button = (event.target as Element).closest<HTMLElement>(
       '[data-action]',
     );
     if (!button || button.hasAttribute('disabled')) return;
     const action = button.dataset.action;
     try {
+      if (action === 'dismiss-update' || action === 'show-update') {
+        if (action === 'dismiss-update') updateNotice.dismiss();
+        else updateNotice.show();
+        syncUpdateNotice();
+        root.querySelector<HTMLButtonElement>(
+          action === 'dismiss-update' ? '#show-update' : '[data-action="update"]',
+        )?.focus();
+        return;
+      }
       if (
         action === 'copy' ||
         action === 'copy-variant' ||
@@ -991,7 +1027,7 @@ export function mountApp(root: HTMLElement): void {
               motionSignature(plan()) === motionSignature(preset.plan)) {
             if (presetRestore) {
               const before = structuredClone(presetRestore);
-              settings.plan = before.plan;
+              settings.plan = restorePresetPlan(plan(), before.plan, preset.plan);
               presetName = before.name;
               presetRestore = null;
               notify('已取消動作預設，恢復套用前設定。');
@@ -1337,16 +1373,22 @@ export function mountApp(root: HTMLElement): void {
     requestAnimationFrame(syncSourceConfirmation);
   });
   render();
+  function syncUpdateNotice(): void {
+    const banner = root.querySelector<HTMLElement>('#update-banner');
+    if (banner) banner.hidden = !updateNotice.visible;
+    const show = root.querySelector<HTMLElement>('#show-update');
+    if (show) show.hidden = !applyUpdate || updateNotice.visible;
+  }
   void registerPwa(
     (status) => {
       pwaStatus = status;
       const el = root.querySelector('#pwa-status');
       if (el) el.textContent = status;
     },
-    (apply) => {
+    (apply, worker) => {
       applyUpdate = apply;
-      const banner = root.querySelector<HTMLElement>('#update-banner');
-      if (banner) banner.hidden = false;
+      updateNotice.offer(worker);
+      syncUpdateNotice();
     },
   );
   if (!persistent) notify('永久儲存不可用；可使用匯出功能備份。');

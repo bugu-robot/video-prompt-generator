@@ -6,13 +6,14 @@ This task does **not** modify `bugu-robot/mochi-bot-v2`, initiate browser submis
 
 - `docs/motion-plan-export.schema.json`: strict JSON Schema 2020-12 for schema **1.0.0**.
 - `docs/motion-plan-export.example.json`: unchanged historical compiler 1.0.0 illustrative export with fixed timestamp. The example metadata is illustrative, not a real attached Mochi image.
-- `docs/motion-plan-export.current.example.json`: current compiler 1.1.0 fixture.
+- `docs/motion-plan-export.current.example.json`: current compiler 1.2.0 fixture.
+- `docs/motion-plan-export.compiler-1.1.example.json`: unchanged released 1.1.0 example.
 - `src/storage/export.ts`: strict runtime validation, historical-version verification, explicit migration review and separate current recompilation.
 - `src/storage/export-profiles.ts`: exact allowlisted compiler/capability snapshot pairs.
-- `src/storage/legacy-v1/`: immutable old compiler/audit/catalog/capability sources; only for historical verification.
+- `src/storage/legacy-v1/` and `src/storage/legacy-v1.1/`: separate immutable released compiler/audit/catalog/capability graphs, for historical verification only.
 - `src/storage/schema.ts`: canonical schema definitions; artifact consistency is tested.
 
-Schema/plan version stays 1.0.0, and the historical example bytes are unchanged. The schema allows registered 1.0.0/1.1.0 compiler profiles; runtime also checks the exact compiler/snapshot pair. Validated mirrored JSON objects compare by keys/values irrespective of key order (including `loopSettings` and source metadata). Arrays remain ordered; values, unknown-field rejection, exact schema/compiler/capability versions, canonical dates and deterministically recompiled English prompts remain strict. The parser's 1 MiB limit counts UTF-8 bytes, not JavaScript string length. Import interoperability does not authorize generation or loosen approval/kill-switch requirements.
+Schema/plan version stays 1.0.0, and the historical example bytes are unchanged. The schema allows registered 1.0.0/1.1.0/1.2.0 compiler profiles; runtime also checks the exact compiler/snapshot pair. Validated mirrored JSON objects compare by keys/values irrespective of key order (including `loopSettings` and source metadata). Arrays remain ordered; values, unknown-field rejection, exact schema/compiler/capability versions, canonical dates and deterministically recompiled English prompts remain strict. The parser's 1 MiB limit counts UTF-8 bytes, not JavaScript string length. Import interoperability does not authorize generation or loosen approval/kill-switch requirements.
 
 Export fields: format/schema version; provider; internal model selection; generation mode; full Motion Plan; source image filename/MIME/size/dimensions; English prompt; compiler version; capability snapshot date; preset identity; loop settings; findings; export timestamp. Media bytes, object URLs, absolute file paths and credentials are excluded. `source.elementsConfirmed` in an original export describes that original source/session only; it is not reusable proof for a later image or bot task. App settings save/load and retired-page restoration clear it with missing source media, while original historical export bytes remain unchanged. The adapter still verifies the exact authorized asset and obtains its existing explicit approval.
 
@@ -44,4 +45,4 @@ The v1 generator has no transport endpoint, queue, task runner, provider login, 
 4. Keep original prompt text/compiler/date/timestamp and raw export unchanged. A newly exported plan gets current prompt/compiler/date/findings and a new export timestamp. This app stores original imports only in session memory with an exact download action, never mixed into new exports or automatically persisted.
 5. Rerun tampering, key-order/ordered-array, canonical-date, historical-fixture and current-fixture tests. Historical consistency validation is not a cryptographic authorship signature; a different fully self-consistent export is a new configuration requiring review.
 
-Custom presets already store versioned plans rather than compiled English or capability snapshots; compiler 1.1.0 needs no preset rewrite. Their v1 schema, limits, atomic writes, unreadable-data backup and opt-in recovery remain unchanged. Loading a preset regenerates current prompts and findings.
+Custom presets already store versioned plans rather than compiled English or capability snapshots; compiler 1.2.0 needs no preset rewrite. Their v1 schema, limits, atomic writes, unreadable-data backup and opt-in recovery remain unchanged. Loading a preset regenerates current prompts and findings.

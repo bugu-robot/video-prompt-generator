@@ -2,6 +2,7 @@ import { MOTION_BY_ID } from '../data/motions';
 import { CAMERA_BY_ID } from '../data/cameras';
 import { PROVIDER_CAPABILITIES } from '../models/provider-capabilities';
 import type { AuditFinding, MotionPlan } from '../models/motion-plan';
+import { cameraNotesConflict } from './camera-notes';
 export function auditPlan(p: MotionPlan): AuditFinding[] {
   const results: AuditFinding[] = [];
   const add = (
@@ -266,12 +267,7 @@ export function auditPlan(p: MotionPlan): AuditFinding[] {
       'No requested audio is not a silence guarantee; remove generated audio during rendering.',
     );
   const notes = p.source.sceneNotesEn.toLowerCase();
-  if (
-    (/(?:locked|static|fixed)\s+(?:camera|shot)/.test(notes) &&
-      p.camera !== 'locked') ||
-    (/\b(?:pan|push.?in|orbit|dolly|pull.?out)\b/.test(notes) &&
-      p.camera === 'locked')
-  )
+  if (cameraNotesConflict(notes, p.camera))
     add(
       'notes-camera-conflict',
       'error',

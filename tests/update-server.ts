@@ -12,17 +12,26 @@ const mime: Record<string, string> = {
 };
 for (const port of [4191, 4192, 4193]) {
   let updated = false;
+  let revision = 'initial';
   createServer(async (req, res) => {
     const pathname = new URL(req.url ?? '/', `http://127.0.0.1:${port}`)
       .pathname;
     if (pathname === '/__test/update') {
       updated = true;
+      revision = 'updated';
       res.end('updated');
       return;
     }
     if (pathname === '/__test/reset') {
       updated = false;
+      revision = 'initial';
       res.end('reset');
+      return;
+    }
+    if (pathname === '/__test/newer') {
+      updated = true;
+      revision = 'newer';
+      res.end('newer');
       return;
     }
     if (pathname === '/__test/status') {
@@ -53,7 +62,7 @@ for (const port of [4191, 4192, 4193]) {
       // response changes, as it would at GitHub Pages after deployment.
       if (updated && (pathname === '/' || pathname === '/index.html')) {
         content = Buffer.from(
-          content.toString().replace('<body>', '<body data-test-deployment="updated">'),
+          content.toString().replace('<body>', `<body data-test-deployment="${revision}">`),
         );
       }
       if (pathname === '/sw.js')
@@ -62,7 +71,7 @@ for (const port of [4191, 4192, 4193]) {
             .toString()
             .replace(
               /const CACHE = PREFIX \+ '[^']+';/,
-              `const CACHE = PREFIX + 'test-${port}-${updated ? 'updated' : 'initial'}';`,
+              `const CACHE = PREFIX + 'test-${port}-${revision}';`,
             ),
         );
       res.setHeader(

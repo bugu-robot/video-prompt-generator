@@ -1,6 +1,7 @@
 export interface MotionDefinition {
   id: string;
   kind: 'subject' | 'environment';
+  timing: 'continuous' | 'discrete';
   nameEn: string;
   nameZh: string;
   en: string;
@@ -14,6 +15,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'blink',
     kind: 'subject',
+    timing: 'discrete',
     nameEn: 'Natural blinking',
     nameZh: '自然眨眼',
     en: 'blink naturally at relaxed intervals',
@@ -25,6 +27,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'breathing',
     kind: 'subject',
+    timing: 'continuous',
     nameEn: 'Gentle breathing',
     nameZh: '輕柔呼吸',
     en: 'breathe gently with small chest movement',
@@ -35,6 +38,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'head',
     kind: 'subject',
+    timing: 'discrete',
     nameEn: 'Small head movement',
     nameZh: '微微轉頭',
     en: 'make a small head turn and settle naturally',
@@ -46,6 +50,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'look',
     kind: 'subject',
+    timing: 'discrete',
     nameEn: 'Looking around',
     nameZh: '輕輕環顧',
     en: 'shift its gaze gently while keeping its body in place',
@@ -57,6 +62,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'ears',
     kind: 'subject',
+    timing: 'discrete',
     nameEn: 'Subtle ear movement',
     nameZh: '耳朵微動',
     en: 'make an occasional small ear twitch',
@@ -67,6 +73,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'tail',
     kind: 'subject',
+    timing: 'continuous',
     nameEn: 'Gentle tail movement',
     nameZh: '尾巴輕擺',
     en: 'sway its tail gently without shifting its body',
@@ -77,6 +84,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'paw',
     kind: 'subject',
+    timing: 'discrete',
     nameEn: 'Small hand or paw movement',
     nameZh: '手掌／貓掌微動',
     en: 'make a small relaxed hand or paw adjustment',
@@ -88,6 +96,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'fur',
     kind: 'subject',
+    timing: 'continuous',
     nameEn: 'Hair or fur movement',
     nameZh: '毛髮輕動',
     en: 'let existing hair or fur move softly',
@@ -98,6 +107,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'sleep',
     kind: 'subject',
+    timing: 'continuous',
     nameEn: 'Sleeping motion',
     nameZh: '熟睡呼吸',
     en: 'remain asleep with eyes closed and gentle rhythmic breathing',
@@ -109,6 +119,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'gesture',
     kind: 'subject',
+    timing: 'discrete',
     nameEn: 'Small natural gestures',
     nameZh: '細小自然動作',
     en: 'make a small natural gesture and relax back into its original pose',
@@ -121,6 +132,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'steam',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Coffee steam',
     nameZh: '咖啡蒸氣',
     en: 'thin steam drifts upward softly',
@@ -131,6 +143,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'rain',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Window raindrops',
     nameZh: '窗上雨滴',
     en: 'raindrops slide slowly down the existing window',
@@ -141,6 +154,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'leaves',
     kind: 'environment',
+    timing: 'discrete',
     nameEn: 'Falling leaves',
     nameZh: '秋葉飄落',
     en: 'a few existing autumn leaves drift down at relaxed intervals',
@@ -151,6 +165,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'snow',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Gentle snowfall',
     nameZh: '輕柔飄雪',
     en: 'light snow falls steadily without accumulating visibly',
@@ -161,6 +176,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'fire',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Fireplace flames',
     nameZh: '壁爐火焰',
     en: 'the existing fireplace flames flicker gently',
@@ -171,6 +187,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'candle',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Candle flicker',
     nameZh: '燭光閃動',
     en: 'the existing candle flame flickers gently',
@@ -181,6 +198,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'trees',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Tree movement',
     nameZh: '樹枝輕搖',
     en: 'the existing branches sway softly in a gentle breeze',
@@ -191,6 +209,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'ripples',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Water ripples',
     nameZh: '水面漣漪',
     en: 'small ripples travel gently across the existing water surface',
@@ -201,6 +220,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'waves',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Ocean waves',
     nameZh: '海浪起伏',
     en: 'the existing ocean waves roll at a calm, consistent pace',
@@ -211,6 +231,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'clouds',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Moving clouds',
     nameZh: '雲朵緩移',
     en: 'the existing clouds drift slowly across the sky',
@@ -221,6 +242,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'curtains',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Curtain movement',
     nameZh: '窗簾輕擺',
     en: 'the existing curtains sway slightly in a light breeze',
@@ -231,6 +253,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'particles',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Atmospheric particles',
     nameZh: '空氣微粒',
     en: 'a sparse amount of existing dust or atmospheric particles drifts slowly',
@@ -241,6 +264,7 @@ export const MOTIONS: readonly MotionDefinition[] = [
   {
     id: 'light',
     kind: 'environment',
+    timing: 'continuous',
     nameEn: 'Ambient lighting variation',
     nameZh: '環境光微變',
     en: 'ambient light varies softly within the original lighting setup',
