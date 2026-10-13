@@ -524,7 +524,7 @@ export function mountApp(root: HTMLElement): void {
     notify('設定已匯入並重新編譯；請重新選取原圖及確認元素。');
   }
   function qcMarkup(): string {
-    return `<section class="panel video-panel"><div class="section-heading"><h2>本機影片 QC</h2><span class="pill">不會上傳</span></div><p class="hint">上載已生成影片，在本機擷取首幀及接近片尾的樣本。像素差異是量度訊號，不能證明無縫或 360° 完成。</p><label class="upload-label" for="video-file">${qcBusy ? '正在本機讀取，可選另一影片取消前一次' : '選擇影片作檢查'}</label><input id="video-file" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="選擇 QC 影片"/><p class="hint">MP4／WebM／MOV · 最多 300 MB／10 分鐘；codec 支援取決於瀏覽器。</p>
+    return `<section class="panel video-panel"><div class="section-heading"><h2>本機影片 QC</h2><span class="pill">不會上傳</span></div><p class="hint">上載已生成影片，在本機擷取首幀及接近片尾的樣本。像素差異是量度訊號，不能證明無縫或 360° 完成。</p><label class="upload-label" for="video-file">${qcBusy ? '正在本機讀取，可選另一影片取消前一次' : '選擇影片作檢查'}</label><input id="video-file" class="file-input" type="file" accept="video/mp4,video/webm,video/quicktime" aria-label="選擇 QC 影片"/><p class="hint">MP4／WebM／MOV · 最多 300 MB／10 分鐘；codec 支援取決於瀏覽器。</p><div id="qc-result">
       ${
         qc
           ? `<p class="metadata">${escape(qc.name)} · ${qc.durationSeconds.toFixed(3)} 秒 · ${qc.width} × ${qc.height}</p><video src="${escape(videoUrl)}" controls muted playsinline preload="metadata" aria-label="本機 QC 影片播放"></video>
@@ -548,7 +548,7 @@ export function mountApp(root: HTMLElement): void {
       ).join('')}</div>
       <label class="field" for="qc-notes"><span>QC 備註</span><textarea id="qc-notes" maxlength="2000">${escape(qc.notes)}</textarea></label><div class="actions"><button data-action="export-qc">匯出 QC JSON 報告</button><button data-action="clear-qc">清除影片與 QC</button></div>`
           : ''
-      }</section>`;
+      }</div></section>`;
   }
   function render(): void {
     const open = [
@@ -626,13 +626,14 @@ export function mountApp(root: HTMLElement): void {
       errors();
   }
   function renderQc(): void {
-    // Native file-change events can outlive asynchronous decode completion.
-    // Preserve the same input so queued selections still reach the live root.
-    const input = root.querySelector<HTMLInputElement>('#video-file');
+    // The native chooser remains in its original live document at all times:
+    // never detach/adopt it while a chooser or change event may be pending.
     const template = document.createElement('template');
     template.innerHTML = qcMarkup();
-    if (input) template.content.querySelector('#video-file')!.replaceWith(input);
-    root.querySelector('#qc-output')!.replaceChildren(template.content);
+    root.querySelector('#qc-result')!.innerHTML =
+      template.content.querySelector('#qc-result')!.innerHTML;
+    root.querySelector('label[for="video-file"]')!.textContent =
+      template.content.querySelector('label[for="video-file"]')!.textContent;
   }
   async function setImage(file: File): Promise<void> {
     const token = ++imageToken;

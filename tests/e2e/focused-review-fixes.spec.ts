@@ -115,13 +115,22 @@ test('Veo Ingredients opening never claims a configured starting frame; Frames k
 
 test('rapid native QC selections keep a stable input and commit only the latest file, then clear retired selection', async ({page}) => {
   const input = page.locator('#video-file');
-  await input.evaluate(el => { (window as unknown as {stableQcInput: Element}).stableQcInput = el; });
+  await input.evaluate(el => {
+    const state = window as unknown as {stableQcInput: Element; detachedQcInputs: number};
+    state.stableQcInput = el; state.detachedQcInputs = 0;
+    new MutationObserver(records => {
+      for (const record of records)
+        for (const removed of record.removedNodes)
+          if (removed === el || removed.contains(el)) state.detachedQcInputs++;
+    }).observe(document.querySelector('#qc-output')!, {childList: true, subtree: true});
+  });
   const buffer = await readFile('tests/fixtures/qc.mp4');
   for (let n = 0; n < 5; n++) {
     await input.setInputFiles({name: 'replacement-' + n + '.mp4', mimeType: 'video/mp4', buffer});
     expect(await input.evaluate(el => el === (window as unknown as {stableQcInput: Element}).stableQcInput)).toBe(true);
   }
   await expect(page.locator('.video-panel .metadata')).toContainText('replacement-4.mp4');
+  expect(await page.evaluate(() => (window as unknown as {detachedQcInputs: number}).detachedQcInputs)).toBe(0);
   expect(await input.evaluate((el: HTMLInputElement) => el.files?.[0]?.name)).toBe('replacement-4.mp4');
   await page.locator('[data-action="clear-qc"]').click();
   expect(await input.evaluate((el: HTMLInputElement) => el.files?.length)).toBe(0);
