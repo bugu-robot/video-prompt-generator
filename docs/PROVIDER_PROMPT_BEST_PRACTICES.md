@@ -31,3 +31,7 @@ Object rotation, hidden-surface reconstruction, crossfading and A/B/C timing are
 ## Recheck for compiler 1.1.0
 
 The three primary prompting/I2V links above were opened again on 2026-10-11. Omni guidance explicitly contrasts overall intent with Veo's precise directions; Veo describes framing/camera and action. The separate [official Veo I2V best-practice guide](https://cloud.google.com/vertex-ai/generative-ai/docs/video/best-practice) grounds source-image continuation rather than a replacement scene description. xAI's image-plus-instructions examples ground direct animation wording. Action hierarchy, provider section ordering, density reduction and detailed continuity are our engineering interpretation, not a verified consumer-specific success formula. No generation trial or account probe was performed.
+
+## Compiler 1.2.0 targeted corrections (2026-10-13)
+
+Google Omni/Veo prompting and Flow creation links were re-opened; original registry/API research dates are unchanged. Shared pacing, continuity and ABC descriptions apply only to selected discrete/continuous actions. Brief actions are not prolonged into held poses. Veo References describes supplied views as same-object references, rather than claiming a configured first frame; image-first workflows retain first-frame wording. These are local composition corrections, not new consumer features or measured output-quality claims. Complete 1.1.0 verifiers/fixtures are frozen for explicit migration to 1.2.0. No provider submission or account probe occurred.

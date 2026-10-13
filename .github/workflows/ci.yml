@@ -1,13 +1,14 @@
 name: CI — local generator verification
 on:
   pull_request:
+  workflow_call:
   push:
-    branches: [feat/local-first-video-prompt-generator]
+    branches: [feat/local-first-video-prompt-generator, 'fix/**']
   workflow_dispatch:
 permissions:
   contents: read
 concurrency:
-  group: video-prompts-ci-${{ github.ref }}
+  group: video-prompts-ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   checks:

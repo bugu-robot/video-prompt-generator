@@ -1,0 +1,2 @@
+# Frozen verifier bytes must hash identically on Windows and Unix checkouts.
+src/storage/legacy-v1.1/** text eol=lf

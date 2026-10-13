@@ -4,7 +4,7 @@
  */
 export async function registerPwa(
   onStatus: (s: string) => void,
-  onUpdate: (apply: () => void) => void,
+  onUpdate: (apply: (() => void) | null, worker: ServiceWorker | null) => void,
 ): Promise<void> {
   if (!('serviceWorker' in navigator) || !import.meta.env.PROD) {
     onStatus('開發模式 · 離線快取未啟用');
@@ -29,7 +29,11 @@ export async function registerPwa(
 
     navigator.serviceWorker.addEventListener('controllerchange', reloadAfterUpdate);
     const offer = () => {
-      if (!registration.waiting || !navigator.serviceWorker.controller) return;
+      const offered = registration.waiting;
+      if (!offered || !navigator.serviceWorker.controller) {
+        onUpdate(null, null);
+        return;
+      }
       onUpdate(() => {
         const waiting = registration.waiting;
         if (!waiting) {
@@ -57,7 +61,7 @@ export async function registerPwa(
             }
           }
         }, 12000);
-      });
+      }, offered);
     };
     offer();
     registration.addEventListener('updatefound', () => {

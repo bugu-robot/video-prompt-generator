@@ -1,5 +1,13 @@
 # Testing and acceptance
 
+## Current correction: compiler 1.2.0 / dismissible updates
+
+**265 new unit cases**, total **739** in 8 files, cover all provider/group/density/ABC timing, every catalog action, dormant rotation, affirmative/negated camera directions/all copy plans, pure preset restoration, waiting-worker presentation and 27 fixed 1.1.0 exports with migration/tampering validation, plus 15 byte-immutability checks. Local units pass, 0 failed/skipped; clean npm ci/typecheck/lint/root/Pages/audit pass (0 vulnerabilities).
+
+Ten shared browser cases cover desktop/mobile interleaved preset edits, all-provider copy gates and cleared groups/comparison, Veo input roles and exact historical backup/adoption. Two new real-SW cases cover dismissal/reopen, repeated foreground/online offers, image/QC position/notes/checklist/preset retention, explicit update cleanup and a genuinely newer worker. **92/91/91 = 274 collected**, including **21 PWA** cases, is not an execution claim. Native BFCache/privacy/storage/QC checks remain mandatory, with no retries/expected failures.
+
+The host denies native dependencies and standard browser downloads yield invalid/truncated ZIPs. Real acceptance requires complete GitHub Actions execution with installed dependencies; final outcomes are recorded only after inspecting logs. Earlier evidence below is historical.
+
 All automated tests are offline/local and consume **zero provider-generation credits**. Test image/video fixtures are synthetic local files. No provider login is needed. No critical test is conditionally skipped; Chromium-only clipboard readback is an additional explicitly scoped test.
 
 ## Commands
@@ -28,7 +36,7 @@ Sixteen additional shared browser cases exercise the aggregate import failure th
 
 PWA tests exercise **real Service Workers**: root offline reload; Pages-base-path offline reload; manifest/icons; version waiting; visible user update; settings retained; old-cache cleanup. A test-only fixture server changes worker identity without external services. It is never part of the built app.
 
-CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit browser tests on Ubuntu. Review-artifact uploads are optional (3-day retention); the account's artifact quota can block them without suppressing any check or test failure. Results remain in job logs. There is no merge or deployment job. WebKit automation is not an assertion that native Safari/iOS installation has been manually accepted.
+CI runs Node 24 checks on Ubuntu and Windows, then Chromium/Firefox/WebKit browser tests on Ubuntu. Review-artifact uploads are optional (3-day retention); the account's artifact quota can block them without suppressing any check or test failure. Results remain in job logs. Standalone CI has no merge/deploy job; the existing separate publishing workflow now requires this complete reusable CI before its publish job. This correction does not trigger publishing. WebKit automation is not an assertion that native Safari/iOS installation has been manually accepted.
 
 ## Session-confirmation correction
 
@@ -92,13 +100,15 @@ Use your existing repository access; the application itself needs no account:
 # git clone https://github.com/bugu-robot/video-prompt-generator.git
 # cd video-prompt-generator
 git fetch origin
-git switch feat/local-first-video-prompt-generator
+git switch fix/review-remediation-update-dismiss
 git pull --ff-only
 npm ci
 npm run typecheck
 npm run lint
 npm test
 npm run build
+npm run build:pages
+npm audit
 npm run preview -- --port 4173 --strictPort
 ```
 
@@ -107,15 +117,18 @@ Open **http://127.0.0.1:4173/** in Chrome or Edge. Keep the PowerShell process r
 This is one consolidated **no-credit** UAT; no Flow/Grok login or generation is needed.
 
 1. Load an existing Mochi image, choose Custom, enter English/Chinese subject descriptions and select only visible/applicable motions. Check local preview/metadata and English/Chinese/bilingual display. Copy from Chinese view into Notepad: it must be the English original.
-2. Compare Omni/Veo/Grok from the same plan: Omni leads with main motion, Veo camera/shot hierarchy, Grok direct action/timing. Select Concise/Balanced/Detailed: clauses should actually shorten or add relevant temporal guidance while all selected actions and camera/identity constraints remain.
+2. Compare Omni/Veo/Grok from the same plan: Omni leads with main motion, Veo camera/shot hierarchy, Grok direct action/timing. Select Concise/Balanced/Detailed: clauses should actually shorten or add relevant temporal guidance while all selected actions and camera/identity constraints remain. Clear environment and select only blink: no environment motion in A/B/C. Clear subject and select only steam: no gestures or brief-action cadence. Locked camera plus `Keep the camera locked. No pan, no dolly, no push-in.` remains copyable; `Pan the camera slowly.` blocks all active copy routes. Remove it afterwards.
 3. Confirm elements, then change subject type, either description, scene notes, motion membership (including removal), source image or region: confirmation must clear and conditional wording return. Reconfirm and change provider/language/density/intensity/camera: it must stay checked. Same-image replacement, preset loading and configuration import still require reconfirmation. Reload with confirmation checked: image/region/confirmation must clear; selected motions, provider/length/theme and saved presets remain. Reconfirm in the new session, change unrelated settings and check it stays checked. Navigate to http://127.0.0.1:4173/icons/icon-192.png (an inline local image) and return with browser Back, then Forward/Back: discarded-source confirmation must not return, including a cached document.
 4. Select only sleep plus breathing (also repeat with blink/look/gesture). Set either as primary. Verify one conflict and disabled base/A/B/C/comparison copy buttons while active. Switch to valid Product Rotation: dormant biological actions must neither appear nor block; return to Ambient/Cinematic and the stored conflict must return.
-5. Compare 360 turntable (object moves, camera fixed) with orbit (object fixed, camera moves). Try one-way 90/180: no return-to-start/identical-end-frame advice; a distinct endpoint or no-loop/editing guidance is shown. Geometry/direction/axis/scale remain in all lengths; completion and hidden-surface warnings remain.
-6. Save/update/rename/duplicate/delete presets; export/import a batch without losing originals. Invalid/oversized merges must leave prior data intact, including reload/later save. For unreadable old data, download the raw backup and use only the explicitly confirmed validated recovery route; failed recovery keeps original bytes. Aggregate UTF-8 limit stays 1 MiB/100 presets.
-7. Import `docs/motion-plan-export.example.json`: do not change current settings before review. Compare original 1.0.0 prompt and new 1.1.0 prompt, download original JSON (unchanged), cancel once, reimport and explicitly accept. Reselect image/reconfirm elements. New JSON must have compiler 1.1.0/new prompt/current findings; original backup remains original. Current fixture/current exports round-trip without a migration prompt. A modified historical prompt must fail without changing settings. Unknown versions remain rejected.
+5. Compare 360 turntable (object moves, camera fixed) with orbit (object fixed, camera moves). Try one-way 90/180: no return-to-start/identical-end-frame advice; a distinct endpoint or no-loop/editing guidance is shown. Geometry/direction/axis/scale remain in all lengths; completion and hidden-surface warnings remain. Veo Fast 8s References opening describes views as references, not a configured starting frame. Single-image mode retains first-frame wording.
+6. Save/update/rename/duplicate/delete presets; export/import a batch without losing originals. Invalid/oversized merges must leave prior data intact, including reload/later save. For unreadable old data, download the raw backup and use only the explicitly confirmed validated recovery route; failed recovery keeps original bytes. Aggregate UTF-8 limit stays 1 MiB/100 presets. Apply nature-breeze, change provider/subject/density, then cancel the same preset: later edits and active image remain, prior motions return.
+7. Import both `docs/motion-plan-export.example.json` and `docs/motion-plan-export.compiler-1.1.example.json`: do not change current settings before review. Compare original 1.0.0/1.1.0 prompt and new 1.2.0 prompt, download original JSON (unchanged), cancel once, reimport and explicitly accept. Reselect image/reconfirm elements. New JSON must have compiler 1.2.0/new prompt/current findings; original backup remains original. Current fixture/current exports round-trip without a migration prompt. A modified historical prompt must fail without changing settings. Unknown versions remain rejected.
 8. Load a local MP4/WebM for QC, seek partway and pause; enter notes and checklist decisions. Edit the prompt, switch provider/model/language/density/presets and check position/notes/checklist remain. Resume playback and repeat; it must continue without reset. Export QC report; pending items stay pending. Choose another video/clear QC to release the old media and reset only the old QC.
 9. Wait for **離線已就緒**, install via browser UI if desired, stop preview/disable network and reload the already controlled app. Prompt and presets must still work; discarded images/regions/confirmation must remain cleared. Reselect a local image and reconfirm, then reload offline again: confirmation must clear again while all other controls/presets remain. Restart preview/network afterward. Repeat Pages build locally if base-path UAT is needed: `npm run build:pages`, then `npm run preview -- --outDir dist-pages --base /video-prompt-generator/ --port 4174 --strictPort`; open http://127.0.0.1:4174/video-prompt-generator/.
 10. Check 390 px device sizing, dark/light themes, keyboard controls and focus. Native iPhone/Safari installation remains a separate device check. An actual PWA update intentionally reloads; local media must be reselected, while settings/presets remain.
+
+11. For a **local-only** update check, run `node --experimental-strip-types tests/update-server.ts` in another PowerShell and open http://127.0.0.1:4191/. Wait for offline readiness; load image/video, seek/pause, add QC notes/checks and save a custom preset. In a third PowerShell run `Invoke-WebRequest http://127.0.0.1:4191/__test/update | Out-Null`, then return the browser to the foreground. **稍後／關閉** (also keyboard Enter) hides the notice without reload, media/QC loss or preset changes. Editing provider/density/theme/language and returning to the tab must not reopen the same-worker notice. **查看更新** reopens it; only **儲存設定並更新** reloads, preserving settings/presets and intentionally clearing session media/confirmation.
+12. Repeat in a fresh browser session after `Invoke-WebRequest http://127.0.0.1:4191/__test/reset | Out-Null`. Offer/dismiss the updated worker, then call `Invoke-WebRequest http://127.0.0.1:4191/__test/newer | Out-Null` and return to the browser. A genuinely newer worker may prompt again but must wait for acceptance. This fixture changes local worker identity only; it is never deployed and calls no provider.
 
 ## Optional real-provider acceptance — user initiated
 

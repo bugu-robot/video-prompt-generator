@@ -39,20 +39,49 @@ const intensityText = {
     zh: '動作可以明顯可見，但保持受控，避免誇張。',
   },
 };
-const timingText = {
-  sparse: {
-    en: 'Make character gestures brief and infrequent; keep selected continuous environmental motion very faint.',
-    zh: '角色動作短暫而疏落；所選連續環境動作保持十分微弱。',
-  },
-  natural: {
-    en: 'Let selected movements recur at relaxed, natural intervals.',
-    zh: '讓所選動作以放鬆、自然的節奏重現。',
-  },
-  sustained: {
-    en: 'Keep the selected environmental movement active throughout; allow character gestures to last longer within the chosen intensity, with natural rests.',
-    zh: '所選環境動作持續進行；在所選強度內，角色動作維持較長時間並有自然休息。',
-  },
-};
+function selectedTimingKinds(p: MotionPlan): { continuous: boolean; discrete: boolean } {
+  const selected = [...p.subjectMotions, ...p.environmentalMotions];
+  return {
+    continuous: selected.some((id) => MOTION_BY_ID.get(id)?.timing === 'continuous'),
+    discrete: selected.some((id) => MOTION_BY_ID.get(id)?.timing === 'discrete'),
+  };
+}
+function timingText(p: MotionPlan, concise: boolean): { en: string; zh: string } {
+  const kinds = selectedTimingKinds(p);
+  const continuous = {
+    sparse: {
+      en: concise ? 'Keep selected continuous motion very faint.' : 'Keep selected continuous motion very faint and smooth throughout the shot.',
+      zh: concise ? '所選連續動作十分微弱。' : '全程只維持所選十分微弱、平滑的連續動作。',
+    },
+    natural: {
+      en: concise ? 'Let selected continuous motion flow naturally.' : 'Let selected continuous motion develop smoothly at a relaxed, natural pace.',
+      zh: concise ? '所選連續動作自然流動。' : '所選連續動作以放鬆自然的速度平滑延續。',
+    },
+    sustained: {
+      en: concise ? 'Sustain selected continuous motion.' : 'Sustain selected continuous motion throughout at the chosen amplitude.',
+      zh: concise ? '維持所選連續動作。' : '全程在所選幅度內維持所選連續動作。',
+    },
+  }[p.motionTiming];
+  const discrete = {
+    sparse: {
+      en: concise ? 'Keep selected brief actions infrequent.' : 'Make selected brief actions infrequent, separated by natural rests.',
+      zh: concise ? '所選短動作疏落。' : '所選短動作疏落，動作之間自然休息。',
+    },
+    natural: {
+      en: concise ? 'Let selected brief actions recur naturally.' : 'Let selected brief actions recur at relaxed, natural intervals.',
+      zh: concise ? '所選短動作自然重現。' : '所選短動作以放鬆自然的間距重現。',
+    },
+    sustained: {
+      en: concise ? 'Repeat selected brief actions regularly, without rushing.' : 'Let selected brief actions recur more regularly, without rushing or stretching each action.',
+      zh: concise ? '所選短動作規律重現，不急促。' : '所選短動作較規律地重現，不急促或拉長每個動作。',
+    },
+  }[p.motionTiming];
+  const parts = [
+    ...(kinds.continuous ? [continuous] : []),
+    ...(kinds.discrete ? [discrete] : []),
+  ];
+  return { en: parts.map((s) => s.en).join(' '), zh: parts.map((s) => s.zh).join('') };
+}
 const compactIntensity = {
   minimal: {
     en: 'Use the smallest natural amplitude.',
@@ -62,20 +91,6 @@ const compactIntensity = {
   moderate: {
     en: 'Keep motion readable and controlled, not exaggerated.',
     zh: '幅度明顯、受控，不誇張。',
-  },
-};
-const compactTiming = {
-  sparse: {
-    en: 'Brief, infrequent gestures; very faint continuous environment motion.',
-    zh: '動作短暫疏落；連續環境動作十分微弱。',
-  },
-  natural: {
-    en: 'Recur at relaxed, natural intervals.',
-    zh: '放鬆自然地重現。',
-  },
-  sustained: {
-    en: 'Sustain environment motion; longer gestures with natural rests at the chosen amplitude.',
-    zh: '環境持續活動；所選幅度內的動作較長，有自然休息。',
   },
 };
 const compactCamera = {
@@ -129,20 +144,18 @@ function detailedContinuity(p: MotionPlan): { en: string; zh: string } {
       en: 'Continue the chosen camera behavior without introducing unselected actions.',
       zh: '延續所選鏡頭行為，不加入未選動作。',
     };
-  return {
-    en:
-      p.motionTiming === 'sparse'
-        ? 'Separate brief gestures with natural rests; maintain only the faint selected continuous environmental motion between gestures.'
-        : p.motionTiming === 'sustained'
-          ? 'Let the selected environmental actions continue between longer character gestures and their natural rests; keep the chosen amplitude throughout.'
-          : 'Let recurring actions develop smoothly at natural intervals, with coherent intermediate poses rather than sudden jumps between poses.',
-    zh:
-      p.motionTiming === 'sparse'
-        ? '短動作之間自然休息；期間只維持所選十分微弱的連續環境動作。'
-        : p.motionTiming === 'sustained'
-          ? '角色較長動作及休息期間，所選環境動作持續；全程維持所選幅度。'
-          : '動作以自然間距平滑重現，中間姿勢連貫，不突然跳到另一姿勢。',
-  };
+  const kinds = selectedTimingKinds(p);
+  const parts = [
+    ...(kinds.continuous ? [{
+      en: 'Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.',
+      zh: '只讓所選連續動作在各幀之間連貫發展，不突然重設或改變幅度。',
+    }] : []),
+    ...(kinds.discrete ? [{
+      en: 'Show coherent intermediate poses within each selected brief action, and natural rests between repetitions; do not stretch a brief action into a held pose.',
+      zh: '每個所選短動作的中間姿勢連貫，重複之間自然休息；不把短動作拉長成停留姿勢。',
+    }] : []),
+  ];
+  return { en: parts.map((s) => s.en).join(' '), zh: parts.map((s) => s.zh).join('') };
 }
 export interface MotionCue {
   kind: 'subject' | 'environment';
@@ -396,7 +409,7 @@ export function intentSections(
     if (b) sections.push(b);
     if (a || b) {
       const level = intensityText[p.intensity],
-        timing = timingText[p.motionTiming];
+        timing = timingText(p, p.length === 'concise');
       sections.push(
         section(
           'pacing',
@@ -405,11 +418,11 @@ export function intentSections(
           p.length === 'concise'
             ? compactIntensity[p.intensity].en +
                 ' ' +
-                compactTiming[p.motionTiming].en
+                timing.en
             : level.en + ' ' + timing.en,
           p.length === 'concise'
             ? compactIntensity[p.intensity].zh +
-                compactTiming[p.motionTiming].zh
+                timing.zh
             : level.zh + timing.zh,
         ),
       );

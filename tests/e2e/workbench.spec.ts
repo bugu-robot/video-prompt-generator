@@ -41,11 +41,12 @@ test('bilingual displays and A/B/C have different actual motion plans', async ({
   ).toBeVisible();
   await page.getByRole('button', { name: '查看 A', exact: true }).click();
   const a = await final(page).textContent();
-  await expect(final(page)).toContainText('brief and infrequent');
+  await expect(final(page)).toContainText('selected continuous motion very faint');
+  await expect(final(page)).not.toContainText('character gestures');
   await page.getByRole('button', { name: '查看 C', exact: true }).click();
   const c = await final(page).textContent();
   expect(c).not.toBe(a);
-  await expect(final(page)).toContainText('active throughout');
+  await expect(final(page)).toContainText('Sustain selected continuous motion throughout');
   await page.getByRole('button', { name: '回到原設定', exact: true }).click();
   await page.getByRole('button', { name: '繁中解讀', exact: true }).click();
   await expect(final(page)).not.toContainText('English Original');

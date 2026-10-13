@@ -171,7 +171,7 @@ test('historical import requires review and explicit acceptance, preserves exact
     'compiler 1.0.0',
   );
   await expect(page.locator('#configuration-import-review')).toContainText(
-    'compiler 1.1.0',
+    'compiler 1.2.0',
   );
   expect(
     await page.evaluate(() =>
@@ -198,7 +198,7 @@ test('historical import requires review and explicit acceptance, preserves exact
   const exported = JSON.parse(
     await readFile((await (await dp).path())!, 'utf8'),
   ) as { compilerVersion: string; generatedEnglishPrompt: string };
-  expect(exported.compilerVersion).toBe('1.1.0');
+  expect(exported.compilerVersion).toBe('1.2.0');
   expect(exported.generatedEnglishPrompt).toBe(
     await page.locator('#final-prompt pre[lang="en"]').innerText(),
   );

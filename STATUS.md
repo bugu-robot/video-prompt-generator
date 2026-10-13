@@ -1,6 +1,18 @@
 # Development status
 
-All six feasible implementation phases are complete on `feat/local-first-video-prompt-generator`. Draft PR [#1](https://github.com/bugu-robot/video-prompt-generator/pull/1) remains open and draft. Main was initialized with a README only because the repository had no commits; all application work is on the feature branch. No merge, deployment, visibility change or provider generation. Reference/Mochi repositories are untouched.
+Original PR #1 and follow-ups #2–#4 were merged by prior work; main baseline is `08971ce5d4a18badb7765a011a63916f05acdd09`. The published site exists. Current corrections use only `fix/review-remediation-update-dismiss`: no merge, deployment, main change, Mochi repository change or provider credits. Earlier sections preserve historical evidence.
+
+## Current review remediation (2026-10-13, compiler 1.2.0)
+
+- Preset cancellation restores motion settings while retaining subsequent provider/model/source/density edits. Confirmation is re-audited; bounded Undo and retired-media disposal remain intact.
+- Catalog discrete/continuous semantics restrict pacing, Detailed continuity and ABC descriptions to selected actions. Empty groups never gain motion, brief blinks are not stretched, and Rotation keeps ambient motion dormant.
+- Negated camera directions/common pan-as-object wording no longer block copying; affirmative contradictions still block base/ABC/comparison. The deterministic text audit does not understand arbitrary prose.
+- Veo Rotation References uses same-object views, not configured first-frame claims. Single-image opening, geometry and capability gates remain intact.
+- **稍後／關閉** hides a waiting update for this session/worker; **查看更新** reopens it. Repeated checks/renders stay dismissed; a genuinely newer/missing worker resets/clears the notice. Closing never activates/reloads or changes media, QC or presets.
+- Compiler 1.1.0's complete immutable verifier and 27 fixed exports join 1.0.0. New exports use 1.2.0 with unchanged plan/schema v1, strict version pairs, exact historical backup and explicit lossless adoption.
+- Existing publishing now requires complete reusable Ubuntu/Windows and browser CI; this correction never triggers publishing.
+
+Local measured checks: clean npm ci; typecheck/lint; **739 unit passes** in 8 files, 0 failed/skipped; root/Pages builds; audit **0 vulnerabilities**. Browser collection: **274** (92 Chromium / 91 Firefox / 91 WebKit), including **21 PWA** cases; collection is not execution. Local native dependency installation is denied and standard downloads return truncated/invalid archives. Actual native CI outcomes will be recorded after log inspection. See [consolidated Windows no-credit UAT](docs/TESTING.md).
 
 ## Implemented
 
@@ -10,7 +22,7 @@ All six feasible implementation phases are complete on `feat/local-first-video-p
 - Installable offline PWA for root/Pages, content-versioned cache, visible waiting updates and settings retention. No external runtime resources, AI calls, accounts or backend.
 - Strict schema/example and documented future Mochi adapter preserving existing approval/kill switch. All requested engineering/provider/preset/loop/rotation/testing/Hong Kong Chinese user documents.
 
-## Current focused P2: source confirmation across sessions
+## Earlier focused P2: source confirmation across sessions
 
 Reviewed baseline: `da2a573d79b1f91e1cd8ef0e0fc2c7990b2ff06b`, [verified CI](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38144374385): 467 units per OS / 181 browser passes.
 
@@ -44,7 +56,7 @@ The subsequent documentation-head [run 38160084093](https://github.com/bugu-robo
 | Windows/Ubuntu CI | [code-fix run 38143409461](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38143409461) **completed successfully** at `71c318becf6a12e44af3be2126caf2e80195fca2`: each platform passes **467 units**, 0 fail/skip, clean install/typecheck/lint/root/Pages builds/audit (0 vulnerabilities) |
 | Chromium / Firefox / WebKit CI | Same completed run: **61 / 60 / 60 = 181 passed**, 0 fail/skip, 8.7 minutes; actual inspected logs include **9 real Service Worker offline/update passes** plus privacy/preset/QC regressions |
 
-Preserved reviewed baseline `8858a181d116668ce9b78938b33d6b0724773411`: Windows/Ubuntu each 221 units; Chromium/Firefox/WebKit 42/41/41 = 124, 0 fail/skip, [verified run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38138566600). That earlier remediation added 246 units (including 27 fixed historical export fixtures plus current contract) and 19 shared browser tests, for **467 units and 61/60/60 = 181 browser cases**. Original checks remain mandatory in today's 474-unit / 202-browser suite.
+Preserved reviewed baseline `8858a181d116668ce9b78938b33d6b0724773411`: Windows/Ubuntu each 221 units; Chromium/Firefox/WebKit 42/41/41 = 124, 0 fail/skip, [verified run](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38138566600). That earlier remediation added 246 units (including 27 fixed historical export fixtures plus current contract) and 19 shared browser tests, for **467 units and 61/60/60 = 181 browser cases**. These original checks remain mandatory in the expanded suite.
 
 ## Independent-review fixes (2026-10-11)
 
@@ -58,7 +70,7 @@ Real browser acceptance includes clipboard readback, H.264 decode, image privacy
 
 Local browser provisioning required alternate downloads and a separately provisioned Chromium. Firefox initially hit host sandbox/decoder restrictions; its final complete run passed with test-process environment overrides, without application or test changes. Local WebKit launch failures are not counted as successful acceptance; its complete **60-pass** acceptance is from the actual CI runner with installed dependencies. Both optional Ubuntu static-review and browser-report uploads in run 38143409461 failed with the account artifact-storage quota error. They **did not succeed**, even though the mandatory jobs passed. Windows intentionally has no static-artifact upload. No existing artifacts were deleted.
 
-This document records verified code snapshots. Documentation-only follow-ups also trigger the same full mandatory workflow; final-head results are attached to Draft PR #1 after checking actual logs. The [remediation handoff](docs/REMEDIATION_HANDOFF.md) separately lists the focused 13-file correction and earlier 45-file remediation, with one consolidated Windows UAT.
+Historical sections retain verified snapshots and failures. Current correction/final-head conclusions are recorded on the new Draft PR after actual Actions inspection. The earlier handoff remains historical; use the consolidated current Windows UAT in docs/TESTING.md.
 
 ## Remaining limitations and manual acceptance
 

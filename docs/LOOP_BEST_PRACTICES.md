@@ -19,6 +19,6 @@ For 360° turns prefer stable framing and uniform angular speed; easing may paus
 
 In the Little Jazz Stories workflow, remove generated audio, attach separately produced jazz music and inspect transitions after rendering. The app does not render the final loop or crossfade.
 
-## Compiler 1.1.0 density and review
+## Compiler 1.2.0 density and review
 
-Concise retains return-pose/boundary/editing intent in shorter clauses. Detailed adds coherent intermediate poses or progressive rotation orientations; a one-way partial turn never gains an extra return leg. Provider composition changes instruction priority, not the chosen loop/camera/angle/direction. Old exported loop instructions remain preserved verbatim and are validated using their historical compiler before explicit migration; current warnings and any copy-blocking errors are rerun. Ordinary prompt editing or provider/language comparison preserves the QC player's position, playback state, notes and checklist, so full-timeline inspection can continue.
+Concise retains return-pose/boundary/editing intent in shorter clauses. Detailed adds coherent poses only for selected discrete actions, smooth evolution only for selected continuous motion, or progressive rotation orientations; a one-way partial turn never gains an extra return leg. Provider composition changes instruction priority, not the chosen loop/camera/angle/direction. Old exported loop instructions remain preserved verbatim and are validated using their historical compiler before explicit migration; current warnings and any copy-blocking errors are rerun. Ordinary prompt editing or provider/language comparison preserves the QC player's position, playback state, notes and checklist, so full-timeline inspection can continue.
