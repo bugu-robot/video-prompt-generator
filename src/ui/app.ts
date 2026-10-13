@@ -626,7 +626,13 @@ export function mountApp(root: HTMLElement): void {
       errors();
   }
   function renderQc(): void {
-    root.querySelector('#qc-output')!.innerHTML = qcMarkup();
+    // Native file-change events can outlive asynchronous decode completion.
+    // Preserve the same input so queued selections still reach the live root.
+    const input = root.querySelector<HTMLInputElement>('#video-file');
+    const template = document.createElement('template');
+    template.innerHTML = qcMarkup();
+    if (input) template.content.querySelector('#video-file')!.replaceWith(input);
+    root.querySelector('#qc-output')!.replaceChildren(template.content);
   }
   async function setImage(file: File): Promise<void> {
     const token = ++imageToken;
@@ -651,7 +657,7 @@ export function mountApp(root: HTMLElement): void {
       if (token === imageToken) notify(resolveError(error));
     }
   }
-  function clearQc(): void {
+  function clearQc(clearSelection = true): void {
     ++videoToken;
     videoController?.abort();
     videoController = null;
@@ -665,9 +671,13 @@ export function mountApp(root: HTMLElement): void {
     videoUrl = null;
     qc = null;
     qcBusy = false;
+    if (clearSelection) {
+      const input = root.querySelector<HTMLInputElement>('#video-file');
+      if (input) input.value = '';
+    }
   }
   async function setVideo(file: File): Promise<void> {
-    clearQc();
+    clearQc(false);
     const token = ++videoToken;
     videoController = new AbortController();
     qcBusy = true;
@@ -916,6 +926,11 @@ export function mountApp(root: HTMLElement): void {
       );
   });
   root.addEventListener('click', (event) => {
+    const target = event.target;
+    // Opening the native chooser permits reselection of the same file, without
+    // changing the active player or cancelling inspection until a new selection.
+    if (target instanceof HTMLInputElement && target.id === 'video-file')
+      target.value = '';
     const button = (event.target as Element).closest<HTMLElement>(
       '[data-action]',
     );

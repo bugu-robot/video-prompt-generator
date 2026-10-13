@@ -69,6 +69,7 @@ for (const provider of PROVIDERS) {
     await motion(page, 'blink').click();
     await page.locator('[data-field="source.elementsConfirmed"]').check();
     await page.locator('#length').selectOption('concise');
+    await page.locator('.comparison summary').click();
     for (const variant of ['base', 'A', 'B', 'C']) {
       if (variant !== 'base') await page.locator(`[data-action="variant"][data-variant="${variant}"]`).click();
       const text = await page.locator('#final-prompt pre[lang="en"]').innerText();
@@ -76,6 +77,7 @@ for (const provider of PROVIDERS) {
       expect(text).not.toMatch(/environment motion|environmental movement|continuous motion|character gestures/);
       await expect(page.locator('.comparison pre[lang="en"]')).toHaveCount(3);
       for (const comparison of await page.locator('.comparison pre[lang="en"]').all()) {
+        await expect(comparison).toBeVisible();
         expect(await comparison.innerText()).toContain('blink naturally');
         expect(await comparison.innerText()).not.toMatch(/environment motion|continuous motion/);
       }
@@ -108,6 +110,22 @@ test('Veo Ingredients opening never claims a configured starting frame; Frames k
   }
   await page.locator('#rotationInput').selectOption('single');
   await expect(page.locator('#final-prompt pre[lang="en"]')).toContainText('starting frame');
+});
+
+
+test('rapid native QC selections keep a stable input and commit only the latest file, then clear retired selection', async ({page}) => {
+  const input = page.locator('#video-file');
+  await input.evaluate(el => { (window as unknown as {stableQcInput: Element}).stableQcInput = el; });
+  const buffer = await readFile('tests/fixtures/qc.mp4');
+  for (let n = 0; n < 5; n++) {
+    await input.setInputFiles({name: 'replacement-' + n + '.mp4', mimeType: 'video/mp4', buffer});
+    expect(await input.evaluate(el => el === (window as unknown as {stableQcInput: Element}).stableQcInput)).toBe(true);
+  }
+  await expect(page.locator('.video-panel .metadata')).toContainText('replacement-4.mp4');
+  expect(await input.evaluate((el: HTMLInputElement) => el.files?.[0]?.name)).toBe('replacement-4.mp4');
+  await page.locator('[data-action="clear-qc"]').click();
+  expect(await input.evaluate((el: HTMLInputElement) => el.files?.length)).toBe(0);
+  await expect(page.locator('.video-panel video')).toHaveCount(0);
 });
 
 test('compiler 1.1.0 import preserves original bytes, requires review, and exports 1.2.0 only after explicit adoption', async ({page}) => {
