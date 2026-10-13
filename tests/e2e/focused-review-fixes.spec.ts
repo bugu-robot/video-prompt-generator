@@ -114,6 +114,21 @@ test('Veo Ingredients opening never claims a configured starting frame; Frames k
 
 
 test('rapid native QC selections keep a stable input and commit only the latest file, then clear retired selection', async ({page}) => {
+  await page.evaluate(() => {
+    const state = window as unknown as {qcDecoderPeak: number; qcDecoderActive: number};
+    state.qcDecoderPeak = 0; state.qcDecoderActive = 0;
+    const active = new WeakSet<HTMLMediaElement>();
+    const nativeLoad = HTMLMediaElement.prototype.load;
+    HTMLMediaElement.prototype.load = function () {
+      if (!this.isConnected && this.getAttribute('src') && !active.has(this)) {
+        active.add(this); state.qcDecoderActive++;
+        state.qcDecoderPeak = Math.max(state.qcDecoderPeak, state.qcDecoderActive);
+      } else if (!this.getAttribute('src') && active.delete(this)) {
+        state.qcDecoderActive--;
+      }
+      nativeLoad.call(this);
+    };
+  });
   const input = page.locator('#video-file');
   await input.evaluate(el => {
     const state = window as unknown as {stableQcInput: Element; detachedQcInputs: number};
@@ -130,6 +145,8 @@ test('rapid native QC selections keep a stable input and commit only the latest 
     expect(await input.evaluate(el => el === (window as unknown as {stableQcInput: Element}).stableQcInput)).toBe(true);
   }
   await expect(page.locator('.video-panel .metadata')).toContainText('replacement-4.mp4');
+  expect(await page.evaluate(() => (window as unknown as {qcDecoderPeak: number}).qcDecoderPeak)).toBe(1);
+  expect(await page.evaluate(() => (window as unknown as {qcDecoderActive: number}).qcDecoderActive)).toBe(0);
   expect(await page.evaluate(() => (window as unknown as {detachedQcInputs: number}).detachedQcInputs)).toBe(0);
   expect(await input.evaluate((el: HTMLInputElement) => el.files?.[0]?.name)).toBe('replacement-4.mp4');
   await page.locator('[data-action="clear-qc"]').click();

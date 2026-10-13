@@ -129,6 +129,7 @@ export function mountApp(root: HTMLElement): void {
     imageToken = 0,
     videoToken = 0,
     videoController: AbortController | null = null,
+    videoInspection: Promise<VideoQcResult> | null = null,
     videoUrl: string | null = null,
     qc: VideoQcResult | null = null;
   let activeVariant: 'base' | 'A' | 'B' | 'C' = 'base',
@@ -678,13 +679,24 @@ export function mountApp(root: HTMLElement): void {
     }
   }
   async function setVideo(file: File): Promise<void> {
+    const retiredInspection = videoInspection;
     clearQc(false);
     const token = ++videoToken;
-    videoController = new AbortController();
+    const controller = new AbortController();
+    videoController = controller;
     qcBusy = true;
     renderQc();
+    // Abort settles asynchronously. Release the retired decoder and its Blob
+    // before starting another one, including when several changes are queued.
+    const inspection = (async () => {
+      await retiredInspection?.catch(() => undefined);
+      if (token !== videoToken || controller.signal.aborted)
+        throw new Error('影片檢查已取消。');
+      return inspectVideo(file, controller.signal);
+    })();
+    videoInspection = inspection;
     try {
-      const result = await inspectVideo(file, videoController.signal);
+      const result = await inspection;
       if (token !== videoToken) return;
       qc = result;
       videoUrl = URL.createObjectURL(file);
@@ -697,6 +709,8 @@ export function mountApp(root: HTMLElement): void {
         renderQc();
         notify(resolveError(error));
       }
+    } finally {
+      if (videoInspection === inspection) videoInspection = null;
     }
   }
   function changed(field = ''): void {
