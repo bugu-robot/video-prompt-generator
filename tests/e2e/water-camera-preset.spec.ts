@@ -45,6 +45,8 @@ test('custom preset peripheral edits keep Update/Rename/Delete usable and preser
   await page.locator('#presetName').fill('Water breeze');
   await page.locator('[data-action="save-preset"]').click();
   await page.locator('[data-action="clear-environment-motions"]').click();
+  await page.locator('details[data-section="more-environment"] summary').click();
+  await expect(page.locator('label.chip').filter({has:page.locator('input[value="ripples"]')})).toBeVisible();
   await page.locator('label.chip').filter({has:page.locator('input[value="ripples"]')}).click();
   await page.locator('[data-action="update-preset"]').click();
   await page.locator('#presetFilter').selectOption('custom');
@@ -75,6 +77,8 @@ for (const provider of PROVIDERS) {
     await page.locator('#provider').selectOption(provider);
     await page.locator('[data-action="clear-subject-motions"]').click();
     await page.locator('[data-action="clear-environment-motions"]').click();
+    await page.locator('details[data-section="more-environment"] summary').click();
+    await expect(page.locator('label.chip').filter({has:page.locator('input[value="ripples"]')})).toBeVisible();
     await page.locator('label.chip').filter({has:page.locator('input[value="ripples"]')}).click();
     await expect(page.locator('label.chip').filter({has:page.locator('input[value="ripples"]')})).toContainText('微風吹拂水面');
     for (const variant of ['base','A','B','C']) {
