@@ -11,6 +11,8 @@ Current focused P2 work starts from latest main `728d1339cfe3efb0aa712e2370cdf49
 - Local Node 24: clean npm ci, typecheck/lint, **861 unit passes** in 10 files, root/Pages builds, audit **0 vulnerabilities**. Added **116 unit cases** and **7 shared browser cases**; full inventory **100 Chromium / 99 Firefox / 99 WebKit = 298**. All existing assertions/retry/skip policies remain intact; version assertions now enforce 1.3.0.
 - Local `playwright install --with-deps` cannot provision system dependencies (setgroups/setuid denied); direct browser download fails with a truncated ZIP. Neither is browser pass evidence. Full existing native CI, including the independent WebKit QC stress, is mandatory; actual final-head outcomes will be recorded in the Draft PR after inspecting Actions logs.
 
+First [PR CI 38492554303](https://github.com/bugu-robot/video-prompt-generator/actions/runs/38492554303) at `b6423e3cfac710b6830bd2571366100e20e897f7` failed: Ubuntu passed all 861 units/static/build/audit checks; Windows passed 845 units and failed 16 newly frozen-file byte hashes because checkout converted LF to CRLF. Browser acceptance was not run (dependency gate), not passed. The new snapshot now uses the same LF checkout attribute as the released 1.1.0 snapshot; all frozen source bytes, expected SHA-256 values and assertions remain unchanged. Full corrected-head CI remains mandatory.
+
 ## Current review remediation (2026-10-13, compiler 1.2.0)
 
 - Preset cancellation restores motion settings while retaining subsequent provider/model/source/density edits. Confirmation is re-audited; bounded Undo and retired-media disposal remain intact.
