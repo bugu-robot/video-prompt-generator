@@ -1,0 +1,2995 @@
+[
+  {
+    "id": "omni/ambient/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue this image naturally. Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface. Keep motion subtle. Let selected continuous motion flow naturally. Keep the camera locked on a static tripod. Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image. Settle selected motions to the starting pose and framing at the end. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/ambient/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/ambient/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nUse one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/cinematic/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue this image naturally. Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface. Keep motion subtle. Let selected continuous motion flow naturally. Keep the camera locked on a static tripod. Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image. Settle selected motions to the starting pose and framing at the end. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/cinematic/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/cinematic/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nUse one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/rotation/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue this image naturally. Rotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Use uniform angular speed, including the boundary. Keep the object centered. Keep framing stable; no abrupt reframing. Keep apparent object scale constant. Keep lighting sources fixed in the scene. Preserve visible geometry and proportions. Retain identifying markings and materials. Complete one full revolution. Finish at the starting object orientation. Preserve identity and appearance, existing objects, color palette, background structure, visual style from the source image. Aim for matching boundary framing and appearance. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/rotation/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nRotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Maintain uniform angular speed throughout, including the clip boundary. Keep the object centered. Keep the framing stable without abrupt reframing. Maintain consistent apparent object scale. Keep lighting sources fixed in the scene. Preserve the visible object geometry and proportions during the turn. Retain the identifying markings and material details. Complete one full revolution. Finish at the starting object orientation.\n\nPreserve identity and appearance, existing objects, color palette, background structure, visual style from the source image.\n\nAim for a repeatable boundary with matching framing and appearance.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "omni/rotation/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nRotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Maintain uniform angular speed throughout, including the clip boundary. Keep the object centered. Keep the framing stable without abrupt reframing. Maintain consistent apparent object scale. Keep lighting sources fixed in the scene. Preserve the visible object geometry and proportions during the turn. Retain the identifying markings and material details. Complete one full revolution. Finish at the starting object orientation.\n\nPreserve identity and appearance, existing objects, color palette, background structure, visual style from the source image.\n\nAim for a repeatable boundary with matching framing and appearance.\n\nUse one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Show progressive intermediate orientations along the requested revolution, rather than substituting a static matching endpoint. Keep the requested angular-speed profile across that path.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/ambient/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Use the supplied image as the shot's starting frame. Keep the camera locked on a static tripod. Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface. Keep motion subtle. Let selected continuous motion flow naturally. Settle selected motions to the starting pose and framing at the end. Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/ambient/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Image-to-video shot: Use the supplied image as the starting frame of one controlled shot; direct its camera and visible action without restaging the scene.\n\nCamera: Keep the camera locked on a static tripod throughout the shot.\n\nEnvironmental motion: Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nMotion scale and timing: Keep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nLoop intention: Let the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve from source: Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nAudio intention: Focus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/ambient/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Image-to-video shot: Use the supplied image as the starting frame of one controlled shot; direct its camera and visible action without restaging the scene.\n\nCamera: Keep the camera locked on a static tripod throughout the shot.\n\nEnvironmental motion: Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nMotion scale and timing: Keep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nTemporal continuity: Use one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.\n\nLoop intention: Let the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve from source: Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nAudio intention: Focus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/cinematic/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Use the supplied image as the shot's starting frame. Keep the camera locked on a static tripod. Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface. Keep motion subtle. Let selected continuous motion flow naturally. Settle selected motions to the starting pose and framing at the end. Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/cinematic/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Image-to-video shot: Use the supplied image as the starting frame of one controlled shot; direct its camera and visible action without restaging the scene.\n\nCamera: Keep the camera locked on a static tripod throughout the shot.\n\nEnvironmental motion: Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nMotion scale and timing: Keep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nLoop intention: Let the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve from source: Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nAudio intention: Focus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/cinematic/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Image-to-video shot: Use the supplied image as the starting frame of one controlled shot; direct its camera and visible action without restaging the scene.\n\nCamera: Keep the camera locked on a static tripod throughout the shot.\n\nEnvironmental motion: Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nMotion scale and timing: Keep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nTemporal continuity: Use one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.\n\nLoop intention: Let the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve from source: Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nAudio intention: Focus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/rotation/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Use the supplied image as the shot's starting frame. Rotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Use uniform angular speed, including the boundary. Keep the object centered. Keep framing stable; no abrupt reframing. Keep apparent object scale constant. Keep lighting sources fixed in the scene. Preserve visible geometry and proportions. Retain identifying markings and materials. Complete one full revolution. Finish at the starting object orientation. Aim for matching boundary framing and appearance. Preserve identity and appearance, existing objects, color palette, background structure, visual style from the source image. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/rotation/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Image-to-video shot: Use the supplied image as the starting frame of one controlled shot; direct its camera and visible action without restaging the scene.\n\nObject turntable: Rotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Maintain uniform angular speed throughout, including the clip boundary. Keep the object centered. Keep the framing stable without abrupt reframing. Maintain consistent apparent object scale. Keep lighting sources fixed in the scene. Preserve the visible object geometry and proportions during the turn. Retain the identifying markings and material details. Complete one full revolution. Finish at the starting object orientation.\n\nLoop intention: Aim for a repeatable boundary with matching framing and appearance.\n\nPreserve from source: Preserve identity and appearance, existing objects, color palette, background structure, visual style from the source image.\n\nAudio intention: Focus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "veo/rotation/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "veo",
+      "modelSelection": "veo-3.1-fast",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "veo",
+        "model": "veo-3.1-fast",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Image-to-video shot: Use the supplied image as the starting frame of one controlled shot; direct its camera and visible action without restaging the scene.\n\nObject turntable: Rotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Maintain uniform angular speed throughout, including the clip boundary. Keep the object centered. Keep the framing stable without abrupt reframing. Maintain consistent apparent object scale. Keep lighting sources fixed in the scene. Preserve the visible object geometry and proportions during the turn. Retain the identifying markings and material details. Complete one full revolution. Finish at the starting object orientation.\n\nTemporal continuity: Use one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Show progressive intermediate orientations along the requested revolution, rather than substituting a static matching endpoint. Keep the requested angular-speed profile across that path.\n\nLoop intention: Aim for a repeatable boundary with matching framing and appearance.\n\nPreserve from source: Preserve identity and appearance, existing objects, color palette, background structure, visual style from the source image.\n\nAudio intention: Focus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/ambient/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate this image. Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface. Keep motion subtle. Let selected continuous motion flow naturally. Keep the camera locked on a static tripod. Settle selected motions to the starting pose and framing at the end. Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/ambient/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate the supplied image with the following actions; use its visible content as the starting reference.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/ambient/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate the supplied image with the following actions; use its visible content as the starting reference.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nUse one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/cinematic/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate this image. Primary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface. Keep motion subtle. Let selected continuous motion flow naturally. Keep the camera locked on a static tripod. Settle selected motions to the starting pose and framing at the end. Preserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/cinematic/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate the supplied image with the following actions; use its visible content as the starting reference.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/cinematic/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "cinematic",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "cinematic",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate the supplied image with the following actions; use its visible content as the starting reference.\n\nPrimary motion: If a water surface is already visible in the source image, small ripples travel gently across the existing water surface.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nPreserve original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image.\n\nUse one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Let only the selected continuous motion evolve coherently between frames, without abrupt resets or sudden changes in amplitude.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/rotation/concise",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "concise",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate this image. Rotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Use uniform angular speed, including the boundary. Keep the object centered. Keep framing stable; no abrupt reframing. Keep apparent object scale constant. Keep lighting sources fixed in the scene. Preserve visible geometry and proportions. Retain identifying markings and materials. Complete one full revolution. Finish at the starting object orientation. Aim for matching boundary framing and appearance. Preserve identity and appearance, existing objects, color palette, background structure, visual style from the source image. Visual motion only; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/rotation/balanced",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate the supplied image with the following actions; use its visible content as the starting reference.\n\nRotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Maintain uniform angular speed throughout, including the clip boundary. Keep the object centered. Keep the framing stable without abrupt reframing. Maintain consistent apparent object scale. Keep lighting sources fixed in the scene. Preserve the visible object geometry and proportions during the turn. Retain the identifying markings and material details. Complete one full revolution. Finish at the starting object orientation.\n\nAim for a repeatable boundary with matching framing and appearance.\n\nPreserve identity and appearance, existing objects, color palette, background structure, visual style from the source image.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "grok/rotation/detailed",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "grok",
+      "modelSelection": "grok-consumer-current",
+      "generationMode": "rotation",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "grok",
+        "model": "grok-consumer-current",
+        "mode": "rotation",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "product",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [],
+        "environmentalMotions": [
+          "ripples"
+        ],
+        "primaryMotion": "ripples",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "detailed",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Animate the supplied image with the following actions; use its visible content as the starting reference.\n\nRotate the product itself clockwise through 360 degrees around its own vertical Y-axis; the camera remains stationary. Viewed from the positive Y-axis toward the object center. Maintain uniform angular speed throughout, including the clip boundary. Keep the object centered. Keep the framing stable without abrupt reframing. Maintain consistent apparent object scale. Keep lighting sources fixed in the scene. Preserve the visible object geometry and proportions during the turn. Retain the identifying markings and material details. Complete one full revolution. Finish at the starting object orientation.\n\nAim for a repeatable boundary with matching framing and appearance.\n\nPreserve identity and appearance, existing objects, color palette, background structure, visual style from the source image.\n\nUse one continuous shot. Keep motion causally connected from frame to frame, with no abrupt cuts or unrelated transitions. Show progressive intermediate orientations along the requested revolution, rather than substituting a static matching endpoint. Keep the requested angular-speed profile across that path.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": true
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "hidden-surfaces",
+          "severity": "warning",
+          "messageZh": "單張圖沒有背面幾何資料；90°／180°／360°都可能重建失真，完整旋轉須人手 QC。",
+          "messageEn": "Hidden surfaces are not verified by one image; reconstruction and rotation completion require manual QC."
+        },
+        {
+          "id": "rotation-completion",
+          "severity": "warning",
+          "messageZh": "要求一圈並不證明影片實際轉足 360°；須檢查完整時間線，不能只比較首尾幀。",
+          "messageEn": "A full-revolution prompt does not prove a completed 360° turn; review the whole timeline."
+        },
+        {
+          "id": "rotation-isolation",
+          "severity": "recommendation",
+          "messageZh": "旋轉模式只輸出旋轉動作；其他模式所選微動作仍保留，切換回去時可繼續使用。",
+          "messageEn": "Rotation isolates the requested turn; ambient selections are retained for the other modes."
+        },
+        {
+          "id": "i2v-unverified",
+          "severity": "warning",
+          "messageZh": "Grok 網站的當前 Image-to-Video 入口及版本未經此研究確認；請自行核對，勿套用 API 規格。",
+          "messageEn": "Current Grok website image-to-video controls are not verified by the API documentation."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  },
+  {
+    "id": "released-camera-audit",
+    "export": {
+      "format": "video-prompt-generator",
+      "schemaVersion": "1.0.0",
+      "provider": "omni",
+      "modelSelection": "omni-flash-1.1",
+      "generationMode": "ambient",
+      "motionPlan": {
+        "schemaVersion": "1.0.0",
+        "provider": "omni",
+        "model": "omni-flash-1.1",
+        "mode": "ambient",
+        "durationSeconds": null,
+        "source": {
+          "subjectType": "unspecified",
+          "subjectEn": "",
+          "subjectZh": "",
+          "sceneNotesEn": "Tilt the camera upward.",
+          "sceneNotesZh": "",
+          "elementsConfirmed": false,
+          "image": null,
+          "region": null
+        },
+        "subjectMotions": [
+          "breathing"
+        ],
+        "environmentalMotions": [
+          "steam",
+          "rain"
+        ],
+        "primaryMotion": "steam",
+        "intensity": "subtle",
+        "motionTiming": "natural",
+        "camera": "locked",
+        "loop": "match-pose",
+        "preservation": [
+          "identity",
+          "face",
+          "proportions",
+          "objects",
+          "composition",
+          "lighting",
+          "palette",
+          "background",
+          "style"
+        ],
+        "rotation": {
+          "type": "turntable",
+          "angle": 360,
+          "direction": "clockwise",
+          "speed": "uniform",
+          "axis": "y",
+          "centered": true,
+          "stableFraming": true,
+          "consistentScale": true,
+          "stableLighting": true,
+          "geometry": true,
+          "details": true,
+          "returnToStart": true,
+          "inputMode": "single"
+        },
+        "audio": "none-requested",
+        "length": "balanced",
+        "presetId": null
+      },
+      "sourceImageReference": null,
+      "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nPrimary motion: If a steaming drink is already visible in the source image, thin steam drifts upward softly. Alongside it, If a rain-covered window is already visible in the source image, raindrops slide slowly down the existing window.\n\nAlongside it, If a breathing character or animal is already visible in the source image, let the existing subject breathe gently with small chest movement.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nPreserve identity and appearance, facial features, original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image, where those features are visible.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nTilt the camera upward.\n\nFocus on visual motion; no audio is requested.",
+      "compilerVersion": "1.2.0",
+      "capabilitySnapshotDate": "2026-10-11",
+      "presetIdentity": null,
+      "loopSettings": {
+        "strategy": "match-pose",
+        "returnToStart": false
+      },
+      "qcWarnings": [
+        {
+          "id": "no-source",
+          "severity": "recommendation",
+          "messageZh": "未載入本機原圖；動作只按你的選擇及確認狀態編譯，請在供應商網站自行提供原圖。",
+          "messageEn": "No local source image is loaded; motion follows your explicit selections and confirmation. Supply the actual image to the provider."
+        },
+        {
+          "id": "unconfirmed-elements",
+          "severity": "recommendation",
+          "messageZh": "未確認已選元素在原圖存在；提示只會要求「如原圖已有」的動作。",
+          "messageEn": "Selected image elements are unconfirmed; motion instructions are conditional."
+        },
+        {
+          "id": "loop-guarantee",
+          "severity": "recommendation",
+          "messageZh": "Loop-friendly 是創作意圖，不能保證數學上無縫；生成後應檢查動作及接點。",
+          "messageEn": "Loop-friendly is an intention, not a seamless-loop guarantee."
+        },
+        {
+          "id": "audio-removal",
+          "severity": "recommendation",
+          "messageZh": "未要求音訊不等於保證靜音；配 Jazz 音樂時可在最後渲染移除生成音軌。",
+          "messageEn": "No requested audio is not a silence guarantee; remove generated audio during rendering."
+        }
+      ],
+      "exportTimestamp": "2026-10-13T19:28:39.000Z"
+    }
+  }
+]

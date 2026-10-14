@@ -6,7 +6,7 @@ import type {
 import { PROVIDER_CAPABILITIES } from '../../models/provider-capabilities';
 import { normalizePlan } from '../motion-planner';
 import { auditPlan } from '../quality-check';
-export const COMPILER_VERSION = '1.2.0';
+export const COMPILER_VERSION = '1.3.0';
 export function workflow(p: MotionPlan): string[] {
   const cap = PROVIDER_CAPABILITIES[p.model];
   const result = [

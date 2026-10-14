@@ -154,12 +154,12 @@ test('rapid native QC selections keep a stable input and commit only the latest 
   await expect(page.locator('.video-panel video')).toHaveCount(0);
 });
 
-test('compiler 1.1.0 import preserves original bytes, requires review, and exports 1.2.0 only after explicit adoption', async ({page}) => {
+test('compiler 1.1.0 import preserves original bytes, requires review, and exports 1.3.0 only after explicit adoption', async ({page}) => {
   const raw = await readFile('docs/motion-plan-export.compiler-1.1.example.json', 'utf8');
   const before = await page.evaluate(() => localStorage.getItem('video-prompts.settings.v1'));
   await page.locator('#json-file').setInputFiles({name: 'historical.json', mimeType: 'application/json', buffer: Buffer.from(raw)});
   await expect(page.locator('#configuration-import-review')).toContainText('compiler 1.1.0');
-  await expect(page.locator('#configuration-import-review')).toContainText('compiler 1.2.0');
+  await expect(page.locator('#configuration-import-review')).toContainText('compiler 1.3.0');
   expect(await page.evaluate(() => localStorage.getItem('video-prompts.settings.v1'))).toBe(before);
   const download = page.waitForEvent('download');
   await page.locator('[data-action="export-original-configuration"]').click();
@@ -168,7 +168,7 @@ test('compiler 1.1.0 import preserves original bytes, requires review, and expor
   const updated = page.waitForEvent('download');
   await page.locator('[data-action="export-json"]').click();
   const output = JSON.parse(await readFile((await (await updated).path())!, 'utf8')) as {compilerVersion: string; generatedEnglishPrompt: string};
-  expect(output.compilerVersion).toBe('1.2.0');
+  expect(output.compilerVersion).toBe('1.3.0');
   expect(output.generatedEnglishPrompt).toBe(await page.locator('#final-prompt pre[lang="en"]').innerText());
   await expect(page.locator('[data-field="source.elementsConfirmed"]')).not.toBeChecked();
 });

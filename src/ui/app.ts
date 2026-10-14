@@ -18,7 +18,7 @@ import {
   invalidateSourceConfirmation,
 } from '../engine/source-confirmation';
 import { generateVariations } from '../engine/variations';
-import { motionSignature, restorePresetPlan } from '../engine/preset-state';
+import { motionSignature, presetSignature, restorePresetPlan } from '../engine/preset-state';
 import {
   defaultPlan,
   normalizePlan,
@@ -443,7 +443,7 @@ export function mountApp(root: HTMLElement): void {
       <p class="hint preset-scroll-hint">可在此清單內向下捲動查看更多預設；手機版請直接向下滑動頁面。</p>
       <div class="preset-list">${items.map((p) => `<button class="preset-card ${p.id === plan().presetId && motionSignature(p.plan) === motionSignature(plan()) ? 'selected' : ''}" data-action="preset" data-id="${escape(p.id)}" aria-pressed="${p.id === plan().presetId && motionSignature(p.plan) === motionSignature(plan())}"><strong>${escape(p.nameZh)}</strong><span>${escape(p.nameEn)}</span><small>${escape(p.descriptionZh)}</small></button>`).join('') || `<p class="hint">${blocked ? '自訂預設暫時無法顯示；原始資料仍在，請使用上方復原功能。' : '此分類還沒有自訂預設。'}</p>`}</div>
       <p class="hint">再次點擊剛套用的預設，可恢復套用前設定；手動修改動作後，預設會取消選取。亦可使用「復原上一步」。</p>
-      ${current ? `<p class="hint">${current.category === 'custom' && motionSignature(current.plan) !== motionSignature(plan()) ? '修改中（可更新自訂）：' : '已選：'}${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>` : ''}
+      ${current ? `<p class="hint">${current.category === 'custom' && presetSignature(current.plan) !== presetSignature(plan()) ? '修改中（可更新自訂）：' : '已選：'}${escape(current.nameZh)}。${current.warningsZh.map(escape).join(' ')}${current.providerNotesZh.map(escape).join(' ')}</p>` : ''}
       <label class="field" for="presetName"><span>自訂預設名稱</span><input id="presetName" maxlength="80" value="${escape(presetName)}" placeholder="例如 Mochi 雨天微動作"/></label>
       <div class="actions"><button data-action="save-preset" ${blocked ? 'disabled' : ''}>另存設定</button><button data-action="duplicate-preset" ${blocked ? 'disabled' : ''}>複製設定</button><button data-action="update-preset" ${isCustom ? '' : 'disabled'}>更新自訂</button><button data-action="rename-preset" ${isCustom ? '' : 'disabled'}>重新命名</button><button data-action="delete-preset" ${isCustom ? '' : 'disabled'}>刪除自訂</button></div>
       <div class="actions"><button data-action="export-presets" ${state.status === 'ready' && state.presets.length ? '' : 'disabled'}>匯出全部自訂</button><button data-action="export-selected" ${current ? '' : 'disabled'}>匯出已選預設</button><button data-action="import-json">匯入預設／設定 JSON</button></div><input id="json-file" class="file-input" type="file" accept="application/json,.json" aria-label="匯入 JSON"/>
