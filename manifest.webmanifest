@@ -1,0 +1,11 @@
+{
+  "id": "./", "name": "Video Prompt Generator", "short_name": "Video Prompts",
+  "lang": "zh-HK", "description": "完全本機的影片提示詞工作台",
+  "start_url": "./", "scope": "./", "display": "standalone",
+  "background_color": "#181e2a", "theme_color": "#181e2a",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
