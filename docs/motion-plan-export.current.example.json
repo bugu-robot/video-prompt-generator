@@ -64,7 +64,7 @@
   },
   "sourceImageReference": null,
   "generatedEnglishPrompt": "Continue the supplied image naturally, focusing on the requested movement.\n\nPrimary motion: If a steaming drink is already visible in the source image, thin steam drifts upward softly. Alongside it, If a rain-covered window is already visible in the source image, raindrops slide slowly down the existing window.\n\nAlongside it, If a breathing character or animal is already visible in the source image, let the existing subject breathe gently with small chest movement.\n\nKeep movement subtle and restrained. Let selected continuous motion develop smoothly at a relaxed, natural pace.\n\nKeep the camera locked on a static tripod throughout the shot.\n\nPreserve identity and appearance, facial features, original proportions, existing objects, composition, lighting setup, color palette, background structure, visual style from the source image, where those features are visible.\n\nLet the selected movements settle back to the starting pose and framing at the end of the clip.\n\nFocus on visual motion; no audio is requested.",
-  "compilerVersion": "1.2.0",
+  "compilerVersion": "1.3.0",
   "capabilitySnapshotDate": "2026-10-11",
   "presetIdentity": null,
   "loopSettings": {

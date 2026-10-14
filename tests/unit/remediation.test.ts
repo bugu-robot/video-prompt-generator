@@ -258,7 +258,7 @@ describe('version-aware historical validation and explicit migration', () => {
           expect(review.originalRaw).toBe(raw);
           expect(review.original).toEqual(v);
           expect(review.recompiled.motionPlan).toEqual(v.motionPlan);
-          expect(review.recompiled.compilerVersion).toBe('1.2.0');
+          expect(review.recompiled.compilerVersion).toBe('1.3.0');
           expect(review.recompiled.generatedEnglishPrompt).not.toBe(
             v.generatedEnglishPrompt,
           );

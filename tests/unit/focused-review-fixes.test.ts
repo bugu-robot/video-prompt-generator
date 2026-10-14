@@ -174,7 +174,7 @@ it.each(frozenFiles)('released 1.1.0 verifier dependency $path stays byte-immuta
 it.each(historical)('frozen 1.1.0 $id remains verifiable with explicit lossless migration and tamper rejection', ({export: old}) => {
   const raw = JSON.stringify(old, null, 2), review = reviewConfigurationImport(raw);
   expect(review.original.compilerVersion).toBe('1.1.0');
-  expect(review.recompiled.compilerVersion).toBe('1.2.0');
+  expect(review.recompiled.compilerVersion).toBe('1.3.0');
   expect(review.originalRaw).toBe(raw); expect(review.original.generatedEnglishPrompt).toBe(old.generatedEnglishPrompt);
   expect(review.recompiled.motionPlan).toEqual(old.motionPlan);
   expect(() => importConfiguration(raw)).toThrow('明確確認');
@@ -182,7 +182,7 @@ it.each(historical)('frozen 1.1.0 $id remains verifiable with explicit lossless 
   expect(() => reviewConfigurationImport(JSON.stringify({...old, generatedEnglishPrompt: old.generatedEnglishPrompt + ' Extra action.'}))).toThrow('generatedEnglishPrompt');
   expect(() => reviewConfigurationImport(JSON.stringify({...old, qcWarnings: []}))).toThrow('qcWarnings');
   expect(() => reviewConfigurationImport(JSON.stringify({...old, compilerVersion: '9.9.9'}))).toThrow();
-  const relabeled = JSON.stringify({...old, compilerVersion: '1.2.0'});
+  const relabeled = JSON.stringify({...old, compilerVersion: '1.3.0'});
   if (old.generatedEnglishPrompt !== review.recompiled.generatedEnglishPrompt ||
       JSON.stringify(old.qcWarnings) !== JSON.stringify(review.recompiled.qcWarnings))
     expect(() => reviewConfigurationImport(relabeled)).toThrow();

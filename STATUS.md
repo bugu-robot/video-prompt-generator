@@ -1,6 +1,15 @@
 # Development status
 
-Original PR #1 and follow-ups #2–#4 were merged by prior work; main baseline is `08971ce5d4a18badb7765a011a63916f05acdd09`. The published site exists. Current corrections use only `fix/review-remediation-update-dismiss`: no merge, deployment, main change, Mochi repository change or provider credits. Earlier sections preserve historical evidence.
+Current focused P2 work starts from latest main `728d1339cfe3efb0aa712e2370cdf49a54a96400` on `fix/water-camera-preset-restore`. No merge, deployment, main modification, Mochi repository change or provider submission is authorized. Earlier sections preserve historical evidence.
+
+## Focused water / camera / preset corrections (2026-10-14, compiler 1.3.0)
+
+- Stable `ripples` ID now describes breeze-driven calm, low-amplitude, continuous water undulation, horizontal ripples and natural shimmering, with bilingual explicit exclusions for droplets, rain impacts, splashes, circular/point-source ripples and objects striking water. Shared catalog wording reaches Omni/Veo/Grok, all densities and ABC. No built-in preset selects `ripples`; custom presets inherit the change without storage rewriting. Ocean `waves` remains separate.
+- Locked-camera notes detect tilt, parallax, zoom in/out and clear roll/truck/track/crane/pedestal/handheld/slide/move directives. Scoped negation and comma lists remain compatible; scene objects and subject head/lantern/ball movement are excluded. This remains a limited deterministic English audit.
+- Motion signature excludes audio, duration and preservation; their edits retain the active preset/restore snapshot. Cancellation restores original motion and only restores untouched peripheral values, retaining later independent edits. A separate full signature preserves the custom dirty indicator and Update/Rename/Delete identity. Undo, source confirmation and media lifetime rules remain intact.
+- Compiler 1.2.0's complete dependency graph is frozen byte-for-byte, with 17 SHA-256 checks and 28 fixed provider/mode/density/water/audit exports. Registered exact 1.2.0/2026-10-11 pair retains historical prompt/warnings; explicit migration produces 1.3.0. Schema/plan v1 and existing historical snapshots are unchanged.
+- Local Node 24: clean npm ci, typecheck/lint, **861 unit passes** in 10 files, root/Pages builds, audit **0 vulnerabilities**. Added **116 unit cases** and **7 shared browser cases**; full inventory **100 Chromium / 99 Firefox / 99 WebKit = 298**. All existing assertions/retry/skip policies remain intact; version assertions now enforce 1.3.0.
+- Local `playwright install --with-deps` cannot provision system dependencies (setgroups/setuid denied); direct browser download fails with a truncated ZIP. Neither is browser pass evidence. Full existing native CI, including the independent WebKit QC stress, is mandatory; actual final-head outcomes will be recorded in the Draft PR after inspecting Actions logs.
 
 ## Current review remediation (2026-10-13, compiler 1.2.0)
 

@@ -1,0 +1,66 @@
+[
+  {
+    "path": "data/cameras.ts",
+    "sha256": "8202b9c4fedb669a8f3e0fd1f06f7d38d1e37b681165d1c72c01b591a382fdf9"
+  },
+  {
+    "path": "data/motions.ts",
+    "sha256": "9b4816e41d0ceaaebe68d793bfd78e1620ae9bb30ec5190b24d5131954c9be42"
+  },
+  {
+    "path": "engine/camera-notes.ts",
+    "sha256": "cdf4c89eadeea8c7778d3c6e511da0078f428fa165e068a4d550391cde767703"
+  },
+  {
+    "path": "engine/compile.ts",
+    "sha256": "96c0b3e39061d9e12a884fce23615a0e688d9cda988d942a9eac4feda8768130"
+  },
+  {
+    "path": "engine/compilers/common.ts",
+    "sha256": "b8e6478d1487079121bfef6d6ca808dba949c205cb89536145c2896133a41cbe"
+  },
+  {
+    "path": "engine/compilers/grok.ts",
+    "sha256": "df393cf799efcf570d8cab98053eb0e057911b97243d1d2fd5f30efab7ad0f59"
+  },
+  {
+    "path": "engine/compilers/omni.ts",
+    "sha256": "36ed234b38ec2bdb7e033984eca039d73413d46de4140881ce02339db0949789"
+  },
+  {
+    "path": "engine/compilers/veo.ts",
+    "sha256": "2d59ea1597aaca961d372d00a3c1d8e2a6fce84d539dfd431d82e4dea3d32427"
+  },
+  {
+    "path": "engine/intent.ts",
+    "sha256": "099183bc0ffb364c6d7015b3ea5b2cb45105ce0329809fa11da39959e4c61f1a"
+  },
+  {
+    "path": "engine/loop-rules.ts",
+    "sha256": "586b30461795a2090235e4f37980558d6758dc5834da09a833383f86746bbf2c"
+  },
+  {
+    "path": "engine/motion-planner.ts",
+    "sha256": "9ebc20436d6af6efa9e5cc1ccaa8b13f494ef6d8ab4d51d5aa2c2115e9b00dd5"
+  },
+  {
+    "path": "engine/quality-check.ts",
+    "sha256": "785ccc3ef6b30ad7daf748b9b585cb1953f7ab7dbebd77e3ad6d000a6309dc5b"
+  },
+  {
+    "path": "engine/source-confirmation.ts",
+    "sha256": "6af56be43fdf13dc5def6be8f0ccd161a9014f1e82d831dac984db8673677371"
+  },
+  {
+    "path": "i18n/zh-HK.ts",
+    "sha256": "187904f4ed3a7548137eef3dac1af19e2bd3b34fc2af6048ba64171eeae6e433"
+  },
+  {
+    "path": "models/motion-plan.ts",
+    "sha256": "6c702aaa9de22fcf5a37f9b725ce602ae4f837fc0aacba9d6582ce80a6d657c3"
+  },
+  {
+    "path": "models/provider-capabilities.ts",
+    "sha256": "f3ff3f96d987acac9b4236b2c18a66e0f655887126b1c4767bc79fd7a2eda7b1"
+  }
+]
