@@ -50,7 +50,10 @@ test('custom preset peripheral edits keep Update/Rename/Delete usable and preser
   await page.locator('label.chip').filter({has:page.locator('input[value="ripples"]')}).click();
   await page.locator('[data-action="update-preset"]').click();
   await page.locator('#presetFilter').selectOption('custom');
-  const id = await page.evaluate(() => JSON.parse(localStorage.getItem('video-prompts.settings.v1')!).plan.presetId as string);
+  const activeCustom = page.locator('[data-action="preset"][aria-pressed="true"]');
+  await expect(activeCustom).toHaveCount(1);
+  const id = await activeCustom.getAttribute('data-id');
+  expect(id).toBeTruthy();
   const before = await motions(page);
   // Switch to built-ins, then cancel after peripheral edits to restore custom identity.
   await page.locator('#presetFilter').selectOption('all');
